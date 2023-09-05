@@ -1,6 +1,5 @@
 import { Request, Response, query } from "express";
 import { pool } from "../db/db";
-import { UUID } from "crypto";
 
 const getProjectStages = async (req: Request, res: Response) => {
   try {
@@ -79,7 +78,8 @@ const setProjectStages = async (req: Request, res: Response) => {
       const result = await pool.query(insertProjectStageQuery, values);
       newProjectStages.push(result.rows[0]);
     }
-
+    // Commit the transaction
+    await client.query("COMMIT");
     res
       .status(201)
       .json({ status: "success", projectStages: newProjectStages });
