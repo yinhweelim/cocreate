@@ -27,11 +27,13 @@
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.5.0",
+    "pg": "^8.11.3",
     "rimraf": "^5.0.1",
     "typescript": "^5.2.2",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/pg": "^8.10.2",
     "nodemon": "^3.0.1"
   }
 }
