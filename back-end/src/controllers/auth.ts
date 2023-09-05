@@ -5,9 +5,20 @@ import { v4 } from "uuid";
 import { pool } from "../db/db";
 
 const uuidv4 = v4;
-const createAuth = async (req: Request, res: Response) => {
+
+//registration endpoint creates 1 auth object and two user objects linked to the same auth object.
+const register = async (req: Request, res: Response) => {
+  const client = await pool.connect(); // Get a PostgreSQL client from the pool
+
   try {
-    const { email, password } = req.body;
+    await client.query("BEGIN"); // Begin the transaction
+
+    const {
+      email,
+      password,
+      given_name: givenName,
+      last_name: lastName,
+    } = req.body;
 
     //check if email already exists
     const checkEmailQuery = "SELECT * FROM auth WHERE email = $1";
@@ -21,20 +32,52 @@ const createAuth = async (req: Request, res: Response) => {
     //hash password
     const hash = await bcrypt.hash(password, 12);
 
-    //insert new auth resource into database
-    const insertAuthQuery = "INSERT INTO auth (email,hash) VALUES ($1, $2)";
-    await pool.query(insertAuthQuery, [email, hash]);
+    //Step 1: Create new auth resource
+    const createAuthQuery =
+      "INSERT INTO auth (email,hash) VALUES ($1, $2) RETURNING id";
+    const newAuth = await pool.query(createAuthQuery, [email, hash]);
+    const authId = newAuth.rows[0].id;
+    console.log("authId: ", authId);
 
-    //get id of new auth resource
-    const createdAuth = await pool.query(
-      "SELECT id FROM auth WHERE email = $1",
-      [email]
-    );
+    // Step 2: Create a 'creator' object
+    const createCreatorQuery =
+      "INSERT INTO creators DEFAULT VALUES returning id";
+    const newCreator = await pool.query(createCreatorQuery);
+    const creatorId = newCreator.rows[0].id;
+    console.log("creatorId: ", creatorId);
 
-    const createdAuthId = createdAuth.rows[0].id;
+    // Step 3: Create two 'user' objects in the database
+    // User with role 'creator'
+    const createUserCreatorQuery =
+      "INSERT INTO users (role, creator_id, auth_id, given_name, last_name) VALUES ($1, $2, $3, $4, $5)";
+    await pool.query(createUserCreatorQuery, [
+      "CREATOR",
+      creatorId,
+      authId,
+      givenName,
+      lastName,
+    ]);
 
-    res.json({ status: "ok", msg: "auth created", id: createdAuthId });
+    // User with role 'patron'
+    const createUserPatronQuery =
+      "INSERT INTO users (role, auth_id,given_name, last_name) VALUES ($1, $2,$3,$4)";
+    await pool.query(createUserPatronQuery, [
+      "PATRON",
+      authId,
+      givenName,
+      lastName,
+    ]);
+
+    await client.query("COMMIT"); // Commit the transaction
+
+    res.json({
+      status: "ok",
+      msg: "Registration successful",
+      auth_id: authId,
+    });
   } catch (error) {
+    await client.query("ROLLBACK"); // Roll back the transaction in case of an error
+
     console.error("Error registering user:", error);
     res.status(500).json({
       status: "error",
@@ -154,4 +197,4 @@ const refresh = async (req: Request, res: Response) => {
   }
 };
 
-export { createAuth, updatePassword, login, refresh };
+export { register, updatePassword, login, refresh };
