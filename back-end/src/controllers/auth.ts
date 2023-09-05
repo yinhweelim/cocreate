@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { v4 } from "uuid";
 import { pool } from "../db/db";
 
@@ -128,4 +128,30 @@ const login = async (req: Request, res: Response) => {
   }
 };
 
-export { createAuth, updatePassword, login };
+const refresh = async (req: Request, res: Response) => {
+  try {
+    //compare refresh token, returns decoded token (headers and payload)
+    const decoded = jwt.verify(
+      req.body.refresh,
+      process.env.REFRESH_SECRET as string
+    ) as JwtPayload;
+
+    //get claims from decoded token, which will be used to create new access token
+    const claims = {
+      email: decoded.email,
+      id: decoded.id,
+    };
+
+    const access = jwt.sign(claims, process.env.ACCESS_SECRET as string, {
+      expiresIn: "30d",
+      jwtid: uuidv4(),
+    });
+
+    res.json({ access });
+  } catch (error) {
+    console.error("Error refreshing token:", error);
+    res.status(400).json({ status: "error", msg: "Refresh error" });
+  }
+};
+
+export { createAuth, updatePassword, login, refresh };

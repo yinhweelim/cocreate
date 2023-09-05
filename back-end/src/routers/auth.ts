@@ -3,7 +3,7 @@ import {
   createAuth,
   updatePassword,
   login,
-  //   refresh,
+  refresh,
 } from "../controllers/auth";
 
 const router = express.Router();
@@ -11,6 +11,6 @@ const router = express.Router();
 router.put("/auth", createAuth);
 router.patch("/auth", updatePassword);
 router.post("/auth/login", login);
-// router.post("/auth/refresh", refresh);
+router.post("/auth/refresh", refresh);
 
 export default router;
