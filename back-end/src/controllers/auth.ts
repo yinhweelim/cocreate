@@ -37,36 +37,36 @@ const register = async (req: Request, res: Response) => {
       "INSERT INTO auth (email,hash) VALUES ($1, $2) RETURNING id";
     const newAuth = await pool.query(createAuthQuery, [email, hash]);
     const authId = newAuth.rows[0].id;
-    console.log("authId: ", authId);
 
     // Step 2: Create a 'creator' object
     const createCreatorQuery =
       "INSERT INTO creators DEFAULT VALUES returning id";
     const newCreator = await pool.query(createCreatorQuery);
     const creatorId = newCreator.rows[0].id;
-    console.log("creatorId: ", creatorId);
 
     // Step 3: Create two 'user' objects in the database
     // User with role 'creator'
     const createUserCreatorQuery =
-      "INSERT INTO users (role, creator_id, auth_id, given_name, last_name) VALUES ($1, $2, $3, $4, $5)";
-    await pool.query(createUserCreatorQuery, [
+      "INSERT INTO users (role, creator_id, auth_id, given_name, last_name) VALUES ($1, $2, $3, $4, $5) RETURNING id";
+    const newCreatorUser = await pool.query(createUserCreatorQuery, [
       "CREATOR",
       creatorId,
       authId,
       givenName,
       lastName,
     ]);
+    const creatorUserId = newCreatorUser.rows[0].id;
 
     // User with role 'patron'
     const createUserPatronQuery =
-      "INSERT INTO users (role, auth_id,given_name, last_name) VALUES ($1, $2,$3,$4)";
-    await pool.query(createUserPatronQuery, [
+      "INSERT INTO users (role, auth_id,given_name, last_name) VALUES ($1, $2,$3,$4) RETURNING id";
+    const newPatronUser = await pool.query(createUserPatronQuery, [
       "PATRON",
       authId,
       givenName,
       lastName,
     ]);
+    const patronUserId = newPatronUser.rows[0].id;
 
     await client.query("COMMIT"); // Commit the transaction
 
@@ -74,6 +74,9 @@ const register = async (req: Request, res: Response) => {
       status: "ok",
       msg: "Registration successful",
       auth_id: authId,
+      creator_user_id: creatorUserId,
+      patron_user_id: patronUserId,
+      creator_id: creatorId,
     });
   } catch (error) {
     await client.query("ROLLBACK"); // Roll back the transaction in case of an error
