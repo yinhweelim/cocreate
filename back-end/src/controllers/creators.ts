@@ -7,7 +7,6 @@ const getCreatorById = async (req: Request, res: Response) => {
     const getCreatorById = "SELECT * FROM creators WHERE id = $1";
     const result = await pool.query(getCreatorById, [req.params.id]);
     const creator = result.rows[0];
-    console.log(result.rows);
 
     if (result.rows.length === 0) {
       return res
@@ -105,7 +104,6 @@ const updateCreator = async (req: Request, res: Response) => {
       queryParams.push(req.body.payment_instructions);
     }
 
-    console.log(queryParams);
     if (updateFields.length === 0) {
       // No fields to update
       return res.status(400).json({
