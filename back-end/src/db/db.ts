@@ -1,11 +1,9 @@
-const Pool = require("pg").Pool;
-import { Request, Response } from "express";
-import { QueryResult } from "pg"; // Import the QueryResult type
+import { Pool } from "pg";
 
 const pool = new Pool({
-  user: process.env.USER,
+  user: process.env.DB_USER,
   host: process.env.HOST,
-  database: process.env.DATABASE,
+  database: process.env.DB_USER,
   password: process.env.PASSWORD,
   port: 5432,
 });
@@ -18,15 +16,4 @@ pool.connect((error: Error) => {
   }
 });
 
-const getTestData = (req: Request, res: Response) => {
-  console.log("here");
-  pool.query("SELECT * FROM testdata", (error: Error, results: QueryResult) => {
-    if (error) {
-      throw error;
-    }
-    console.log(results);
-    res.status(200).json(results.rows);
-  });
-};
-
-export default { getTestData };
+export { pool };
