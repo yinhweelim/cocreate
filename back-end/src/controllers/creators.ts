@@ -1,6 +1,4 @@
 import { Request, Response, query } from "express";
-import { v4 } from "uuid";
-const uuidv4 = v4;
 import { pool } from "../db/db";
 
 const getCreatorById = async (req: Request, res: Response) => {
@@ -9,6 +7,7 @@ const getCreatorById = async (req: Request, res: Response) => {
     const getCreatorById = "SELECT * FROM creators WHERE id = $1";
     const result = await pool.query(getCreatorById, [req.params.id]);
     const creator = result.rows[0];
+    console.log(result.rows);
 
     if (result.rows.length === 0) {
       return res
