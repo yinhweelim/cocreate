@@ -5,11 +5,15 @@ import {
   createProductForCreator,
   updateProduct,
   deleteProduct,
-} from "../controllers/products";
+} from "../controllers/creators_products";
 import {
   getProjectStages,
   setProjectStages,
 } from "../controllers/creators_project_stages";
+import {
+  getTestimonials,
+  createTestimonial,
+} from "../controllers/creators_testimonials";
 
 const router = express.Router();
 
@@ -23,5 +27,8 @@ router.delete("/creators/products/:id", deleteProduct);
 
 router.get("/creators/project_stages/:creator_id", getProjectStages);
 router.put("/creators/project_stages/:creator_id", setProjectStages);
+
+router.get("/creators/testimonials/:creator_id", getTestimonials);
+router.put("/creators/testimonials/:creator_id", createTestimonial);
 
 export default router;
