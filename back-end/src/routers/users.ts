@@ -3,6 +3,6 @@ import { updateUser } from "../controllers/users";
 
 const router = express.Router();
 
-router.patch("/users/:user_id", updateUser);
+router.patch("/users/:id", updateUser);
 
 export default router;

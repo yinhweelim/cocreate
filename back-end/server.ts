@@ -31,8 +31,10 @@ app.use(express.urlencoded({ extended: false }));
 
 //routers
 import auth from "./src/routers/auth";
+import users from "./src/routers/users";
 
 app.use("/api", auth);
+app.use("/api", users);
 
 app.listen(port, () => {
   console.log(`now listening on port ${port}`);
