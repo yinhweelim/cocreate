@@ -6,9 +6,6 @@ const getProductsByCreatorId = async (req: Request, res: Response) => {
     //if creator not found, return error
     const getCreatorById = "SELECT * FROM creators WHERE id = $1";
     const result = await pool.query(getCreatorById, [req.params.creator_id]);
-
-    console.log(result.rows);
-
     if (result.rows.length === 0) {
       return res
         .status(400)
@@ -16,7 +13,8 @@ const getProductsByCreatorId = async (req: Request, res: Response) => {
     }
 
     //get products with creator_id
-    const getProducts = "SELECT * FROM creator_products WHERE creator_id = $1";
+    const getProducts =
+      "SELECT * FROM creator_products WHERE creator_id = $1 AND is_deleted = false";
     const results = await pool.query(getProducts, [req.params.creator_id]);
     const products = results.rows;
 
@@ -131,4 +129,30 @@ const updateProduct = async (req: Request, res: Response) => {
   }
 };
 
-export { getProductsByCreatorId, createProductForCreator, updateProduct };
+const deleteProduct = async (req: Request, res: Response) => {
+  try {
+    const queryParams = [req.params.id];
+
+    const updateQuery =
+      "UPDATE creator_products SET is_deleted = true WHERE id = $1";
+
+    await pool.query(updateQuery, queryParams);
+
+    res
+      .status(200)
+      .json({ status: "success", msg: "Product deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    res.status(500).json({
+      status: "error",
+      msg: "An error occurred while deleting the product",
+    });
+  }
+};
+
+export {
+  getProductsByCreatorId,
+  createProductForCreator,
+  updateProduct,
+  deleteProduct,
+};
