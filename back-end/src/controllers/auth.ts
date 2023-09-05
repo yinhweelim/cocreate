@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { v4 } from "uuid";
 import { pool } from "../db/db";
 
+const uuidv4 = v4;
 const createAuth = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
@@ -42,8 +45,6 @@ const createAuth = async (req: Request, res: Response) => {
 
 const updatePassword = async (req: Request, res: Response) => {
   try {
-    // const { email, currentPassword, newPassword } = req.body;
-
     //get auth object based on email
     const authResult = await pool.query("SELECT * FROM auth WHERE email = $1", [
       req.body.email,
@@ -83,4 +84,48 @@ const updatePassword = async (req: Request, res: Response) => {
   }
 };
 
-export { createAuth, updatePassword };
+const login = async (req: Request, res: Response) => {
+  try {
+    //get auth object based on email
+    const auth = await pool.query("SELECT * FROM auth WHERE email = $1", [
+      req.body.email,
+    ]);
+    if (auth.rows.length === 0) {
+      return res.status(404).json({ status: "error", msg: "Not authorised" });
+    }
+
+    //check current password
+    const authData = auth.rows[0];
+
+    const result = await bcrypt.compare(req.body.password, authData.hash); //compare method will hash provided password and compare with hashed password
+    if (!result) {
+      console.log("username or password error");
+      return res.status(401).json({ status: "error", msg: "login failed" });
+    }
+
+    const claims = {
+      email: authData.email,
+      id: authData.id,
+    };
+
+    //after user has been successfully authenticated, create jwt
+    const access = jwt.sign(claims, process.env.ACCESS_SECRET as string, {
+      expiresIn: "30d", //TODO: set to valid for 20 mins
+      jwtid: uuidv4(),
+    });
+
+    const refresh = jwt.sign(claims, process.env.REFRESH_SECRET as string, {
+      expiresIn: "30d", //valid for 30 days
+      jwtid: uuidv4(),
+    });
+
+    res.json({ access, refresh });
+  } catch (error) {
+    console.error("Error during login:", error);
+    res
+      .status(500)
+      .json({ status: "error", msg: "An error occurred during login" });
+  }
+};
+
+export { createAuth, updatePassword, login };
