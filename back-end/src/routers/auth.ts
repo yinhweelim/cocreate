@@ -1,12 +1,11 @@
 import express from "express";
-import { createAuth } from "../controllers/auth";
+import { createAuth, updatePassword } from "../controllers/auth";
 
 const router = express.Router();
 
 router.put("/auth", createAuth);
+router.patch("/auth", updatePassword);
 
-// PUT	/auth
-// PATCH	/auth/:auth_id
 // POST	/auth/login
 // POST	/auth/refresh
 

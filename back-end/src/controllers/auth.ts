@@ -40,4 +40,47 @@ const createAuth = async (req: Request, res: Response) => {
   }
 };
 
-export { createAuth };
+const updatePassword = async (req: Request, res: Response) => {
+  try {
+    // const { email, currentPassword, newPassword } = req.body;
+
+    //get auth object based on email
+    const authResult = await pool.query("SELECT * FROM auth WHERE email = $1", [
+      req.body.email,
+    ]);
+
+    if (authResult.rows.length === 0) {
+      return res.status(404).json({ status: "error", msg: "User not found" });
+    }
+
+    //check current password
+    const authData = authResult.rows[0];
+    const passwordMatch = await bcrypt.compare(
+      req.body.current_password,
+      authData.hash
+    );
+
+    if (!passwordMatch) {
+      return res
+        .status(401)
+        .json({ status: "error", msg: "Incorrect current password" });
+    }
+
+    // Hash the new password
+    const hashedNewPassword = await bcrypt.hash(req.body.new_password, 12);
+
+    // Update the password in the database
+    const updateQuery = "UPDATE auth SET hash = $1 WHERE email = $2";
+    await pool.query(updateQuery, [hashedNewPassword, req.body.email]);
+
+    res.json({ status: "ok", msg: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error updating password:", error);
+    res.status(500).json({
+      status: "error",
+      msg: "An error occurred while updating password",
+    });
+  }
+};
+
+export { createAuth, updatePassword };
