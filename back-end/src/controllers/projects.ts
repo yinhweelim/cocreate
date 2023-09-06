@@ -148,6 +148,15 @@ const createProject = async (req: Request, res: Response) => {
 
 const updateProject = async (req: Request, res: Response) => {
   try {
+    //if project not found, return error
+    const getProjectById = "SELECT * FROM projects WHERE id = $1";
+    const queryResult = await pool.query(getProjectById, [req.params.id]);
+    if (queryResult.rows.length === 0) {
+      return res
+        .status(400)
+        .json({ status: "error", msg: "project not found" });
+    }
+
     // Build the UPDATE query based on request body
     const updateFields = [];
     const queryParams = [req.params.id];
@@ -163,7 +172,7 @@ const updateProject = async (req: Request, res: Response) => {
         });
       }
 
-      updateFields.push("agreed_proposal_id = $2");
+      updateFields.push("agreed_proposal_id = $" + (queryParams.length + 1));
       queryParams.push(agreedProposalId);
     }
 
@@ -180,7 +189,7 @@ const updateProject = async (req: Request, res: Response) => {
       // Convert the Date object to a string in ISO 8601 format
       const isoAgreedDate = agreedDate.toISOString();
 
-      updateFields.push("agreed_date = $2");
+      updateFields.push("agreed_date = $" + (queryParams.length + 1));
       queryParams.push(isoAgreedDate); // Use the converted ISO date string
     }
 
@@ -194,7 +203,7 @@ const updateProject = async (req: Request, res: Response) => {
         });
       }
 
-      updateFields.push("current_stage_id = $4");
+      updateFields.push("current_stage_id = $" + (queryParams.length + 1));
       queryParams.push(currentStageId);
     }
 
@@ -210,7 +219,7 @@ const updateProject = async (req: Request, res: Response) => {
     const updateQuery =
       "UPDATE projects SET " +
       updateFields.join(", ") +
-      " WHERE id = $1  RETURNING *";
+      " WHERE id = $1 RETURNING *";
 
     // Execute the UPDATE query
     const result = await pool.query(updateQuery, queryParams);
