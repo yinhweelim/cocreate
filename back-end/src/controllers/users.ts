@@ -51,7 +51,11 @@ const updateUser = async (req: Request, res: Response) => {
       updateFields.push("last_name = $5");
       queryParams.push(req.body.last_name);
     }
-    console.log(queryParams);
+    if ("is_deleted" in req.body) {
+      updateFields.push("is_deleted = $6");
+      queryParams.push(req.body.is_deleted);
+    }
+
     if (updateFields.length === 0) {
       // No fields to update
       return res.status(400).json({
