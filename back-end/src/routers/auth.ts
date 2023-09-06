@@ -1,5 +1,7 @@
 import express from "express";
 import { register, updatePassword, login, refresh } from "../controllers/auth";
+import { auth } from "../middleware/auth";
+import { validation as checkValid } from "../middleware/checkValid";
 
 const router = express.Router();
 

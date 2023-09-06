@@ -14,21 +14,20 @@ import {
   getTestimonials,
   createTestimonial,
 } from "../controllers/creators_testimonials";
-
 import {
   deleteCreatorGalleryImage,
   getCreatorGalleryImages,
   uploadCreatorGalleryImage,
 } from "../controllers/creators_images";
-
 import {
   getSocialLinksByCreatorId,
   createSocialLink,
   updateSocialLink,
   deleteSocialLink,
 } from "../controllers/creators_social_links";
-
 import multer from "multer";
+import { auth } from "../middleware/auth";
+import { validation as checkValid } from "../middleware/checkValid";
 
 //functions to store images in memory until uploaded
 const storage = multer.memoryStorage();
