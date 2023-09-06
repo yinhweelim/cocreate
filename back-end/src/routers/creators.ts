@@ -24,6 +24,8 @@ import {
 import {
   getSocialLinksByCreatorId,
   createSocialLink,
+  updateSocialLink,
+  deleteSocialLink,
 } from "../controllers/creators_social_links";
 
 import multer from "multer";
@@ -63,7 +65,7 @@ router.delete("/creators/images/:id", deleteCreatorGalleryImage);
 //social links
 router.get("/creators/sociallinks/:creator_id", getSocialLinksByCreatorId);
 router.put("/creators/sociallinks/:creator_id", createSocialLink);
-// router.patch("/creators/sociallinks/:id", updateSocialLink);
-// router.delete("/creators/sociallinks/:id", deleteSocialLink);
+router.patch("/creators/sociallinks/:id", updateSocialLink);
+router.delete("/creators/sociallinks/:id", deleteSocialLink);
 
 export default router;

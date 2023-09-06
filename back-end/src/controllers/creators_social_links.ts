@@ -15,7 +15,7 @@ const getSocialLinksByCreatorId = async (req: Request, res: Response) => {
 
     //get links with creator_id
     const getLinksQuery =
-      "SELECT type, url FROM creator_social_links WHERE creator_id = $1 AND is_deleted = false";
+      "SELECT * FROM creator_social_links WHERE creator_id = $1 AND is_deleted = false";
     const results = await pool.query(getLinksQuery, [req.params.creator_id]);
     const links = results.rows;
 
@@ -63,35 +63,20 @@ const createSocialLink = async (req: Request, res: Response) => {
   }
 };
 
-const updateProduct = async (req: Request, res: Response) => {
+const updateSocialLink = async (req: Request, res: Response) => {
   try {
     // Build the UPDATE query based on request body
     const updateFields = [];
     const queryParams = [req.params.id];
 
-    if ("title" in req.body) {
-      updateFields.push("title = $2");
-      queryParams.push(req.body.title);
+    if ("type" in req.body) {
+      updateFields.push("type = $2");
+      queryParams.push(req.body.type);
     }
 
-    if ("description" in req.body) {
-      updateFields.push("description = $3");
-      queryParams.push(req.body.description);
-    }
-
-    if ("currency" in req.body) {
-      updateFields.push("currency = $4");
-      queryParams.push(req.body.currency);
-    }
-
-    if ("starting_price" in req.body) {
-      updateFields.push("starting_price = $5");
-      queryParams.push(req.body.starting_price);
-    }
-
-    if ("image_url" in req.body) {
-      updateFields.push("image_url = $6");
-      queryParams.push(req.body.image_url);
+    if ("url" in req.body) {
+      updateFields.push("url = $3");
+      queryParams.push(req.body.url);
     }
 
     if (updateFields.length === 0) {
@@ -104,44 +89,51 @@ const updateProduct = async (req: Request, res: Response) => {
 
     // Construct the final SQL UPDATE query
     const updateQuery =
-      "UPDATE creator_products SET " +
+      "UPDATE creator_social_links SET " +
       updateFields.join(", ") +
       " WHERE id = $1";
 
     // Execute the UPDATE query
     await pool.query(updateQuery, queryParams);
 
-    res
-      .status(200)
-      .json({ status: "success", msg: "Product updated successfully" });
+    res.status(200).json({
+      status: "success",
+      msg: "Social media link updated successfully",
+    });
   } catch (error) {
-    console.error("Error updating product:", error);
+    console.error("Error updating social media link:", error);
     res.status(500).json({
       status: "error",
-      msg: "An error occurred while updating the product",
+      msg: "An error occurred while updating the social media link",
     });
   }
 };
 
-const deleteProduct = async (req: Request, res: Response) => {
+const deleteSocialLink = async (req: Request, res: Response) => {
   try {
     const queryParams = [req.params.id];
 
     const updateQuery =
-      "UPDATE creator_products SET is_deleted = true WHERE id = $1";
+      "UPDATE creator_social_links SET is_deleted = true WHERE id = $1";
 
     await pool.query(updateQuery, queryParams);
 
-    res
-      .status(200)
-      .json({ status: "success", msg: "Product deleted successfully" });
+    res.status(200).json({
+      status: "success",
+      msg: "Social media link deleted successfully",
+    });
   } catch (error) {
-    console.error("Error deleting product:", error);
+    console.error("Error deleting social media link:", error);
     res.status(500).json({
       status: "error",
-      msg: "An error occurred while deleting the product",
+      msg: "An error occurred while deleting the social media link",
     });
   }
 };
 
-export { getSocialLinksByCreatorId, createSocialLink };
+export {
+  getSocialLinksByCreatorId,
+  createSocialLink,
+  updateSocialLink,
+  deleteSocialLink,
+};
