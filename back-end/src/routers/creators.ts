@@ -28,6 +28,10 @@ import {
 import multer from "multer";
 import { auth } from "../middleware/auth";
 import { validation as checkValid } from "../middleware/checkValid";
+import {
+  validateIdInParam,
+  validateUpdateCreatorData,
+} from "../validators/creators";
 
 //functions to store images in memory until uploaded
 const storage = multer.memoryStorage();
@@ -35,8 +39,15 @@ const upload = multer({ storage: storage }); //string should be name of input
 
 const router = express.Router();
 
-router.get("/creators/:id", getCreatorById);
-router.patch("/creators/:id", updateCreator);
+//creators
+router.get("/creators/:id", validateIdInParam, checkValid, getCreatorById);
+router.patch(
+  "/creators/:id",
+  validateIdInParam,
+  validateUpdateCreatorData,
+  checkValid,
+  updateCreator
+);
 
 //products
 router.get("/creators/products/:creator_id", getProductsByCreatorId);
