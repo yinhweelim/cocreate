@@ -75,7 +75,18 @@ const validateSetProjectStagesData = [
 ];
 //TODO: figure out how to validate data inside the array of objects
 
-
+const validateCreateTestimonialData = [
+  body("patron_id", "patron_id is required").not().isEmpty(),
+  body("creator_id", "creator_id is required").not().isEmpty(),
+  body("project_id", "project_id is required").not().isEmpty(),
+  body("testimonial", "testimonial is required").not().isEmpty(),
+  body("patron_id", "type should be uuid").isUUID(),
+  body("creator_id", "type should be uuid").isUUID(),
+  body("project_id", "type should be uuid").isUUID(),
+  body("testimonial", "type should be string").isString(),
+  body("image_url", "type should be string").optional().isString(),
+  body("patron_tagline", "type should be string").optional().isString(),
+];
 
 export {
   validateIdInParam,
@@ -84,4 +95,5 @@ export {
   validateCreateProductData,
   validateUpdateProductData,
   validateSetProjectStagesData,
+  validateCreateTestimonialData,
 };

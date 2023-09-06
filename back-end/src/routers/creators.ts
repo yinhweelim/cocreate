@@ -35,6 +35,7 @@ import {
   validateCreateProductData,
   validateUpdateProductData,
   validateSetProjectStagesData,
+  validateCreateTestimonialData,
 } from "../validators/creators";
 
 //functions to store images in memory until uploaded
@@ -106,6 +107,7 @@ router.get(
 router.put(
   "/creators/testimonials/:creator_id",
   validateCreatorIdInParam,
+  validateCreateTestimonialData,
   checkValid,
   createTestimonial
 );
