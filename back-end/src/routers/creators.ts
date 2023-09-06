@@ -81,26 +81,78 @@ router.delete(
 );
 
 //template project stages
-router.get("/creators/project_stages/:creator_id", getProjectStages);
-router.put("/creators/project_stages/:creator_id", setProjectStages);
+router.get(
+  "/creators/project_stages/:creator_id",
+  validateCreatorIdInParam,
+  checkValid,
+  getProjectStages
+);
+router.put(
+  "/creators/project_stages/:creator_id",
+  validateCreatorIdInParam,
+  checkValid,
+  setProjectStages
+);
 
 //testimonials
-router.get("/creators/testimonials/:creator_id", getTestimonials);
-router.put("/creators/testimonials/:creator_id", createTestimonial);
+router.get(
+  "/creators/testimonials/:creator_id",
+  validateCreatorIdInParam,
+  checkValid,
+  getTestimonials
+);
+router.put(
+  "/creators/testimonials/:creator_id",
+  validateCreatorIdInParam,
+  checkValid,
+  createTestimonial
+);
 
 //gallery images
-router.get("/creators/images/:creator_id", getCreatorGalleryImages);
+router.get(
+  "/creators/images/:creator_id",
+  validateCreatorIdInParam,
+  checkValid,
+  getCreatorGalleryImages
+);
 router.put(
   "/creators/images/:creator_id",
+  validateCreatorIdInParam,
+  checkValid,
   upload.single("image"),
   uploadCreatorGalleryImage
 );
-router.delete("/creators/images/:id", deleteCreatorGalleryImage);
+router.delete(
+  "/creators/images/:id",
+  validateIdInParam,
+  checkValid,
+  deleteCreatorGalleryImage
+);
 
 //social links
-router.get("/creators/sociallinks/:creator_id", getSocialLinksByCreatorId);
-router.put("/creators/sociallinks/:creator_id", createSocialLink);
-router.patch("/creators/sociallinks/:id", updateSocialLink);
-router.delete("/creators/sociallinks/:id", deleteSocialLink);
+router.get(
+  "/creators/sociallinks/:creator_id",
+  validateCreatorIdInParam,
+  checkValid,
+  getSocialLinksByCreatorId
+);
+router.put(
+  "/creators/sociallinks/:creator_id",
+  validateCreatorIdInParam,
+  checkValid,
+  createSocialLink
+);
+router.patch(
+  "/creators/sociallinks/:id",
+  validateIdInParam,
+  checkValid,
+  updateSocialLink
+);
+router.delete(
+  "/creators/sociallinks/:id",
+  validateIdInParam,
+  checkValid,
+  deleteSocialLink
+);
 
 export default router;

@@ -76,28 +76,33 @@ const updateProduct = async (req: Request, res: Response) => {
     const queryParams = [req.params.id];
 
     if ("title" in req.body) {
-      updateFields.push("title = $2");
+      updateFields.push("title = $" + (queryParams.length + 1));
       queryParams.push(req.body.title);
     }
 
     if ("description" in req.body) {
-      updateFields.push("description = $3");
+      updateFields.push("description = $" + (queryParams.length + 1));
       queryParams.push(req.body.description);
     }
 
     if ("currency" in req.body) {
-      updateFields.push("currency = $4");
+      updateFields.push("currency = $" + (queryParams.length + 1));
       queryParams.push(req.body.currency);
     }
 
     if ("starting_price" in req.body) {
-      updateFields.push("starting_price = $5");
+      updateFields.push("starting_price = $" + (queryParams.length + 1));
       queryParams.push(req.body.starting_price);
     }
 
     if ("image_url" in req.body) {
-      updateFields.push("image_url = $6");
+      updateFields.push("image_url = $" + (queryParams.length + 1));
       queryParams.push(req.body.image_url);
+    }
+
+    if ("is_deleted" in req.body) {
+      updateFields.push("is_deleted = $" + (queryParams.length + 1));
+      queryParams.push(req.body.is_deleted);
     }
 
     if (updateFields.length === 0) {
