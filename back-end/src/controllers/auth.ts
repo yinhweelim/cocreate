@@ -86,6 +86,9 @@ const register = async (req: Request, res: Response) => {
       status: "error",
       msg: "An error occurred while registering the user",
     });
+  } finally {
+    // Release the client back to the pool
+    client.release();
   }
 };
 
