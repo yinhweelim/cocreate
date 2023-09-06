@@ -40,68 +40,81 @@ const updateCreator = async (req: Request, res: Response) => {
     const queryParams = [req.params.id];
 
     if ("display_name" in req.body) {
-      updateFields.push("display_name = $2");
+      updateFields.push("display_name = $" + (queryParams.length + 1));
       queryParams.push(req.body.display_name);
     }
 
     if ("tagline" in req.body) {
-      updateFields.push("tagline = $3");
+      updateFields.push("tagline = $" + (queryParams.length + 1));
       queryParams.push(req.body.tagline);
     }
 
     if ("country_of_operation" in req.body) {
-      updateFields.push("country_of_operation = $4");
+      updateFields.push("country_of_operation = $" + (queryParams.length + 1));
       queryParams.push(req.body.country_of_operation);
     }
 
     if ("about" in req.body) {
-      updateFields.push("about = $5");
+      updateFields.push("about = $" + (queryParams.length + 1));
       queryParams.push(req.body.about);
     }
 
     if ("logo_image_url" in req.body) {
-      updateFields.push("logo_image_url = $6");
+      updateFields.push("logo_image_url = $" + (queryParams.length + 1));
       queryParams.push(req.body.logo_image_url);
     }
 
     if ("slots_per_month" in req.body) {
-      updateFields.push("slots_per_month = $7");
+      updateFields.push("slots_per_month = $" + (queryParams.length + 1));
       queryParams.push(req.body.slots_per_month);
     }
 
     if ("display_slots_per_month" in req.body) {
-      updateFields.push("display_slots_per_month = $8");
+      updateFields.push(
+        "display_slots_per_month = $" + (queryParams.length + 1)
+      );
       queryParams.push(req.body.display_slots_per_month);
     }
 
     if ("display_project_count" in req.body) {
-      updateFields.push("display_project_count = $9");
+      updateFields.push("display_project_count = $" + (queryParams.length + 1));
       queryParams.push(req.body.display_project_count);
     }
 
     if ("allow_consultation_booking" in req.body) {
-      updateFields.push("allow_consultation_booking = $10");
+      updateFields.push(
+        "allow_consultation_booking = $" + (queryParams.length + 1)
+      );
       queryParams.push(req.body.allow_consultation_booking);
     }
 
     if ("consultation_notice_days" in req.body) {
-      updateFields.push("consultation_notice_days = $11");
+      updateFields.push(
+        "consultation_notice_days = $" + (queryParams.length + 1)
+      );
       queryParams.push(req.body.consultation_notice_days);
     }
 
     if ("lead_time_in_weeks" in req.body) {
-      updateFields.push("lead_time_in_weeks = $12");
+      updateFields.push("lead_time_in_weeks = $" + (queryParams.length + 1));
       queryParams.push(req.body.lead_time_in_weeks);
     }
 
     if ("project_description_guideline" in req.body) {
-      updateFields.push("project_description_guideline = $13");
+      updateFields.push(
+        "project_description_guideline = $" + (queryParams.length + 1)
+      );
       queryParams.push(req.body.project_description_guideline);
     }
 
     if ("payment_instructions" in req.body) {
-      updateFields.push("payment_instructions = $14");
+      updateFields.push("payment_instructions = $" + (queryParams.length + 1));
       queryParams.push(req.body.payment_instructions);
+    }
+
+    if ("is_deleted" in req.body) {
+      updateFields.push("is_deleted = $" + (queryParams.length + 1));
+      queryParams.push(req.body.is_deleted);
     }
 
     if (updateFields.length === 0) {

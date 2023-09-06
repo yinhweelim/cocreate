@@ -77,48 +77,64 @@ const createProjectProposal = async (req: Request, res: Response) => {
 
 const updateProjectProposal = async (req: Request, res: Response) => {
   try {
+    //if proposal not found, return error
+    const getProposalQuery = "SELECT * FROM project_proposals WHERE id = $1";
+    const queryResult = await pool.query(getProposalQuery, [req.params.id]);
+    if (queryResult.rows.length === 0) {
+      return res
+        .status(400)
+        .json({ status: "error", msg: "proposal not found" });
+    }
+
     // Build the UPDATE query based on request body
     const updateFields = [];
     const queryParams = [req.params.id];
 
     if ("reference_image_url" in req.body) {
-      updateFields.push("reference_image_url = $2");
+      updateFields.push("reference_image_url = $" + (queryParams.length + 1));
       queryParams.push(req.body.reference_image_url);
     }
 
     if ("description" in req.body) {
-      updateFields.push("description = $3");
+      updateFields.push("description = $" + (queryParams.length + 1));
       queryParams.push(req.body.description);
     }
 
     if ("currency" in req.body) {
-      updateFields.push("currency = $4");
+      updateFields.push("currency = $" + (queryParams.length + 1));
       queryParams.push(req.body.currency);
     }
 
     if ("project_fee" in req.body) {
-      updateFields.push("project_fee = $5");
+      updateFields.push("project_fee = $" + (queryParams.length + 1));
       queryParams.push(req.body.project_fee);
     }
 
     if ("delivery_fee" in req.body) {
-      updateFields.push("delivery_fee = $6");
+      updateFields.push("delivery_fee = $" + (queryParams.length + 1));
       queryParams.push(req.body.delivery_fee);
     }
 
-    if ("additional_fees" in req.body) {
-      updateFields.push("additional_fees = $7");
-      queryParams.push(req.body.additional_fees);
+    if ("additional_fee" in req.body) {
+      updateFields.push("additional_fee = $" + (queryParams.length + 1));
+      queryParams.push(req.body.additional_fee);
     }
 
     if ("total_price" in req.body) {
-      updateFields.push("total_price = $8");
+      updateFields.push("total_price = $" + (queryParams.length + 1));
       queryParams.push(req.body.total_price);
     }
 
     if ("estimated_delivery_date" in req.body) {
-      updateFields.push("estimated_delivery_date = $9");
+      updateFields.push(
+        "estimated_delivery_date = $" + (queryParams.length + 1)
+      );
       queryParams.push(req.body.estimated_delivery_date);
+    }
+
+    if ("is_deleted" in req.body) {
+      updateFields.push("is_deleted = $" + (queryParams.length + 1));
+      queryParams.push(req.body.is_deleted);
     }
 
     if (updateFields.length === 0) {

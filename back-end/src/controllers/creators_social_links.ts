@@ -70,12 +70,12 @@ const updateSocialLink = async (req: Request, res: Response) => {
     const queryParams = [req.params.id];
 
     if ("type" in req.body) {
-      updateFields.push("type = $2");
+      updateFields.push("type = $" + (queryParams.length + 1));
       queryParams.push(req.body.type);
     }
 
     if ("url" in req.body) {
-      updateFields.push("url = $3");
+      updateFields.push("url = $" + (queryParams.length + 1));
       queryParams.push(req.body.url);
     }
 

@@ -100,48 +100,60 @@ const createBrief = async (req: Request, res: Response) => {
 
 const updateBrief = async (req: Request, res: Response) => {
   try {
+    //if brief not found, return error
+    const getBriefsQuery = "SELECT * FROM project_briefs WHERE id = $1";
+    const queryResult = await pool.query(getBriefsQuery, [req.params.id]);
+    if (queryResult.rows.length === 0) {
+      return res.status(400).json({ status: "error", msg: "brief not found" });
+    }
+
     // Build the UPDATE query based on request body
     const updateFields = [];
     const queryParams = [req.params.id];
 
     if ("details" in req.body) {
-      updateFields.push("details = $2");
+      updateFields.push("details = $" + (queryParams.length + 1));
       queryParams.push(req.body.details);
     }
 
     if ("budget_currency" in req.body) {
-      updateFields.push("budget_currency = $3");
+      updateFields.push("budget_currency = $" + (queryParams.length + 1));
       queryParams.push(req.body.budget_currency);
     }
 
     if ("budget_amount" in req.body) {
-      updateFields.push("budget_amount = $4");
+      updateFields.push("budget_amount = $" + (queryParams.length + 1));
       queryParams.push(req.body.budget_amount);
     }
 
     if ("deadline" in req.body) {
-      updateFields.push("deadline = $5");
+      updateFields.push("deadline = $" + (queryParams.length + 1));
       queryParams.push(req.body.deadline);
     }
 
     if ("consultation_slot" in req.body) {
-      updateFields.push("consultation_slot = $6");
+      updateFields.push("consultation_slot = $" + (queryParams.length + 1));
       queryParams.push(req.body.consultation_slot);
     }
 
     if ("delivery_method" in req.body) {
-      updateFields.push("delivery_method = $7");
+      updateFields.push("delivery_method = $" + (queryParams.length + 1));
       queryParams.push(req.body.delivery_method);
     }
 
     if ("status" in req.body) {
-      updateFields.push("status = $8");
+      updateFields.push("status = $" + (queryParams.length + 1));
       queryParams.push(req.body.status);
     }
 
     if ("product_id" in req.body) {
-      updateFields.push("product_id = $9");
+      updateFields.push("product_id = $" + (queryParams.length + 1));
       queryParams.push(req.body.product_id);
+    }
+
+    if ("is_deleted" in req.body) {
+      updateFields.push("is_deleted = $" + (queryParams.length + 1));
+      queryParams.push(req.body.is_deleted);
     }
 
     if (updateFields.length === 0) {
