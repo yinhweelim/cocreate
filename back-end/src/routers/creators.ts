@@ -36,6 +36,8 @@ import {
   validateUpdateProductData,
   validateSetProjectStagesData,
   validateCreateTestimonialData,
+  validateUpdateSocialLinkData,
+  validateCreateSocialLinkData,
 } from "../validators/creators";
 
 //functions to store images in memory until uploaded
@@ -143,12 +145,14 @@ router.get(
 router.put(
   "/creators/sociallinks/:creator_id",
   validateCreatorIdInParam,
+  validateCreateSocialLinkData,
   checkValid,
   createSocialLink
 );
 router.patch(
   "/creators/sociallinks/:id",
   validateIdInParam,
+  validateUpdateSocialLinkData,
   checkValid,
   updateSocialLink
 );
