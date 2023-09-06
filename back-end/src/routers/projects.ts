@@ -12,6 +12,12 @@ import {
   createProject,
   updateProject,
 } from "../controllers/projects";
+
+import {
+  getProjectStagesByProject,
+  setProjectStages,
+} from "../controllers/project_stages";
+
 import multer from "multer";
 
 //functions to store images in memory until uploaded
@@ -32,13 +38,13 @@ router.get("/projects/patrons/:patron_id", getProjectByPatronId);
 router.put("/projects", createProject);
 router.patch("/projects/:id", updateProject);
 
+// // project stages
+router.get("/projects/stages/:project_id", getProjectStagesByProject);
+router.put("/projects/stages", setProjectStages);
+
 // //proposals
 // router.get("/projects/proposals/:project_id", getProposalsByProjectId);
 // router.put("/projects/proposals", createProjectProposal);
 // router.patch("/projects/proposals/:id", updateProjectProposal);
-
-// // project stages
-// router.get("/projects/stages/:project_id", getProjectStagesByProject);
-// router.put("/projects/stages", createProjectStages);
 
 export default router;

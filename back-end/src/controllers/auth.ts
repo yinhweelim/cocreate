@@ -22,7 +22,7 @@ const register = async (req: Request, res: Response) => {
 
     //check if email already exists
     const checkEmailQuery = "SELECT * FROM auth WHERE email = $1";
-    const emailCheckResult = await pool.query(checkEmailQuery, [email]);
+    const emailCheckResult = await client.query(checkEmailQuery, [email]);
 
     if (emailCheckResult.rows.length > 0) {
       return res
@@ -35,20 +35,20 @@ const register = async (req: Request, res: Response) => {
     //Step 1: Create new auth resource
     const createAuthQuery =
       "INSERT INTO auth (email,hash) VALUES ($1, $2) RETURNING id";
-    const newAuth = await pool.query(createAuthQuery, [email, hash]);
+    const newAuth = await client.query(createAuthQuery, [email, hash]);
     const authId = newAuth.rows[0].id;
 
     // Step 2: Create a 'creator' object
     const createCreatorQuery =
       "INSERT INTO creators DEFAULT VALUES returning id";
-    const newCreator = await pool.query(createCreatorQuery);
+    const newCreator = await client.query(createCreatorQuery);
     const creatorId = newCreator.rows[0].id;
 
     // Step 3: Create two 'user' objects in the database
     // User with role 'creator'
     const createUserCreatorQuery =
       "INSERT INTO users (role, creator_id, auth_id, given_name, last_name) VALUES ($1, $2, $3, $4, $5) RETURNING id";
-    const newCreatorUser = await pool.query(createUserCreatorQuery, [
+    const newCreatorUser = await client.query(createUserCreatorQuery, [
       "CREATOR",
       creatorId,
       authId,
@@ -60,7 +60,7 @@ const register = async (req: Request, res: Response) => {
     // User with role 'patron'
     const createUserPatronQuery =
       "INSERT INTO users (role, auth_id,given_name, last_name) VALUES ($1, $2,$3,$4) RETURNING id";
-    const newPatronUser = await pool.query(createUserPatronQuery, [
+    const newPatronUser = await client.query(createUserPatronQuery, [
       "PATRON",
       authId,
       givenName,
