@@ -25,6 +25,8 @@ import {
   validateCreatorIdInParam,
   validatePatronIdInParam,
   validateProjectIdInParam,
+  validateCreateBriefData,
+  validateUpdateBriefData,
 } from "../validators/projects";
 import { auth } from "../middleware/auth";
 import { validation as checkValid } from "../middleware/checkValid";
@@ -50,9 +52,15 @@ router.get(
   checkValid,
   getBriefByPatronId
 );
-router.put("/projects/briefs", createBrief);
+router.put(
+  "/projects/briefs",
+  validateCreateBriefData,
+  checkValid,
+  createBrief
+);
 router.patch(
   "/projects/briefs/:id",
+  validateUpdateBriefData,
   validateIdInParam,
   checkValid,
   updateBrief
