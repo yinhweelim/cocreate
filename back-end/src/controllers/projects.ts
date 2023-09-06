@@ -77,7 +77,7 @@ const createProject = async (req: Request, res: Response) => {
       patron_id,
       brief_id,
       agreed_proposal_id || null, // Use null if not provided
-      agreed_date, // Use null if not provided
+      agreed_date || null, // Use null if not provided
       current_stage_id || null, // Use null if not provided
     ];
 

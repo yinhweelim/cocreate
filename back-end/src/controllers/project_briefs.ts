@@ -79,8 +79,8 @@ const createBrief = async (req: Request, res: Response) => {
       details,
       budget_currency,
       budget_amount,
-      deadline,
-      consultation_slot,
+      new Date(deadline),
+      new Date(consultation_slot),
       delivery_method,
     ];
 
@@ -140,7 +140,7 @@ const updateBrief = async (req: Request, res: Response) => {
     }
 
     if ("product_id" in req.body) {
-      updateFields.push("product_id = $8");
+      updateFields.push("product_id = $9");
       queryParams.push(req.body.product_id);
     }
 
@@ -162,13 +162,11 @@ const updateBrief = async (req: Request, res: Response) => {
     const result = await pool.query(updateQuery, queryParams);
     const updatedBrief = result.rows[0];
 
-    res
-      .status(200)
-      .json({
-        status: "success",
-        msg: "Brief updated successfully",
-        updated_brief: updatedBrief,
-      });
+    res.status(200).json({
+      status: "success",
+      msg: "Brief updated successfully",
+      updated_brief: updatedBrief,
+    });
   } catch (error) {
     console.error("Error updating brief:", error);
     res.status(500).json({
