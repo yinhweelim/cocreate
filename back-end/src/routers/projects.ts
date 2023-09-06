@@ -40,7 +40,7 @@ router.patch("/projects/:id", updateProject);
 
 // // project stages
 router.get("/projects/stages/:project_id", getProjectStagesByProject);
-router.put("/projects/stages", setProjectStages);
+router.put("/projects/stages/:project_id", setProjectStages);
 
 // //proposals
 // router.get("/projects/proposals/:project_id", getProposalsByProjectId);
