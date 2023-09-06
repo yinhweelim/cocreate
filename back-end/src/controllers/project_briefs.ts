@@ -100,6 +100,13 @@ const createBrief = async (req: Request, res: Response) => {
 
 const updateBrief = async (req: Request, res: Response) => {
   try {
+    //if brief not found, return error
+    const getBriefsQuery = "SELECT * FROM project_briefs WHERE id = $1";
+    const queryResult = await pool.query(getBriefsQuery, [req.params.id]);
+    if (queryResult.rows.length === 0) {
+      return res.status(400).json({ status: "error", msg: "brief not found" });
+    }
+
     // Build the UPDATE query based on request body
     const updateFields = [];
     const queryParams = [req.params.id];

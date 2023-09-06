@@ -48,6 +48,27 @@ const validateUpdateBriefData = [
   body("is_deleted", "should be a boolean").optional().isBoolean(),
 ];
 
+const validateCreateProjectData = [
+  body("creator_id", "creator_id is required").not().isEmpty(),
+  body("patron_id", "patron_id is required").not().isEmpty(),
+  body("brief_id", "brief_id is required").not().isEmpty(),
+  body("creator_id", "invalid creator_id").isUUID(),
+  body("patron_id", "invalid patron_id").isUUID(),
+  body("brief_id", "invalid brief_id").isUUID(),
+  body("agreed_proposal_id", "invalid proposal_id").optional().isUUID(),
+  body("current_stage_id", "invalid stage_id").optional().isUUID(),
+  body("is_deleted", "should be a boolean").optional().isBoolean(),
+];
+
+const validateUpdateProjectData = [
+  body("creator_id", "invalid creator_id").optional().isUUID(),
+  body("patron_id", "invalid patron_id").optional().isUUID(),
+  body("brief_id", "invalid brief_id").optional().isUUID(),
+  body("agreed_proposal_id", "invalid proposal_id").optional().isUUID(),
+  body("current_stage_id", "invalid stage_id").optional().isUUID(),
+  body("is_deleted", "should be a boolean").optional().isBoolean(),
+];
+
 export {
   validateIdInParam,
   validateCreatorIdInParam,
@@ -55,4 +76,6 @@ export {
   validateProjectIdInParam,
   validateCreateBriefData,
   validateUpdateBriefData,
+  validateCreateProjectData,
+  validateUpdateProjectData,
 };

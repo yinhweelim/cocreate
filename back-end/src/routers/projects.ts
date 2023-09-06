@@ -27,6 +27,8 @@ import {
   validateProjectIdInParam,
   validateCreateBriefData,
   validateUpdateBriefData,
+  validateCreateProjectData,
+  validateUpdateProjectData,
 } from "../validators/projects";
 import { auth } from "../middleware/auth";
 import { validation as checkValid } from "../middleware/checkValid";
@@ -79,8 +81,14 @@ router.get(
   checkValid,
   getProjectByPatronId
 );
-router.put("/projects", createProject);
-router.patch("/projects/:id", validateIdInParam, checkValid, updateProject);
+router.put("/projects", validateCreateProjectData, checkValid, createProject);
+router.patch(
+  "/projects/:id",
+  validateIdInParam,
+  validateUpdateProjectData,
+  checkValid,
+  updateProject
+);
 
 // // project stages
 router.get(
