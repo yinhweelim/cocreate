@@ -33,10 +33,12 @@ app.use(express.urlencoded({ extended: false }));
 import auth from "./src/routers/auth";
 import users from "./src/routers/users";
 import creators from "./src/routers/creators";
+import projects from "./src/routers/projects";
 
 app.use("/api", auth);
 app.use("/api", users);
 app.use("/api", creators);
+app.use("/api", projects);
 
 app.listen(port, () => {
   console.log(`now listening on port ${port}`);

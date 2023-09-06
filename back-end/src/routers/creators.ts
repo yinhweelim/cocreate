@@ -21,6 +21,13 @@ import {
   uploadCreatorGalleryImage,
 } from "../controllers/creators_images";
 
+import {
+  getSocialLinksByCreatorId,
+  createSocialLink,
+  updateSocialLink,
+  deleteSocialLink,
+} from "../controllers/creators_social_links";
+
 import multer from "multer";
 
 //functions to store images in memory until uploaded
@@ -32,17 +39,21 @@ const router = express.Router();
 router.get("/creators/:id", getCreatorById);
 router.patch("/creators/:id", updateCreator);
 
+//products
 router.get("/creators/products/:creator_id", getProductsByCreatorId);
 router.put("/creators/products/:creator_id", createProductForCreator);
 router.patch("/creators/products/:id", updateProduct);
 router.delete("/creators/products/:id", deleteProduct);
 
+//template project stages
 router.get("/creators/project_stages/:creator_id", getProjectStages);
 router.put("/creators/project_stages/:creator_id", setProjectStages);
 
+//testimonials
 router.get("/creators/testimonials/:creator_id", getTestimonials);
 router.put("/creators/testimonials/:creator_id", createTestimonial);
 
+//gallery images
 router.get("/creators/images/:creator_id", getCreatorGalleryImages);
 router.put(
   "/creators/images/:creator_id",
@@ -50,5 +61,11 @@ router.put(
   uploadCreatorGalleryImage
 );
 router.delete("/creators/images/:id", deleteCreatorGalleryImage);
+
+//social links
+router.get("/creators/sociallinks/:creator_id", getSocialLinksByCreatorId);
+router.put("/creators/sociallinks/:creator_id", createSocialLink);
+router.patch("/creators/sociallinks/:id", updateSocialLink);
+router.delete("/creators/sociallinks/:id", deleteSocialLink);
 
 export default router;

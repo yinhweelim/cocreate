@@ -1,21 +1,21 @@
 import { Request, Response, query } from "express";
 import { pool } from "../db/db";
 
-const getProjectStages = async (req: Request, res: Response) => {
+const getProjectStagesByProject = async (req: Request, res: Response) => {
   try {
-    //if creator not found, return error
-    const getCreatorById = "SELECT * FROM creators WHERE id = $1";
-    const result = await pool.query(getCreatorById, [req.params.creator_id]);
+    //if project not found, return error
+    const getProjectById = "SELECT * FROM projects WHERE id = $1";
+    const result = await pool.query(getProjectById, [req.params.project_id]);
     if (result.rows.length === 0) {
       return res
         .status(400)
-        .json({ status: "error", msg: "creator not found" });
+        .json({ status: "error", msg: "project not found" });
     }
 
-    //get products with creator_id
+    //get projects with project_id
     const getProjectStages =
-      "SELECT * FROM creator_project_stages WHERE creator_id = $1 AND is_deleted = false";
-    const results = await pool.query(getProjectStages, [req.params.creator_id]);
+      "SELECT * FROM project_stages WHERE project_id = $1 AND is_deleted = false";
+    const results = await pool.query(getProjectStages, [req.params.project_id]);
     const projectStages = results.rows;
 
     res.status(200).json({ status: "success", projectStages });
@@ -34,22 +34,19 @@ const setProjectStages = async (req: Request, res: Response) => {
   try {
     // Start a transaction
     await client.query("BEGIN");
-    // Check if the creator exists
-    const getCreatorById = "SELECT * FROM creators WHERE id = $1";
-    const creatorResult = await client.query(getCreatorById, [
-      req.params.creator_id,
-    ]);
 
-    if (creatorResult.rows.length === 0) {
+    //if project not found, return error
+    const getProjectById = "SELECT * FROM projects WHERE id = $1";
+    const result = await client.query(getProjectById, [req.params.project_id]);
+    if (result.rows.length === 0) {
       return res
         .status(400)
-        .json({ status: "error", msg: "creator not found" });
+        .json({ status: "error", msg: "project not found" });
     }
-
-    // Mark existing project stages as deleted for the given creator_id
+    // Mark existing project stages as deleted for the given project_id
     const markAsDeletedQuery =
-      "UPDATE creator_project_stages SET is_deleted = true WHERE creator_id = $1";
-    await client.query(markAsDeletedQuery, [req.params.creator_id]);
+      "UPDATE project_stages SET is_deleted = true WHERE project_id = $1";
+    await client.query(markAsDeletedQuery, [req.params.project_id]);
 
     // Extract project stages from the request body
     const projectStagesData = req.body;
@@ -60,7 +57,7 @@ const setProjectStages = async (req: Request, res: Response) => {
       const stage = projectStagesData[i];
 
       const insertProjectStageQuery = `
-          INSERT INTO creator_project_stages (index, name, description, time_estimate_unit, time_estimate_start, time_estimate_end, creator_id)
+          INSERT INTO project_stages (index, name, description, time_estimate_unit, time_estimate_start, time_estimate_end, project_id)
           VALUES ($1, $2, $3, $4, $5, $6, $7)
           RETURNING *;`;
 
@@ -71,7 +68,7 @@ const setProjectStages = async (req: Request, res: Response) => {
         stage.time_estimate_unit,
         stage.time_estimate_start,
         stage.time_estimate_end,
-        req.params.creator_id,
+        req.params.project_id,
       ];
 
       const result = await client.query(insertProjectStageQuery, values);
@@ -95,4 +92,4 @@ const setProjectStages = async (req: Request, res: Response) => {
   }
 };
 
-export { getProjectStages, setProjectStages };
+export { getProjectStagesByProject, setProjectStages };
