@@ -5,7 +5,7 @@ import { pool } from "../db/db";
 
 const updateUser = async (req: Request, res: Response) => {
   try {
-    //if user not found, return error
+    //check whether user exists before proceeding
     const checkUserQuery = "SELECT * FROM users WHERE id = $1";
     const result = await pool.query(checkUserQuery, [req.params.id]);
 

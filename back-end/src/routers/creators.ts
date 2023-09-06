@@ -16,6 +16,7 @@ import {
 } from "../controllers/creators_testimonials";
 
 import {
+  deleteCreatorGalleryImage,
   getCreatorGalleryImages,
   uploadCreatorGalleryImage,
 } from "../controllers/creators_images";
@@ -43,11 +44,11 @@ router.get("/creators/testimonials/:creator_id", getTestimonials);
 router.put("/creators/testimonials/:creator_id", createTestimonial);
 
 router.get("/creators/images/:creator_id", getCreatorGalleryImages);
-router.post(
+router.put(
   "/creators/images/:creator_id",
   upload.single("image"),
   uploadCreatorGalleryImage
 );
-// router.delete("/api/creators/images/:id", uploadCreatorImage);
+router.delete("/creators/images/:id", deleteCreatorGalleryImage);
 
 export default router;

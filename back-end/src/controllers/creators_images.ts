@@ -116,7 +116,7 @@ const uploadCreatorGalleryImage = async (req: Request, res: Response) => {
 //delete image using id
 const deleteCreatorGalleryImage = async (req: Request, res: Response) => {
   try {
-    const imageId = [req.params.id];
+    const imageId = req.params.id;
 
     // Check if the image exists before processing
     const getImageQuery = "SELECT * FROM creator_gallery_images WHERE id = $1";
@@ -127,7 +127,7 @@ const deleteCreatorGalleryImage = async (req: Request, res: Response) => {
 
     const updateQuery =
       "UPDATE creator_gallery_images SET is_deleted = true WHERE id = $1";
-    await pool.query(updateQuery, imageId);
+    await pool.query(updateQuery, [imageId]);
     res
       .status(200)
       .json({ status: "success", msg: "Image deleted successfully" });
