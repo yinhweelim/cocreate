@@ -69,6 +69,48 @@ const validateUpdateProjectData = [
   body("is_deleted", "should be a boolean").optional().isBoolean(),
 ];
 
+const validateSetProjectStagesData = [
+  body().isArray().withMessage("Request body must be an array"),
+  body("*").isObject().withMessage("Each item in the array must be an object"),
+];
+//TODO: figure out how to validate data inside the array of objects
+
+const validateCreateProposalData = [
+  body("project_id", "project_id is required").not().isEmpty(),
+  body("project_id", "invalid project_id").isUUID(),
+  body("currency", "currency is required").not().isEmpty(),
+  body("currency", "invalid currency code")
+    .isUppercase()
+    .isLength({ min: 3, max: 3 }),
+  body("total_price", "total_price is required").not().isEmpty(),
+  body("total_price", "should be an integer").isInt(),
+
+  body("project_fee", "should be an integer").optional().isInt(),
+  body("delivery_fee", "should be an integer").optional().isInt(),
+  body("additional_fee", "should be an integer").optional().isInt(),
+
+  body("reference_image_url", "should be a string").optional().isString(),
+  body("description", "should be a string").optional().isString(),
+  body("is_deleted", "should be a boolean").optional().isBoolean(),
+];
+
+const validateUpdateProposalData = [
+  body("project_id", "invalid project_id").optional().isUUID(),
+  body("currency", "invalid currency code")
+    .optional()
+    .isUppercase()
+    .isLength({ min: 3, max: 3 }),
+  body("total_price", "should be an integer").optional().isInt(),
+  body("project_fee", "should be an integer").optional().isInt(),
+  body("delivery_fee", "should be an integer").optional().isInt(),
+  body("additional_fee", "should be an integer").optional().isInt(),
+
+  body("reference_image_url", "should be a string").optional().isString(),
+  body("description", "should be a string").optional().isString(),
+  body("is_accepted", "should be a boolean").optional().isBoolean(),
+  body("is_deleted", "should be a boolean").optional().isBoolean(),
+];
+
 export {
   validateIdInParam,
   validateCreatorIdInParam,
@@ -78,4 +120,7 @@ export {
   validateUpdateBriefData,
   validateCreateProjectData,
   validateUpdateProjectData,
+  validateSetProjectStagesData,
+  validateCreateProposalData,
+  validateUpdateProposalData,
 };

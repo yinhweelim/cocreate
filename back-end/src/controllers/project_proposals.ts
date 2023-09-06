@@ -115,9 +115,9 @@ const updateProjectProposal = async (req: Request, res: Response) => {
       queryParams.push(req.body.delivery_fee);
     }
 
-    if ("additional_fees" in req.body) {
-      updateFields.push("additional_fees = $" + (queryParams.length + 1));
-      queryParams.push(req.body.additional_fees);
+    if ("additional_fee" in req.body) {
+      updateFields.push("additional_fee = $" + (queryParams.length + 1));
+      queryParams.push(req.body.additional_fee);
     }
 
     if ("total_price" in req.body) {

@@ -29,6 +29,9 @@ import {
   validateUpdateBriefData,
   validateCreateProjectData,
   validateUpdateProjectData,
+  validateSetProjectStagesData,
+  validateCreateProposalData,
+  validateUpdateProposalData,
 } from "../validators/projects";
 import { auth } from "../middleware/auth";
 import { validation as checkValid } from "../middleware/checkValid";
@@ -68,7 +71,7 @@ router.patch(
   updateBrief
 );
 
-// //projects
+//projects
 router.get(
   "/projects/creators/:creator_id",
   validateCreatorIdInParam,
@@ -90,7 +93,7 @@ router.patch(
   updateProject
 );
 
-// // project stages
+// project stages
 router.get(
   "/projects/stages/:project_id",
   validateProjectIdInParam,
@@ -100,21 +103,28 @@ router.get(
 router.put(
   "/projects/stages/:project_id",
   validateProjectIdInParam,
+  validateSetProjectStagesData,
   checkValid,
   setProjectStages
 );
 
-// //proposals
+//proposals
 router.get(
   "/projects/proposals/:project_id",
   validateProjectIdInParam,
   checkValid,
   getProposalsByProjectId
 );
-router.put("/projects/proposals", createProjectProposal);
+router.put(
+  "/projects/proposals",
+  validateCreateProposalData,
+  checkValid,
+  createProjectProposal
+);
 router.patch(
   "/projects/proposals/:id",
   validateIdInParam,
+  validateUpdateProposalData,
   checkValid,
   updateProjectProposal
 );

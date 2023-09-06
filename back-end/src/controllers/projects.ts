@@ -207,6 +207,11 @@ const updateProject = async (req: Request, res: Response) => {
       queryParams.push(currentStageId);
     }
 
+    if ("is_accepted" in req.body) {
+      const isAccepted = req.body.is_accepted;
+      updateFields.push("is_accepted = $" + (queryParams.length + 1));
+      queryParams.push(isAccepted);
+    }
     if (updateFields.length === 0) {
       // No fields to update
       return res.status(400).json({
