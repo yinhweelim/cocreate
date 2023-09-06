@@ -6,6 +6,12 @@ import {
   updateBrief,
 } from "../controllers/project_briefs";
 
+import {
+  getProjectByCreatorId,
+  getProjectByPatronId,
+  createProject,
+  updateProject,
+} from "../controllers/projects";
 import multer from "multer";
 
 //functions to store images in memory until uploaded
@@ -21,10 +27,10 @@ router.put("/projects/briefs", createBrief);
 router.patch("/projects/briefs/:id", updateBrief);
 
 // //projects
-// router.get("/projects/creators/:creator_id", getProjectByCreatorId);
-// router.get("/projects/patrons/:patron_id", getProjectByPatronId);
-// router.put("/projects", createProject);
-// router.patch("/projects/:id", updateProject);
+router.get("/projects/creators/:creator_id", getProjectByCreatorId);
+router.get("/projects/patrons/:patron_id", getProjectByPatronId);
+router.put("/projects", createProject);
+router.patch("/projects/:id", updateProject);
 
 // //proposals
 // router.get("/projects/proposals/:project_id", getProposalsByProjectId);

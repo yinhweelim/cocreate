@@ -40,10 +40,12 @@
     "rimraf": "^5.0.1",
     "sharp": "^0.32.5",
     "typescript": "^5.2.2",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "uuid-validate": "^0.0.3"
   },
   "devDependencies": {
     "@types/pg": "^8.10.2",
+    "@types/uuid-validate": "^0.0.1",
     "nodemon": "^3.0.1"
   }
 }
