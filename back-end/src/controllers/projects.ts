@@ -55,10 +55,9 @@ const getProjectByPatronId = async (req: Request, res: Response) => {
 };
 
 const createProject = async (req: Request, res: Response) => {
+  const client = await pool.connect();
   try {
-    //create project stages based on creator_project_stages template
-    //step 2: store array of items in project_stages database. one item should be one row
-    //step 3: create a const current_stage_id which is the first item in project_stages array
+    await client.query("BEGIN"); // Begin a database transaction
 
     //Create SQL query to create project
     const insertQuery =
@@ -86,13 +85,64 @@ const createProject = async (req: Request, res: Response) => {
     const projectResult = await pool.query(insertQuery, values);
     const project = projectResult.rows[0];
 
-    res.status(201).json({ status: "success", project });
+    //Add project stages based on creator_project_stages template
+
+    // Step 1: Fetch the template project stages based on creator_id
+    const templateStagesQuery =
+      "SELECT * FROM creator_project_stages WHERE creator_id = $1";
+    const templateStagesValues = [req.body.creator_id];
+    const templateStagesResult = await client.query(
+      templateStagesQuery,
+      templateStagesValues
+    );
+    const templateStages = templateStagesResult.rows;
+
+    //step 2: store array of items in project_stages database, and set project_id = created project id
+    const projectStagesInsertQuery =
+      "INSERT INTO project_stages (project_id, index, name, description, time_estimate_unit, time_estimate_start, time_estimate_end) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id";
+
+    const projectStagesPromises = templateStages.map(async (templateStage) => {
+      const stageValues = [
+        project.id,
+        templateStage.index,
+        templateStage.name,
+        templateStage.description,
+        templateStage.time_estimate_unit,
+        templateStage.time_estimate_start,
+        templateStage.time_estimate_end,
+      ];
+      const stageResult = await client.query(
+        projectStagesInsertQuery,
+        stageValues
+      );
+      return stageResult.rows[0].id;
+    });
+
+    const projectStageIds = await Promise.all(projectStagesPromises);
+
+    // Step 3: Set the first stage as current_stage_id
+    const currentStageId = projectStageIds[0];
+
+    // Step 4: Create the project with current_stage_id
+    const updateQuery = "UPDATE projects SET current_stage_id = $1 RETURNING *";
+
+    const updatedProjectResult = await client.query(updateQuery, [
+      currentStageId,
+    ]);
+    const updatedProject = updatedProjectResult.rows[0];
+
+    await client.query("COMMIT"); // Commit the transaction
+    res.status(201).json({ status: "success", updatedProject });
   } catch (error) {
+    await client.query("ROLLBACK"); // Rollback the transaction in case of an error
+
     console.error("Error creating project:", error);
     res.status(500).json({
       status: "error",
       msg: "An error occurred while creating the project",
     });
+  } finally {
+    client.release();
   }
 };
 
