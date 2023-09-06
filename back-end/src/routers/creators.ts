@@ -30,7 +30,10 @@ import { auth } from "../middleware/auth";
 import { validation as checkValid } from "../middleware/checkValid";
 import {
   validateIdInParam,
+  validateCreatorIdInParam,
   validateUpdateCreatorData,
+  validateCreateProductData,
+  validateUpdateProductData,
 } from "../validators/creators";
 
 //functions to store images in memory until uploaded
@@ -50,10 +53,32 @@ router.patch(
 );
 
 //products
-router.get("/creators/products/:creator_id", getProductsByCreatorId);
-router.put("/creators/products/:creator_id", createProductForCreator);
-router.patch("/creators/products/:id", updateProduct);
-router.delete("/creators/products/:id", deleteProduct);
+router.get(
+  "/creators/products/:creator_id",
+  validateCreatorIdInParam,
+  checkValid,
+  getProductsByCreatorId
+);
+router.put(
+  "/creators/products/:creator_id",
+  validateCreatorIdInParam,
+  validateCreateProductData,
+  checkValid,
+  createProductForCreator
+);
+router.patch(
+  "/creators/products/:id",
+  validateIdInParam,
+  validateUpdateProductData,
+  checkValid,
+  updateProduct
+);
+router.delete(
+  "/creators/products/:id",
+  validateIdInParam,
+  checkValid,
+  deleteProduct
+);
 
 //template project stages
 router.get("/creators/project_stages/:creator_id", getProjectStages);
