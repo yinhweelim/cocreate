@@ -20,6 +20,12 @@ import {
   createProjectProposal,
   updateProjectProposal,
 } from "../controllers/project_proposals";
+import {
+  validateIdInParam,
+  validateCreatorIdInParam,
+  validatePatronIdInParam,
+  validateProjectIdInParam,
+} from "../validators/projects";
 import { auth } from "../middleware/auth";
 import { validation as checkValid } from "../middleware/checkValid";
 
@@ -32,24 +38,69 @@ const upload = multer({ storage: storage }); //string should be name of input
 const router = express.Router();
 
 //briefs
-router.get("/projects/briefs/creators/:creator_id", getBriefByCreatorId);
-router.get("/projects/briefs/patrons/:patron_id", getBriefByPatronId);
+router.get(
+  "/projects/briefs/creators/:creator_id",
+  validateCreatorIdInParam,
+  checkValid,
+  getBriefByCreatorId
+);
+router.get(
+  "/projects/briefs/patrons/:patron_id",
+  validatePatronIdInParam,
+  checkValid,
+  getBriefByPatronId
+);
 router.put("/projects/briefs", createBrief);
-router.patch("/projects/briefs/:id", updateBrief);
+router.patch(
+  "/projects/briefs/:id",
+  validateIdInParam,
+  checkValid,
+  updateBrief
+);
 
 // //projects
-router.get("/projects/creators/:creator_id", getProjectByCreatorId);
-router.get("/projects/patrons/:patron_id", getProjectByPatronId);
+router.get(
+  "/projects/creators/:creator_id",
+  validateCreatorIdInParam,
+  checkValid,
+  getProjectByCreatorId
+);
+router.get(
+  "/projects/patrons/:patron_id",
+  validatePatronIdInParam,
+  checkValid,
+  getProjectByPatronId
+);
 router.put("/projects", createProject);
-router.patch("/projects/:id", updateProject);
+router.patch("/projects/:id", validateIdInParam, checkValid, updateProject);
 
 // // project stages
-router.get("/projects/stages/:project_id", getProjectStagesByProject);
-router.put("/projects/stages/:project_id", setProjectStages);
+router.get(
+  "/projects/stages/:project_id",
+  validateProjectIdInParam,
+  checkValid,
+  getProjectStagesByProject
+);
+router.put(
+  "/projects/stages/:project_id",
+  validateProjectIdInParam,
+  checkValid,
+  setProjectStages
+);
 
 // //proposals
-router.get("/projects/proposals/:project_id", getProposalsByProjectId);
+router.get(
+  "/projects/proposals/:project_id",
+  validateProjectIdInParam,
+  checkValid,
+  getProposalsByProjectId
+);
 router.put("/projects/proposals", createProjectProposal);
-router.patch("/projects/proposals/:id", updateProjectProposal);
+router.patch(
+  "/projects/proposals/:id",
+  validateIdInParam,
+  checkValid,
+  updateProjectProposal
+);
 
 export default router;
