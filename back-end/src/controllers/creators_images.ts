@@ -115,21 +115,29 @@ const uploadCreatorGalleryImage = async (req: Request, res: Response) => {
 
 //delete image using id
 const deleteCreatorGalleryImage = async (req: Request, res: Response) => {
-  //   try {
-  //     const queryParams = [req.params.id];
-  //     const updateQuery =
-  //       "UPDATE creator_products SET is_deleted = true WHERE id = $1";
-  //     await pool.query(updateQuery, queryParams);
-  //     res
-  //       .status(200)
-  //       .json({ status: "success", msg: "Product deleted successfully" });
-  //   } catch (error) {
-  //     console.error("Error deleting product:", error);
-  //     res.status(500).json({
-  //       status: "error",
-  //       msg: "An error occurred while deleting the product",
-  //     });
-  //   }
+  try {
+    const imageId = [req.params.id];
+
+    // Check if the image exists before processing
+    const getImageQuery = "SELECT * FROM creator_gallery_images WHERE id = $1";
+    const result = await pool.query(getImageQuery, [imageId]);
+    if (result.rows.length === 0) {
+      return res.status(400).json({ status: "error", msg: "image not found" });
+    }
+
+    const updateQuery =
+      "UPDATE creator_gallery_images SET is_deleted = true WHERE id = $1";
+    await pool.query(updateQuery, imageId);
+    res
+      .status(200)
+      .json({ status: "success", msg: "Image deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting image:", error);
+    res.status(500).json({
+      status: "error",
+      msg: "An error occurred while deleting the image",
+    });
+  }
 };
 
 export {
