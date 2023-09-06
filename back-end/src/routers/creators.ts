@@ -34,6 +34,7 @@ import {
   validateUpdateCreatorData,
   validateCreateProductData,
   validateUpdateProductData,
+  validateSetProjectStagesData,
 } from "../validators/creators";
 
 //functions to store images in memory until uploaded
@@ -90,6 +91,7 @@ router.get(
 router.put(
   "/creators/project_stages/:creator_id",
   validateCreatorIdInParam,
+  validateSetProjectStagesData,
   checkValid,
   setProjectStages
 );

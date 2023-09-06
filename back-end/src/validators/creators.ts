@@ -69,10 +69,19 @@ const validateUpdateProductData = [
   body("is_deleted", "should be a boolean").optional().isBoolean(),
 ];
 
+const validateSetProjectStagesData = [
+  body().isArray().withMessage("Request body must be an array"),
+  body("*").isObject().withMessage("Each item in the array must be an object"),
+];
+//TODO: figure out how to validate data inside the array of objects
+
+
+
 export {
   validateIdInParam,
   validateCreatorIdInParam,
   validateUpdateCreatorData,
   validateCreateProductData,
   validateUpdateProductData,
+  validateSetProjectStagesData,
 };
