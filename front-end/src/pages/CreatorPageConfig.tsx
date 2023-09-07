@@ -1,13 +1,14 @@
 import React from "react";
 import Sidebar from "../components/Sidebar";
 import { Box } from "@mui/material";
+import SectionHeading from "../components/SectionHeading";
 
 const CreatorPageConfig = () => {
   return (
     <>
       <Box sx={{ display: "flex" }}>
         <Sidebar></Sidebar>
-        <Box>My page</Box>
+        <SectionHeading heading={"My Page"} actionButton={null} />
       </Box>
     </>
   );

@@ -1,13 +1,17 @@
 import React from "react";
 import Sidebar from "../components/Sidebar";
-import { Box } from "@mui/material";
-
+import { Box, Button, Divider } from "@mui/material";
+import SectionHeading from "../components/SectionHeading";
 const CreatorProjects = () => {
   return (
     <>
       <Box sx={{ display: "flex" }}>
         <Sidebar></Sidebar>
-        <Box>Projects</Box>
+        <SectionHeading
+          heading={"Projects"}
+          actionButton={<Button variant="contained">Create</Button>}
+        ></SectionHeading>
+        <Divider variant="middle" />
       </Box>
     </>
   );

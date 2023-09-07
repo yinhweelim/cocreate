@@ -1,13 +1,17 @@
 import React from "react";
 import Sidebar from "../components/Sidebar";
 import { Box } from "@mui/material";
+import SectionHeading from "../components/SectionHeading";
 
 const CreatorAnalytics = () => {
   return (
     <>
       <Box sx={{ display: "flex" }}>
         <Sidebar></Sidebar>
-        <Box>Analytics</Box>
+        <SectionHeading
+          heading={"Analytics"}
+          actionButton={null}
+        ></SectionHeading>
       </Box>
     </>
   );
