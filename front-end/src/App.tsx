@@ -8,7 +8,8 @@ import Container from "@mui/material/Container";
 import { ThemeProvider } from "@mui/material";
 
 import LandingPage from "./pages/LandingPage";
-import SignInPage from "./pages/SignInPage";
+import SignInPage from "./pages/SignIn";
+import Registration from "./pages/Registration";
 
 function App() {
   return (
@@ -20,7 +21,11 @@ function App() {
           <Routes>
             <Route path="/" element={<LandingPage></LandingPage>}></Route>
             <Route path="/sign-in" element={<SignInPage></SignInPage>}></Route>
-            {/* <Route path="/registration" element={}></Route>
+            <Route
+              path="/registration"
+              element={<Registration></Registration>}
+            ></Route>
+            {/* 
             <Route path="/registration/page-setup" element={}></Route>
             <Route path="/creators/:creator_id" element={}></Route>
             <Route path="/creators/createbrief" element={}></Route>
