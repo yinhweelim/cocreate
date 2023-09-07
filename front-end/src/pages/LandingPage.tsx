@@ -51,7 +51,9 @@ const LandingPage = () => {
             padding={2}
             spacing={2}
           >
-            <Button variant="contained">Sign up</Button>
+            <Button variant="contained" component={Link} to="/registration">
+              Sign up
+            </Button>
           </Stack>
           <Grid
             container
