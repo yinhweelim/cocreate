@@ -109,6 +109,7 @@ export default function Sidebar() {
               <ListItemText primary={"Projects"} />
             </ListItemButton>
           </ListItem>
+
           <ListItem key={"page"} disablePadding>
             <ListItemButton component={RouterLink} to="/pagesetup">
               <ListItemIcon>
@@ -117,6 +118,7 @@ export default function Sidebar() {
               <ListItemText primary={"My page"} />
             </ListItemButton>
           </ListItem>
+
           <ListItem key={"analytics"} disablePadding>
             <ListItemButton component={RouterLink} to="/analytics">
               <ListItemIcon>
@@ -125,14 +127,16 @@ export default function Sidebar() {
               <ListItemText primary={"Analytics"} />
             </ListItemButton>
           </ListItem>
-          {/* <ListItem key={"messagaes"} disablePadding>
-            <ListItemButton component={RouterLink} to="/">
+
+          <ListItem key={"commissions"} disablePadding>
+            <ListItemButton component={RouterLink} to="/commissions">
               <ListItemIcon>
-                <MailIcon />
+                <InboxIcon />
               </ListItemIcon>
-              <ListItemText primary={"Messages"} />
+              <ListItemText primary={"Commissions"} />
             </ListItemButton>
-          </ListItem> */}
+          </ListItem>
+
           <ListItem key={"settings"} disablePadding>
             <ListItemButton component={RouterLink} to="/settings">
               <ListItemIcon>
