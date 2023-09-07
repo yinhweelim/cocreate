@@ -11,6 +11,7 @@ import LandingPage from "./pages/LandingPage";
 import SignInPage from "./pages/SignIn";
 import Registration from "./pages/Registration";
 import InitialPageSetup from "./pages/InitialPageSetup";
+import Home from "./pages/Home";
 
 function App() {
   return (
@@ -30,10 +31,11 @@ function App() {
               path="/registration/page-setup"
               element={<InitialPageSetup></InitialPageSetup>}
             ></Route>
+            <Route path="/home" element={<Home></Home>}></Route>
             {/* 
             <Route path="/creators/:creator_id" element={}></Route>
             <Route path="/creators/createbrief" element={}></Route>
-            <Route path="/home" element={}></Route>
+            
             <Route path="/projects" element={}></Route>
             <Route path="/mypage" element={}></Route>
             <Route path="/insights" element={}></Route>
