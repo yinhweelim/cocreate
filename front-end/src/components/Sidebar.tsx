@@ -18,12 +18,51 @@ import AccountCard from "./AccountCard";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 const drawerWidth = 240;
 
-//for dialog
-import { Dialog, DialogTitle, ListItemAvatar } from "@mui/material";
+//switch account dialog
+import { Dialog, DialogTitle } from "@mui/material";
+interface SimpleDialogProps {
+  open: boolean;
+  selectedValue: string;
+  onClose: (value: string) => void;
+}
+
+function SimpleDialog(props: SimpleDialogProps) {
+  const { onClose, selectedValue, open } = props;
+
+  const handleClose = () => {
+    onClose(selectedValue);
+  };
+
+  const handleListItemClick = (value: string) => {
+    console.log(value);
+    onClose(value);
+  };
+
+  return (
+    <Dialog onClose={handleClose} open={open} sx={{ width: "300px" }}>
+      <DialogTitle>Switch account</DialogTitle>
+      <List sx={{ pt: 0 }}>
+        <AccountCard
+          onClick={() => handleListItemClick("switchAccount")}
+        ></AccountCard>
+        <AccountCard
+          onClick={() => handleListItemClick("switchAccount")}
+        ></AccountCard>
+        <Divider></Divider>
+        <ListItem disablePadding>
+          <ListItemButton autoFocus component={RouterLink} to="/">
+            <ListItemText primary={"Log out"} />
+          </ListItemButton>
+        </ListItem>
+      </List>
+    </Dialog>
+  );
+}
 
 export default function Sidebar() {
+  //switch account dialog states
   const [open, setOpen] = React.useState(false);
-  const [selectedValue, setSelectedValue] = React.useState(emails[1]);
+  const [selectedValue, setSelectedValue] = React.useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -127,46 +166,5 @@ export default function Sidebar() {
         />
       </Drawer>
     </>
-  );
-}
-
-const emails = ["username@gmail.com", "user02@gmail.com"];
-
-interface SimpleDialogProps {
-  open: boolean;
-  selectedValue: string;
-  onClose: (value: string) => void;
-}
-
-function SimpleDialog(props: SimpleDialogProps) {
-  const { onClose, selectedValue, open } = props;
-
-  const handleClose = () => {
-    onClose(selectedValue);
-  };
-
-  const handleListItemClick = (value: string) => {
-    console.log(value);
-    onClose(value);
-  };
-
-  return (
-    <Dialog onClose={handleClose} open={open}>
-      <DialogTitle>Switch account</DialogTitle>
-      <List sx={{ pt: 0 }}>
-        <AccountCard
-          onClick={() => handleListItemClick("switchAccount")}
-        ></AccountCard>
-        <AccountCard
-          onClick={() => handleListItemClick("switchAccount")}
-        ></AccountCard>
-        <Divider></Divider>
-        <ListItem disablePadding>
-          <ListItemButton autoFocus component={RouterLink} to="/">
-            <ListItemText primary={"Log out"} />
-          </ListItemButton>
-        </ListItem>
-      </List>
-    </Dialog>
   );
 }
