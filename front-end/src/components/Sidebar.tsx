@@ -3,26 +3,37 @@ import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
 import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import InsightsIcon from "@mui/icons-material/Insights";
-import MailIcon from "@mui/icons-material/Mail";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { Divider } from "@mui/material";
 import { IconButton, Avatar } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
-
+import AccountCard from "./AccountCard";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 const drawerWidth = 240;
 
-// TODO: remove text decoration in sidebar
+//for dialog
+import { Dialog, DialogTitle, ListItemAvatar } from "@mui/material";
 
 export default function Sidebar() {
+  const [open, setOpen] = React.useState(false);
+  const [selectedValue, setSelectedValue] = React.useState(emails[1]);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (value: string) => {
+    setOpen(false);
+    setSelectedValue(value);
+  };
+
   return (
     <>
       <CssBaseline />
@@ -94,25 +105,68 @@ export default function Sidebar() {
         </List>
         <List>
           <Divider />
-          <ListItem disablePadding>
-            <ListItemButton>
-              <Avatar sx={{ width: 30, height: 30 }}></Avatar>
-              <Box paddingLeft={2} sx={{ flexGrow: 1 }}>
-                <Typography variant="subtitle1">Display Name</Typography>
-                <Typography variant="subtitle2">User Role</Typography>
-              </Box>
+          <AccountCard
+            onClick={handleClickOpen}
+            iconButton={
               <IconButton
                 color="default"
                 size="large"
                 component={RouterLink}
                 to="/home"
               >
-                <MoreVertIcon></MoreVertIcon>
+                <MoreVertIcon />
               </IconButton>
-            </ListItemButton>
-          </ListItem>
+            }
+          ></AccountCard>
         </List>
+
+        <SimpleDialog
+          selectedValue={selectedValue}
+          open={open}
+          onClose={handleClose}
+        />
       </Drawer>
     </>
+  );
+}
+
+const emails = ["username@gmail.com", "user02@gmail.com"];
+
+interface SimpleDialogProps {
+  open: boolean;
+  selectedValue: string;
+  onClose: (value: string) => void;
+}
+
+function SimpleDialog(props: SimpleDialogProps) {
+  const { onClose, selectedValue, open } = props;
+
+  const handleClose = () => {
+    onClose(selectedValue);
+  };
+
+  const handleListItemClick = (value: string) => {
+    console.log(value);
+    onClose(value);
+  };
+
+  return (
+    <Dialog onClose={handleClose} open={open}>
+      <DialogTitle>Switch account</DialogTitle>
+      <List sx={{ pt: 0 }}>
+        <AccountCard
+          onClick={() => handleListItemClick("switchAccount")}
+        ></AccountCard>
+        <AccountCard
+          onClick={() => handleListItemClick("switchAccount")}
+        ></AccountCard>
+        <Divider></Divider>
+        <ListItem disablePadding>
+          <ListItemButton autoFocus component={RouterLink} to="/">
+            <ListItemText primary={"Log out"} />
+          </ListItemButton>
+        </ListItem>
+      </List>
+    </Dialog>
   );
 }
