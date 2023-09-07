@@ -1,7 +1,8 @@
 import React from "react";
 import Sidebar from "../components/Sidebar";
 import { Box } from "@mui/material";
-const Home = () => {
+
+const CreatorProjects = () => {
   return (
     <>
       <Box sx={{ display: "flex" }}>
@@ -12,4 +13,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default CreatorProjects;

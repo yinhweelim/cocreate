@@ -1,15 +1,16 @@
 import React from "react";
 import Sidebar from "../components/Sidebar";
 import { Box } from "@mui/material";
-const Home = () => {
+
+const Settings = () => {
   return (
     <>
       <Box sx={{ display: "flex" }}>
         <Sidebar></Sidebar>
-        <Box>Projects</Box>
+        <Box>Settings</Box>
       </Box>
     </>
   );
 };
 
-export default Home;
+export default Settings;

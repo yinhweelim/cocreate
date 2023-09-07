@@ -10,8 +10,12 @@ import { ThemeProvider } from "@mui/material";
 import LandingPage from "./pages/LandingPage";
 import SignInPage from "./pages/SignIn";
 import Registration from "./pages/Registration";
-import InitialPageSetup from "./pages/InitialPageSetup";
 import Home from "./pages/Home";
+import Settings from "./pages/Settings";
+import InitialPageSetup from "./pages/InitialPageSetup";
+import CreatorProjects from "./pages/CreatorProjects";
+import CreatorPageConfig from "./pages/CreatorPageConfig";
+import CreatorAnalytics from "./pages/CreatorAnalytics";
 
 function App() {
   return (
@@ -32,14 +36,24 @@ function App() {
               element={<InitialPageSetup></InitialPageSetup>}
             ></Route>
             <Route path="/home" element={<Home></Home>}></Route>
+            <Route
+              path="/projects"
+              element={<CreatorProjects></CreatorProjects>}
+            ></Route>
+            <Route
+              path="/pagesetup"
+              element={<CreatorPageConfig></CreatorPageConfig>}
+            ></Route>
+            <Route
+              path="/analytics"
+              element={<CreatorAnalytics></CreatorAnalytics>}
+            ></Route>
+            <Route path="/settings" element={<Settings></Settings>}></Route>
             {/* 
             <Route path="/creators/:creator_id" element={}></Route>
             <Route path="/creators/createbrief" element={}></Route>
             
-            <Route path="/projects" element={}></Route>
-            <Route path="/mypage" element={}></Route>
-            <Route path="/insights" element={}></Route>
-            <Route path="/settings" element={}></Route> */}
+ */}
           </Routes>
         </Container>
       </ThemeProvider>

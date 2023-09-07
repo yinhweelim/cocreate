@@ -1,15 +1,16 @@
 import React from "react";
 import Sidebar from "../components/Sidebar";
 import { Box } from "@mui/material";
-const Home = () => {
+
+const CreatorPageConfig = () => {
   return (
     <>
       <Box sx={{ display: "flex" }}>
         <Sidebar></Sidebar>
-        <Box>Projects</Box>
+        <Box>My page</Box>
       </Box>
     </>
   );
 };
 
-export default Home;
+export default CreatorPageConfig;

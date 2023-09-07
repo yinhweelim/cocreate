@@ -2,7 +2,6 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
-import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import ListItem from "@mui/material/ListItem";
@@ -15,14 +14,17 @@ import MailIcon from "@mui/icons-material/Mail";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { IconButton, Stack, Avatar } from "@mui/material";
+import { Divider } from "@mui/material";
+import { IconButton, Avatar } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 
 const drawerWidth = 240;
 
+// TODO: remove text decoration in sidebar
+
 export default function Sidebar() {
   return (
-    <Box sx={{ display: "flex" }}>
+    <>
       <CssBaseline />
       <Drawer
         sx={{
@@ -50,7 +52,7 @@ export default function Sidebar() {
         </Box>
         <List sx={{ flexGrow: 1 }}>
           <ListItem key={"projects"} disablePadding>
-            <ListItemButton>
+            <ListItemButton component={RouterLink} to="/projects">
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
@@ -58,7 +60,7 @@ export default function Sidebar() {
             </ListItemButton>
           </ListItem>
           <ListItem key={"page"} disablePadding>
-            <ListItemButton>
+            <ListItemButton component={RouterLink} to="/pagesetup">
               <ListItemIcon>
                 <AutoAwesomeIcon />
               </ListItemIcon>
@@ -66,23 +68,23 @@ export default function Sidebar() {
             </ListItemButton>
           </ListItem>
           <ListItem key={"analytics"} disablePadding>
-            <ListItemButton>
+            <ListItemButton component={RouterLink} to="/analytics">
               <ListItemIcon>
                 <InsightsIcon />
               </ListItemIcon>
               <ListItemText primary={"Analytics"} />
             </ListItemButton>
           </ListItem>
-          <ListItem key={"messagaes"} disablePadding>
-            <ListItemButton>
+          {/* <ListItem key={"messagaes"} disablePadding>
+            <ListItemButton component={RouterLink} to="/">
               <ListItemIcon>
                 <MailIcon />
               </ListItemIcon>
               <ListItemText primary={"Messages"} />
             </ListItemButton>
-          </ListItem>
+          </ListItem> */}
           <ListItem key={"settings"} disablePadding>
-            <ListItemButton>
+            <ListItemButton component={RouterLink} to="/settings">
               <ListItemIcon>
                 <SettingsIcon />
               </ListItemIcon>
@@ -91,29 +93,26 @@ export default function Sidebar() {
           </ListItem>
         </List>
         <List>
-          <ListItemButton>
-            <Avatar sx={{ width: 30, height: 30 }}></Avatar>
-            <Box paddingLeft={2} sx={{ flexGrow: 1 }}>
-              <Typography variant="subtitle1">Display Name</Typography>
-              <Typography variant="subtitle2">User Role</Typography>
-            </Box>
-            <IconButton
-              color="default"
-              size="large"
-              component={RouterLink}
-              to="/home"
-            >
-              <MoreVertIcon></MoreVertIcon>
-            </IconButton>
-          </ListItemButton>
+          <Divider />
+          <ListItem disablePadding>
+            <ListItemButton>
+              <Avatar sx={{ width: 30, height: 30 }}></Avatar>
+              <Box paddingLeft={2} sx={{ flexGrow: 1 }}>
+                <Typography variant="subtitle1">Display Name</Typography>
+                <Typography variant="subtitle2">User Role</Typography>
+              </Box>
+              <IconButton
+                color="default"
+                size="large"
+                component={RouterLink}
+                to="/home"
+              >
+                <MoreVertIcon></MoreVertIcon>
+              </IconButton>
+            </ListItemButton>
+          </ListItem>
         </List>
       </Drawer>
-      <Box
-        component="main"
-        sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
-      >
-        <Toolbar />
-      </Box>
-    </Box>
+    </>
   );
 }
