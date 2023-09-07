@@ -9,17 +9,26 @@ const themeOptions: ThemeOptions = {
     secondary: {
       main: "#e64a19",
     },
-    divider: "rgba(0,0,0,0.64)",
   },
   typography: {
     button: {
       letterSpacing: "0.1em",
     },
     body1: {
-      fontWeight: 300,
+      fontWeight: 200,
     },
     body2: {
+      fontWeight: 200,
+    },
+    h1: {
+      fontSize: "6rem",
+    },
+    subtitle1: {
+      fontSize: "0.8rem",
       fontWeight: 300,
+    },
+    subtitle2: {
+      fontSize: "0.7rem",
     },
   },
 };
