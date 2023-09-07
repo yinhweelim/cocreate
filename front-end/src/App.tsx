@@ -10,6 +10,7 @@ import { ThemeProvider } from "@mui/material";
 import LandingPage from "./pages/LandingPage";
 import SignInPage from "./pages/SignIn";
 import Registration from "./pages/Registration";
+import InitialPageSetup from "./pages/InitialPageSetup";
 
 function App() {
   return (
@@ -25,8 +26,11 @@ function App() {
               path="/registration"
               element={<Registration></Registration>}
             ></Route>
+            <Route
+              path="/registration/page-setup"
+              element={<InitialPageSetup></InitialPageSetup>}
+            ></Route>
             {/* 
-            <Route path="/registration/page-setup" element={}></Route>
             <Route path="/creators/:creator_id" element={}></Route>
             <Route path="/creators/createbrief" element={}></Route>
             <Route path="/home" element={}></Route>

@@ -13,24 +13,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { Link as RouterLink } from "react-router-dom";
 
-function Copyright(props: any) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Cocreate
-      </Link>{" "}
-      {new Date().getFullYear()}
-    </Typography>
-  );
-}
-
-export default function SignIn() {
+const InitialPageSetup = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -42,6 +25,7 @@ export default function SignIn() {
 
   return (
     <>
+      {" "}
       <Box sx={{ flexGrow: 1 }}>
         <Toolbar sx={{ justifyContent: "space-between" }}>
           <img src="../src/assets/logo.png" height="20"></img>
@@ -69,7 +53,16 @@ export default function SignIn() {
           }}
         >
           <Typography component="h1" variant="h6" paddingTop={4}>
-            Sign in
+            Name your new creator page
+          </Typography>
+          <Typography
+            component="body"
+            variant="body1"
+            paddingY={2}
+            textAlign={"center"}
+          >
+            Your page name is how people will know you and search for you. You
+            can always change it later.
           </Typography>
           <Box
             component="form"
@@ -81,26 +74,23 @@ export default function SignIn() {
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+              id="display_name"
+              label="Display Name"
+              name="display_name"
+              type="text"
               autoFocus
             />
             <TextField
               margin="normal"
               required
               fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
+              name="tagline"
+              label="Short description"
+              type="text"
+              id="tagline"
+              helperText="Share some details about yourself or your brand."
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
+
             <Button
               type="submit"
               fullWidth
@@ -110,21 +100,17 @@ export default function SignIn() {
               Sign In
             </Button>
             <Grid container>
-              {/* <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid> */}
               <Grid item>
-                <Link href="/registration" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                <Link href="/home" variant="body2">
+                  {"Skip for now"}
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </>
   );
-}
+};
+
+export default InitialPageSetup;
