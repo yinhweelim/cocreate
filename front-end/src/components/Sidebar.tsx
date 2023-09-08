@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -16,6 +16,7 @@ import { IconButton, Avatar } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import AccountCard from "./AccountCard";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { useSidebar } from "../context/SidebarContext";
 const drawerWidth = 240;
 
 //switch account dialog
@@ -60,6 +61,18 @@ function SimpleDialog(props: SimpleDialogProps) {
 }
 
 export default function Sidebar() {
+  //highlight selected item in sidebar
+  const { selectedIndex, setSelectedIndex } = useSidebar();
+
+  const handleListItemClick = (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    index: number
+  ) => {
+    setSelectedIndex(index);
+    console.log(index);
+    console.log(selectedIndex);
+  };
+
   //switch account dialog states
   const [open, setOpen] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState("");
@@ -102,7 +115,12 @@ export default function Sidebar() {
         </Box>
         <List sx={{ flexGrow: 1 }}>
           <ListItem key={"projects"} disablePadding>
-            <ListItemButton component={RouterLink} to="/projects">
+            <ListItemButton
+              component={RouterLink}
+              to="/projects"
+              selected={selectedIndex === 0}
+              onClick={(event) => handleListItemClick(event, 0)}
+            >
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
@@ -111,7 +129,14 @@ export default function Sidebar() {
           </ListItem>
 
           <ListItem key={"page"} disablePadding>
-            <ListItemButton component={RouterLink} to="/pagesetup">
+            <ListItemButton
+              component={RouterLink}
+              to="/pagesetup"
+              selected={selectedIndex === 1}
+              onClick={(
+                event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+              ) => handleListItemClick(event, 1)}
+            >
               <ListItemIcon>
                 <AutoAwesomeIcon />
               </ListItemIcon>
@@ -120,7 +145,12 @@ export default function Sidebar() {
           </ListItem>
 
           <ListItem key={"analytics"} disablePadding>
-            <ListItemButton component={RouterLink} to="/analytics">
+            <ListItemButton
+              component={RouterLink}
+              to="/analytics"
+              selected={selectedIndex === 2}
+              onClick={(event) => handleListItemClick(event, 2)}
+            >
               <ListItemIcon>
                 <InsightsIcon />
               </ListItemIcon>
@@ -129,7 +159,12 @@ export default function Sidebar() {
           </ListItem>
 
           <ListItem key={"commissions"} disablePadding>
-            <ListItemButton component={RouterLink} to="/commissions">
+            <ListItemButton
+              component={RouterLink}
+              to="/commissions"
+              selected={selectedIndex === 3}
+              onClick={(event) => handleListItemClick(event, 3)}
+            >
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
@@ -138,7 +173,12 @@ export default function Sidebar() {
           </ListItem>
 
           <ListItem key={"settings"} disablePadding>
-            <ListItemButton component={RouterLink} to="/settings">
+            <ListItemButton
+              component={RouterLink}
+              to="/settings"
+              selected={selectedIndex === 4}
+              onClick={(event) => handleListItemClick(event, 4)}
+            >
               <ListItemIcon>
                 <SettingsIcon />
               </ListItemIcon>

@@ -17,47 +17,56 @@ import CreatorProjects from "./pages/CreatorProjects";
 import CreatorPageConfig from "./pages/CreatorPageConfig";
 import CreatorAnalytics from "./pages/CreatorAnalytics";
 import PatronCommissions from "./pages/PatronCommissions";
+import { SidebarProvider } from "./context/SidebarContext";
 
 function App() {
   return (
     <React.Fragment>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
+        <SidebarProvider>
+          <CssBaseline />
 
-        <Container maxWidth="lg">
-          <Routes>
-            <Route path="/" element={<LandingPage></LandingPage>}></Route>
-            <Route path="/sign-in" element={<SignInPage></SignInPage>}></Route>
-            <Route
-              path="/registration"
-              element={<Registration></Registration>}
-            ></Route>
-            <Route
-              path="/registration/page-setup"
-              element={<InitialPageSetup></InitialPageSetup>}
-            ></Route>
-            <Route path="/home" element={<Home></Home>}></Route>
-            <Route
-              path="/projects"
-              element={<CreatorProjects></CreatorProjects>}
-            ></Route>
-            <Route
-              path="/pagesetup"
-              element={<CreatorPageConfig></CreatorPageConfig>}
-            ></Route>
-            <Route
-              path="/analytics"
-              element={<CreatorAnalytics></CreatorAnalytics>}
-            ></Route>
-            <Route path="/settings" element={<Settings></Settings>}></Route>
-            <Route path="/commissions" element={<PatronCommissions />}></Route>
-            {/* 
+          <Container maxWidth="lg">
+            <Routes>
+              <Route path="/" element={<LandingPage></LandingPage>}></Route>
+              <Route
+                path="/sign-in"
+                element={<SignInPage></SignInPage>}
+              ></Route>
+              <Route
+                path="/registration"
+                element={<Registration></Registration>}
+              ></Route>
+              <Route
+                path="/registration/page-setup"
+                element={<InitialPageSetup></InitialPageSetup>}
+              ></Route>
+              <Route path="/home" element={<Home></Home>}></Route>
+              <Route
+                path="/projects"
+                element={<CreatorProjects></CreatorProjects>}
+              ></Route>
+              <Route
+                path="/pagesetup"
+                element={<CreatorPageConfig></CreatorPageConfig>}
+              ></Route>
+              <Route
+                path="/analytics"
+                element={<CreatorAnalytics></CreatorAnalytics>}
+              ></Route>
+              <Route path="/settings" element={<Settings></Settings>}></Route>
+              <Route
+                path="/commissions"
+                element={<PatronCommissions />}
+              ></Route>
+              {/* 
             <Route path="/creators/:creator_id" element={}></Route>
             <Route path="/creators/createbrief" element={}></Route>
             
  */}
-          </Routes>
-        </Container>
+            </Routes>
+          </Container>
+        </SidebarProvider>
       </ThemeProvider>
     </React.Fragment>
   );
