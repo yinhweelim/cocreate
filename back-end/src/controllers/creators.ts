@@ -15,7 +15,7 @@ const getCreatorById = async (req: Request, res: Response) => {
     }
     res.status(200).json({ status: "success", creator: creator });
   } catch (error) {
-    console.error("Error updating user:", error);
+    console.error("Error getting creator:", error);
     res.status(500).json({
       status: "error",
       msg: "An error occurred while getting the creator",

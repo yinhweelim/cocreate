@@ -153,4 +153,32 @@ const updateUserAvatar = async (req: Request, res: Response) => {
   }
 };
 
-export { updateUser, updateUserAvatar };
+const getUsersByAuthId = async (req: Request, res: Response) => {
+  try {
+    //if authId not found, return error
+    const authQuery = "SELECT * FROM auth WHERE id = $1";
+    const result = await pool.query(authQuery, [req.params.auth_id]);
+
+    if (result.rows.length === 0) {
+      return res
+        .status(400)
+        .json({ status: "error", msg: "account not found" });
+    }
+    //SQL query to get users
+
+    const usersQuery =
+      "SELECT id as user_id,role,creator_id,given_name,avatar_image_url FROM users WHERE auth_id = $1 ORDER BY role asc";
+    const usersResult = await pool.query(usersQuery, [req.params.auth_id]);
+    const users = usersResult.rows;
+
+    res.status(200).json({ status: "success", users });
+  } catch (error) {
+    console.error("Error getting users:", error);
+    res.status(500).json({
+      status: "error",
+      msg: "An error occurred while getting the users",
+    });
+  }
+};
+
+export { updateUser, updateUserAvatar, getUsersByAuthId };

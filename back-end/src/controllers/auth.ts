@@ -152,12 +152,13 @@ const login = async (req: Request, res: Response) => {
       return res.status(401).json({ status: "error", msg: "login failed" });
     }
 
+    //after user has been successfully authenticated, create jwt
+
     const claims = {
       email: authData.email,
       id: authData.id,
     };
 
-    //after user has been successfully authenticated, create jwt
     const access = jwt.sign(claims, process.env.ACCESS_SECRET as string, {
       expiresIn: "30d", //TODO: set to valid for 20 mins
       jwtid: uuidv4(),
