@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import UserContext from "../context/UserContext";
 
 import Box from "@mui/material/Box";
@@ -23,7 +23,7 @@ const drawerWidth = 240;
 
 //dialog to switch accounts
 import { Dialog, DialogTitle } from "@mui/material";
-import { jsx } from "@emotion/react";
+
 interface SimpleDialogProps {
   open: boolean;
   selectedValue: string | null;

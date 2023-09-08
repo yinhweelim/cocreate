@@ -44,7 +44,6 @@ function App() {
 
     // Store userInfo to localStorage and set as initial state
     const userInfo = res.data.users;
-    console.log(userInfo);
 
     // Set current user and user info
     setCurrentUser(userInfo[0]);

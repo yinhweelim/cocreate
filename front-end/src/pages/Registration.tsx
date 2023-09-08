@@ -1,19 +1,19 @@
-import * as React from "react";
-import Avatar from "@mui/material/Avatar";
+import React, { useState } from "react";
+import useFetch from "../hooks/useFetch";
+
+import { data } from "../interfaces";
+
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { Toolbar, Stack, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 
 function Copyright(props: any) {
   return (
@@ -33,13 +33,40 @@ function Copyright(props: any) {
 }
 
 export default function Registration() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const navigate = useNavigate();
+  const fetchData = useFetch();
+
+  const [passwordMatchError, setPasswordMatchError] = useState(false);
+
+  const registerUser = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    const givenName = data.get("firstName");
+    const lastName = data.get("lastName");
+    const email = data.get("email");
+    const password = data.get("password");
+    const confirmPassword = data.get("confirmPassword");
+
+    if (password != confirmPassword) {
+      setPasswordMatchError(true);
+      console.log("Password does not match");
+      return;
+    } else {
+      const res: data = await fetchData("/api/register", "PUT", {
+        email,
+        password,
+        given_name: givenName,
+        last_name: lastName,
+      });
+
+      if (res.ok) {
+        console.log(res.data);
+        navigate("/sign-in");
+      } else {
+        alert(JSON.stringify(res.data));
+        console.log(res.data);
+      }
+    }
   };
 
   return (
@@ -75,7 +102,7 @@ export default function Registration() {
           <Box
             component="form"
             noValidate
-            onSubmit={handleSubmit}
+            onSubmit={registerUser}
             sx={{ mt: 3 }}
           >
             <Grid container spacing={2}>
@@ -125,12 +152,17 @@ export default function Registration() {
                 <TextField
                   required
                   fullWidth
-                  name="confirmpassword"
+                  name="confirmPassword"
                   label="Confirm password"
                   type="password"
                   id="confirmpassword"
                 />
               </Grid>
+
+              {/* Display password match error */}
+              {passwordMatchError && (
+                <p style={{ color: "red" }}>Passwords do not match.</p>
+              )}
               {/* <Grid item xs={12}>
                 <FormControlLabel
                   control={
