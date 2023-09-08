@@ -167,7 +167,7 @@ const getUsersByAuthId = async (req: Request, res: Response) => {
     //SQL query to get users
 
     const usersQuery =
-      "SELECT id as user_id,role,creator_id FROM users WHERE auth_id = $1";
+      "SELECT id as user_id,role,creator_id,given_name,avatar_image_url FROM users WHERE auth_id = $1";
     const usersResult = await pool.query(usersQuery, [req.params.auth_id]);
     const users = usersResult.rows;
 
