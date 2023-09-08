@@ -34,6 +34,7 @@ function App() {
   const [accessToken, setAccessToken] = useState(initAccessToken);
   const [authId, setAuthId] = useState(initAuthId);
   const [userArray, setUserArray] = useState([]);
+  const [currentUser, setCurrentUser] = useState({});
 
   //endpoints
 
@@ -45,10 +46,8 @@ function App() {
     const userInfo = res.data.users;
     console.log(userInfo);
 
-    // Serialize and store userInfo in localStorage
-    localStorage.setItem("userInfo", JSON.stringify(userInfo));
-
-    // Set userInfo state by deserializing the stored data
+    // Set current user and user info
+    setCurrentUser(userInfo[0]);
     setUserArray(userInfo);
   };
 
@@ -65,6 +64,8 @@ function App() {
             value={{
               accessToken,
               setAccessToken,
+              currentUser,
+              setCurrentUser,
               userArray,
               setUserArray,
               authId,

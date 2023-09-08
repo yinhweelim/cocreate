@@ -1,10 +1,12 @@
 export interface UserContextType {
   accessToken: String;
   setAccessToken: React.Dispatch<React.SetStateAction<String>>;
-  role: String;
-  setRole: React.Dispatch<React.SetStateAction<String>>;
-  userId: String;
-  setUserId: React.Dispatch<React.SetStateAction<String>>;
+  // role: String;
+  // setRole: React.Dispatch<React.SetStateAction<String>>;
+  authId: String;
+  setAuthId: React.Dispatch<React.SetStateAction<String>>;
+  currentUser: UserInfoType;
+  setCurrentUser: React.Dispatch<React.SetStateAction<UserInfoType>>;
   userArray: UserInfoType[];
   setUserArray: React.Dispatch<React.SetStateAction<UserInfoType[]>>;
 }

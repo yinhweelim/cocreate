@@ -50,7 +50,7 @@ function SimpleDialog(props: SimpleDialogProps) {
         {userArray.map((data: any, index: number) => (
           <AccountCard
             key={index}
-            onClick={() => handleListItemClick("switchAccount")}
+            onClick={() => handleListItemClick(data)}
             {...data} // Pass all user properties as props
           />
         ))}
@@ -66,6 +66,9 @@ function SimpleDialog(props: SimpleDialogProps) {
 }
 
 export default function Sidebar() {
+  const userCtx = useContext(UserContext);
+  const currentUser = userCtx?.currentUser;
+
   //highlight selected item in sidebar
   const { selectedIndex, setSelectedIndex } = useSidebar();
 
@@ -84,9 +87,9 @@ export default function Sidebar() {
     setOpen(true);
   };
 
-  const handleClose = (value: string) => {
+  const handleClose = (value: any) => {
     setOpen(false);
-    setSelectedValue(value);
+    userCtx?.setCurrentUser(value);
   };
 
   return (
@@ -193,6 +196,10 @@ export default function Sidebar() {
           <Divider />
           <AccountCard
             onClick={handleClickOpen}
+            given_name={currentUser.given_name}
+            role={currentUser.role}
+            avatar_image_url={currentUser.avatar_image_url}
+            key={currentUser.user_id}
             iconButton={
               <IconButton
                 color="default"

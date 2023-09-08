@@ -7,6 +7,8 @@ type UserContextType = {
   setUserArray: React.Dispatch<any>;
   authId: string;
   setAuthId: React.Dispatch<any>;
+  currentUser: any;
+  setCurrentUser: React.Dispatch<any>;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
