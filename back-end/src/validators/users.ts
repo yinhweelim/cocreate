@@ -4,6 +4,10 @@ const validateIdInParam = [
   param("id", "invalid id").isLength({ min: 36, max: 36 }),
 ];
 
+const validateAuthIdInParam = [
+  param("auth_id", "invalid id").isLength({ min: 36, max: 36 }),
+];
+
 const validateUpdateUserData = [
   body("country_of_residence", "max length is 100 characters")
     .optional()
@@ -18,4 +22,4 @@ const validateUpdateUserData = [
   body("is_deleted", "type should be boolean").optional().isBoolean(),
 ];
 
-export { validateIdInParam, validateUpdateUserData };
+export { validateIdInParam, validateAuthIdInParam, validateUpdateUserData };

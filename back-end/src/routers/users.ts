@@ -6,11 +6,20 @@ import {
 } from "../controllers/users";
 import { auth } from "../middleware/auth";
 import { validation as checkValid } from "../middleware/checkValid";
-import { validateIdInParam, validateUpdateUserData } from "../validators/users";
+import {
+  validateIdInParam,
+  validateAuthIdInParam,
+  validateUpdateUserData,
+} from "../validators/users";
 
 const router = express.Router();
 
-router.get("/users/:auth_id", getUsersByAuthId);
+router.get(
+  "/users/:auth_id",
+  validateAuthIdInParam,
+  checkValid,
+  getUsersByAuthId
+);
 router.patch(
   "/users/:id",
   validateIdInParam,
