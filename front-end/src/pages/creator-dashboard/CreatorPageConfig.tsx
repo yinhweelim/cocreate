@@ -35,7 +35,7 @@ const CreatorPageConfig = () => {
             </Button>
             <Button
               variant="text"
-              onClick={() => handleSubpageChange("projects")}
+              onClick={() => handleSubpageChange("project_settings")}
             >
               Project Settings
             </Button>
@@ -44,13 +44,12 @@ const CreatorPageConfig = () => {
           <Divider />
 
           {/* page content */}
-          <Grid container padding={1}>
-            {selectedSubpage === "projects" ? (
-              <CreatorProfileSubpage />
-            ) : (
-              <CreatorProjectConfig />
-            )}
-          </Grid>
+
+          {selectedSubpage === "business_profile" ? (
+            <CreatorProfileSubpage />
+          ) : (
+            <CreatorProjectConfig />
+          )}
         </Grid>
       </Box>
     </>
