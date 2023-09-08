@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../../components/Sidebar";
 import { Box, Grid, Divider, Button, Stack } from "@mui/material";
-import SectionHeading from "../components/SectionHeading";
+import SectionHeading from "../../components/SectionHeading";
 
 const CreatorAnalytics = () => {
   const [selectedSubpage, setSelectedSubpage] = useState<String>("subpage1");

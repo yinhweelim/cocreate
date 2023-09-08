@@ -13,10 +13,10 @@ import Registration from "./pages/Registration";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
 import InitialPageSetup from "./pages/InitialPageSetup";
-import CreatorProjects from "./pages/CreatorProjects";
-import CreatorPageConfig from "./pages/CreatorPageConfig";
-import CreatorAnalytics from "./pages/CreatorAnalytics";
-import PatronCommissions from "./pages/PatronCommissions";
+import CreatorProjects from "./pages/creator-dashboard/CreatorProjects";
+import CreatorPageConfig from "./pages/creator-dashboard/CreatorPageConfig";
+import CreatorAnalytics from "./pages/creator-dashboard/CreatorAnalytics";
+import PatronCommissions from "./pages/patron-dashboard/PatronCommissions";
 import { SidebarProvider } from "./context/SidebarContext";
 
 function App() {

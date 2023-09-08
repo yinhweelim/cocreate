@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../../components/Sidebar";
+import { Box, Grid, Button, Stack, Divider } from "@mui/material";
+import SectionHeading from "../../components/SectionHeading";
+import CreatorProfileSubpage from "./CreatorProfileSubpage";
+import CreatorProjectConfig from "./CreatorProjectConfigSubpage";
 
-import { Box, Grid, Button, Divider, Stack } from "@mui/material";
-import SectionHeading from "../components/SectionHeading";
-import CreatorProjectsSubpage from "./CreatorProjectsSubpage";
-import CreatorRequestsSubpage from "./CreatorRequestsSubpage";
-
-const CreatorProjects = () => {
-  const [selectedSubpage, setSelectedSubpage] = useState<String>("projects");
+const CreatorPageConfig = () => {
+  const [selectedSubpage, setSelectedSubpage] =
+    useState<String>("business_profile");
 
   const handleSubpageChange = (subpage: String) => {
     setSelectedSubpage(subpage);
@@ -21,23 +21,23 @@ const CreatorProjects = () => {
         <Grid container direction="column">
           {/* header with action buttons */}
           <SectionHeading
-            heading={"Projects"}
-            actionButton={<Button variant="contained">Create Project</Button>}
+            heading={"My page"}
+            actionButton={<Button variant="contained">View Page</Button>}
           ></SectionHeading>
 
           {/* subpages */}
           <Stack direction={"row"} spacing={1}>
             <Button
               variant="text"
-              onClick={() => handleSubpageChange("projects")}
+              onClick={() => handleSubpageChange("business_profile")}
             >
-              Projects
+              Business Profile
             </Button>
             <Button
               variant="text"
-              onClick={() => handleSubpageChange("requests")}
+              onClick={() => handleSubpageChange("projects")}
             >
-              Requests
+              Project Settings
             </Button>
           </Stack>
 
@@ -46,9 +46,9 @@ const CreatorProjects = () => {
           {/* page content */}
           <Grid container padding={1}>
             {selectedSubpage === "projects" ? (
-              <CreatorProjectsSubpage />
+              <CreatorProfileSubpage />
             ) : (
-              <CreatorRequestsSubpage />
+              <CreatorProjectConfig />
             )}
           </Grid>
         </Grid>
@@ -57,4 +57,4 @@ const CreatorProjects = () => {
   );
 };
 
-export default CreatorProjects;
+export default CreatorPageConfig;
