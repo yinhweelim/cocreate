@@ -21,7 +21,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useSidebar } from "../context/SidebarContext";
 const drawerWidth = 240;
 
-//switch account dialog
+//dialog to switch accounts
 import { Dialog, DialogTitle } from "@mui/material";
 interface SimpleDialogProps {
   open: boolean;
@@ -65,6 +65,7 @@ function SimpleDialog(props: SimpleDialogProps) {
   );
 }
 
+//sidebar
 export default function Sidebar() {
   const userCtx = useContext(UserContext);
   const currentUser = userCtx?.currentUser;
@@ -109,7 +110,6 @@ export default function Sidebar() {
         anchor="left"
       >
         <Box padding={1}>
-          {" "}
           <IconButton
             color="default"
             size="large"
@@ -120,63 +120,66 @@ export default function Sidebar() {
           </IconButton>
         </Box>
         <List sx={{ flexGrow: 1 }}>
-          <ListItem key={"projects"} disablePadding>
-            <ListItemButton
-              component={RouterLink}
-              to="/projects"
-              selected={selectedIndex === 0}
-              onClick={(event) => handleListItemClick(event, 0)}
-            >
-              <ListItemIcon>
-                <InboxIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Projects"} />
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem key={"page"} disablePadding>
-            <ListItemButton
-              component={RouterLink}
-              to="/pagesetup"
-              selected={selectedIndex === 1}
-              onClick={(
-                event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-              ) => handleListItemClick(event, 1)}
-            >
-              <ListItemIcon>
-                <AutoAwesomeIcon />
-              </ListItemIcon>
-              <ListItemText primary={"My page"} />
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem key={"analytics"} disablePadding>
-            <ListItemButton
-              component={RouterLink}
-              to="/analytics"
-              selected={selectedIndex === 2}
-              onClick={(event) => handleListItemClick(event, 2)}
-            >
-              <ListItemIcon>
-                <InsightsIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Analytics"} />
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem key={"commissions"} disablePadding>
-            <ListItemButton
-              component={RouterLink}
-              to="/commissions"
-              selected={selectedIndex === 3}
-              onClick={(event) => handleListItemClick(event, 3)}
-            >
-              <ListItemIcon>
-                <InboxIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Commissions"} />
-            </ListItemButton>
-          </ListItem>
+          {userCtx?.currentUser.role === "CREATOR" ? (
+            <>
+              {" "}
+              <ListItem key={"projects"} disablePadding>
+                <ListItemButton
+                  component={RouterLink}
+                  to="/projects"
+                  selected={selectedIndex === 0}
+                  onClick={(event) => handleListItemClick(event, 0)}
+                >
+                  <ListItemIcon>
+                    <InboxIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={"Projects"} />
+                </ListItemButton>
+              </ListItem>
+              <ListItem key={"page"} disablePadding>
+                <ListItemButton
+                  component={RouterLink}
+                  to="/pagesetup"
+                  selected={selectedIndex === 1}
+                  onClick={(
+                    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+                  ) => handleListItemClick(event, 1)}
+                >
+                  <ListItemIcon>
+                    <AutoAwesomeIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={"My page"} />
+                </ListItemButton>
+              </ListItem>
+              <ListItem key={"analytics"} disablePadding>
+                <ListItemButton
+                  component={RouterLink}
+                  to="/analytics"
+                  selected={selectedIndex === 2}
+                  onClick={(event) => handleListItemClick(event, 2)}
+                >
+                  <ListItemIcon>
+                    <InsightsIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={"Analytics"} />
+                </ListItemButton>
+              </ListItem>
+            </>
+          ) : (
+            <ListItem key={"commissions"} disablePadding>
+              <ListItemButton
+                component={RouterLink}
+                to="/commissions"
+                selected={selectedIndex === 3}
+                onClick={(event) => handleListItemClick(event, 3)}
+              >
+                <ListItemIcon>
+                  <InboxIcon />
+                </ListItemIcon>
+                <ListItemText primary={"Commissions"} />
+              </ListItemButton>
+            </ListItem>
+          )}
 
           <ListItem key={"settings"} disablePadding>
             <ListItemButton
