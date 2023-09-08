@@ -17,7 +17,7 @@ const Settings = () => {
         <Grid container direction="column">
           {/* header with action buttons */}
           <SectionHeading
-            heading={"Analytics"}
+            heading={"Settings"}
             actionButton={null}
           ></SectionHeading>
 
