@@ -122,13 +122,23 @@ export default function Registration() {
                 />
               </Grid>
               <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="confirmpassword"
+                  label="Confirm password"
+                  type="password"
+                  id="confirmpassword"
+                />
+              </Grid>
+              {/* <Grid item xs={12}>
                 <FormControlLabel
                   control={
                     <Checkbox value="allowExtraEmails" color="primary" />
                   }
                   label="I accept the Terms and Conditions."
                 />
-              </Grid>
+              </Grid> */}
             </Grid>
             <Button
               type="submit"

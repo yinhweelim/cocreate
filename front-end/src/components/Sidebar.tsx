@@ -23,10 +23,11 @@ const drawerWidth = 240;
 
 //dialog to switch accounts
 import { Dialog, DialogTitle } from "@mui/material";
+import { jsx } from "@emotion/react";
 interface SimpleDialogProps {
   open: boolean;
-  selectedValue: string;
-  onClose: (value: string) => void;
+  selectedValue: string | null;
+  onClose: (value: string | null) => void;
 }
 
 function SimpleDialog(props: SimpleDialogProps) {
@@ -82,7 +83,8 @@ export default function Sidebar() {
 
   //switch account dialog states
   const [open, setOpen] = React.useState(false);
-  const [selectedValue, setSelectedValue] = React.useState("");
+  // const [selectedValue, setSelectedValue] = React.useState("");
+  const [selectedValue, setSelectedValue] = React.useState<string | null>(null);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -90,7 +92,12 @@ export default function Sidebar() {
 
   const handleClose = (value: any) => {
     setOpen(false);
-    userCtx?.setCurrentUser(value);
+
+    // Check if a value is selected before updating the current user
+    if (value !== null) {
+      userCtx?.setCurrentUser(value);
+      setSelectedValue(value); // Update selectedValue when a value is selected
+    }
   };
 
   return (
