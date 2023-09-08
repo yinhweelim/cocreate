@@ -5,9 +5,8 @@ export interface UserContextType {
   setRole: React.Dispatch<React.SetStateAction<String>>;
   userId: String;
   setUserId: React.Dispatch<React.SetStateAction<String>>;
-  userInfo: UserInfoType[];
-  setUserInfo: React.Dispatch<React.SetStateAction<UserInfoType>>;
-  handleLogout: () => void;
+  userArray: UserInfoType[];
+  setUserArray: React.Dispatch<React.SetStateAction<UserInfoType[]>>;
 }
 
 export interface data {

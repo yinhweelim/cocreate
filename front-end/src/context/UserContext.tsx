@@ -3,8 +3,8 @@ import React, { createContext } from "react";
 type UserContextType = {
   accessToken: any;
   setAccessToken: React.Dispatch<any>;
-  userInfo: any;
-  setUserInfo: React.Dispatch<any>;
+  userArray: any;
+  setUserArray: React.Dispatch<any>;
   authId: string;
   setAuthId: React.Dispatch<any>;
 };

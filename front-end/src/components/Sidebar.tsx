@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import UserContext from "../context/UserContext";
+
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -28,6 +30,9 @@ interface SimpleDialogProps {
 }
 
 function SimpleDialog(props: SimpleDialogProps) {
+  const userCtx = useContext(UserContext);
+  const userArray = userCtx?.userArray;
+
   const { onClose, selectedValue, open } = props;
 
   const handleClose = () => {
@@ -42,12 +47,13 @@ function SimpleDialog(props: SimpleDialogProps) {
     <Dialog onClose={handleClose} open={open} sx={{ width: "300px" }}>
       <DialogTitle>Switch account</DialogTitle>
       <List sx={{ pt: 0 }}>
-        <AccountCard
-          onClick={() => handleListItemClick("switchAccount")}
-        ></AccountCard>
-        <AccountCard
-          onClick={() => handleListItemClick("switchAccount")}
-        ></AccountCard>
+        {userArray.map((data: any, index: number) => (
+          <AccountCard
+            key={index}
+            onClick={() => handleListItemClick("switchAccount")}
+            {...data} // Pass all user properties as props
+          />
+        ))}
         <Divider></Divider>
         <ListItem disablePadding>
           <ListItemButton autoFocus component={RouterLink} to="/">
