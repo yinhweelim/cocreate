@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import UserContext from "../../context/UserContext";
+
 import Sidebar from "../../components/Sidebar";
 import { Box, Grid, Button, Stack, Divider } from "@mui/material";
 import SectionHeading from "../../components/SectionHeading";
@@ -6,6 +8,7 @@ import CreatorProfileSubpage from "./CreatorProfileSubpage";
 import CreatorProjectConfig from "./CreatorProjectConfigSubpage";
 
 const CreatorPageConfig = () => {
+  const userCtx = useContext(UserContext);
   const [selectedSubpage, setSelectedSubpage] =
     useState<String>("business_profile");
 

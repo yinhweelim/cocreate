@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as React from "react";
 import { Route, Routes } from "react-router-dom";
 import UserContext from "./context/UserContext";
 import useFetch from "./hooks/useFetch";
 import "./App.css";
+import { data } from "../src/interfaces";
+
+//MUI and theme
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
-
-//theme
 import { ThemeProvider } from "@mui/material";
 import { theme } from "./theme";
 
@@ -25,7 +26,7 @@ import PatronCommissions from "./pages/patron-dashboard/PatronCommissions";
 import { SidebarProvider } from "./context/SidebarContext";
 
 function App() {
-  // const fetchData = useFetch();
+  const fetchData = useFetch();
   const initAuthId = JSON.parse(localStorage.getItem("authId")!);
   const initAccessToken = JSON.parse(localStorage.getItem("accessToken")!);
 
@@ -37,23 +38,19 @@ function App() {
   //endpoints
 
   // get user and patron info with authid
-  // const getUserInfo = async () => {
-  //   const res = await fetchData("/auth/accounts/" + userId);
+  const getUserInfo = async () => {
+    const res: data = await fetchData("/api/users/" + authId);
 
-  //   // Store userInfo to localStorage and set as initial state
-  //   localStorage.setItem("userInfo", JSON.stringify(res.data));
+    // Store userInfo to localStorage and set as initial state
+    const userInfo = JSON.stringify(res.data.users);
+    localStorage.setItem("userInfo", userInfo);
+    setUserInfo(userInfo);
+  };
 
-  //   // Set initial userInfo from localStorage after component mounts
-  //   const initUserInfo = JSON.parse(localStorage.getItem("userInfo"));
-  //   if (initUserInfo) {
-  //     setUserInfo(initUserInfo);
-  //   }
-  // };
-
-  //when user logs in, userId is updated and app gets user info
-  // useEffect(() => {
-  //   getUserInfo();
-  // }, [userId]);
+  // when user logs in, userId is updated and app gets user info
+  useEffect(() => {
+    getUserInfo();
+  }, [authId]);
 
   return (
     <React.Fragment>

@@ -12,7 +12,7 @@ import InsightsIcon from "@mui/icons-material/Insights";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { Divider } from "@mui/material";
-import { IconButton, Avatar } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import AccountCard from "./AccountCard";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -35,7 +35,6 @@ function SimpleDialog(props: SimpleDialogProps) {
   };
 
   const handleListItemClick = (value: string) => {
-    console.log(value);
     onClose(value);
   };
 
@@ -69,8 +68,6 @@ export default function Sidebar() {
     index: number
   ) => {
     setSelectedIndex(index);
-    console.log(index);
-    console.log(selectedIndex);
   };
 
   //switch account dialog states

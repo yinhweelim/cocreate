@@ -5,10 +5,8 @@ export interface UserContextType {
   setRole: React.Dispatch<React.SetStateAction<String>>;
   userId: String;
   setUserId: React.Dispatch<React.SetStateAction<String>>;
-  userInfo: any;
-  setUserInfo: any;
-  //   userInfo: userInfoType;
-  //   setUserInfo: React.Dispatch<React.SetStateAction<userInfoType>>;
+  userInfo: UserInfoType[];
+  setUserInfo: React.Dispatch<React.SetStateAction<UserInfoType>>;
   handleLogout: () => void;
 }
 
@@ -34,4 +32,12 @@ export interface useFetchType {
     token?: String,
     isExtAPI?: boolean
   ): Promise<{}>;
+}
+
+export interface UserInfoType {
+  user_id: string;
+  role: "PATRON" | "CREATOR";
+  creator_id: string | null;
+  image_url: string | null;
+  given_name: string | null;
 }

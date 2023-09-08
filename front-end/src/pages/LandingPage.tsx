@@ -1,8 +1,7 @@
 import React from "react";
 import { Box, Typography, Stack, Button, Grid, Paper } from "@mui/material";
-import { AppBar, Toolbar, IconButton } from "@mui/material";
+import { Toolbar } from "@mui/material";
 import { Link } from "react-router-dom";
-import MenuIcon from "@mui/icons-material/Menu";
 import { styled } from "@mui/material/styles";
 
 const LandingPage = () => {
