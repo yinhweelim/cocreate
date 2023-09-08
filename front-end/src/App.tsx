@@ -16,6 +16,7 @@ import InitialPageSetup from "./pages/InitialPageSetup";
 import CreatorProjects from "./pages/CreatorProjects";
 import CreatorPageConfig from "./pages/CreatorPageConfig";
 import CreatorAnalytics from "./pages/CreatorAnalytics";
+import PatronCommissions from "./pages/PatronCommissions";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
               element={<CreatorAnalytics></CreatorAnalytics>}
             ></Route>
             <Route path="/settings" element={<Settings></Settings>}></Route>
+            <Route path="/commissions" element={<PatronCommissions />}></Route>
             {/* 
             <Route path="/creators/:creator_id" element={}></Route>
             <Route path="/creators/createbrief" element={}></Route>

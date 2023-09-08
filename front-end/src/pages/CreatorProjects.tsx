@@ -1,17 +1,56 @@
-import React from "react";
+import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
-import { Box, Button, Divider } from "@mui/material";
+import { Box, Grid, Button, Divider, Stack } from "@mui/material";
 import SectionHeading from "../components/SectionHeading";
+import CreatorProjectsSubpage from "./CreatorProjectsSubpage";
+import CreatorRequestsSubpage from "./CreatorRequestsSubpage";
+
 const CreatorProjects = () => {
+  const [selectedSubpage, setSelectedSubpage] = useState<String>("projects");
+
+  const handleSubpageChange = (subpage: String) => {
+    setSelectedSubpage(subpage);
+  };
+
   return (
     <>
       <Box sx={{ display: "flex" }}>
         <Sidebar></Sidebar>
-        <SectionHeading
-          heading={"Projects"}
-          actionButton={<Button variant="contained">Create</Button>}
-        ></SectionHeading>
-        <Divider variant="middle" />
+
+        <Grid container direction="column">
+          {/* header with action buttons */}
+          <SectionHeading
+            heading={"Projects"}
+            actionButton={<Button variant="contained">Create Project</Button>}
+          ></SectionHeading>
+
+          {/* subpages */}
+          <Stack direction={"row"} spacing={1}>
+            <Button
+              variant="text"
+              onClick={() => handleSubpageChange("projects")}
+            >
+              Projects
+            </Button>
+            <Button
+              variant="text"
+              onClick={() => handleSubpageChange("requests")}
+            >
+              Requests
+            </Button>
+          </Stack>
+
+          <Divider />
+
+          {/* page content */}
+          <Grid container padding={1}>
+            {selectedSubpage === "projects" ? (
+              <CreatorProjectsSubpage />
+            ) : (
+              <CreatorRequestsSubpage />
+            )}
+          </Grid>
+        </Grid>
       </Box>
     </>
   );

@@ -8,7 +8,6 @@ import {
   Typography,
   IconButton,
 } from "@mui/material";
-
 import { Link as RouterLink } from "react-router-dom";
 
 const AccountCard = (props: {

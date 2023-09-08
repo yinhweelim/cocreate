@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import { Typography, Box, Stack, Button, Divider, Grid } from "@mui/material";
 
-const SectionHeading = (props: {
+const SectionSubpages = (props: {
   actionButton: ReactNode | undefined;
   heading: string | undefined;
 }) => {
@@ -10,7 +10,7 @@ const SectionHeading = (props: {
       <Grid
         container
         sx={{ flexDirection: "row", justifyContent: "space-between" }}
-        paddingY={3}
+        paddingY={2}
       >
         <Typography variant="h4">{props.heading}</Typography>
         <Stack>{props.actionButton}</Stack>
@@ -19,4 +19,4 @@ const SectionHeading = (props: {
   );
 };
 
-export default SectionHeading;
+export default SectionSubpages;

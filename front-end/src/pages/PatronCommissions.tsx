@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
-import { Box, Grid, Button, Divider, Stack } from "@mui/material";
+import { Box, Grid, Button, Stack, Divider } from "@mui/material";
 import SectionHeading from "../components/SectionHeading";
-const Settings = () => {
+
+const PatronCommissions = () => {
   const [selectedSubpage, setSelectedSubpage] = useState<String>("subpage1");
 
   const handleSubpageChange = (subpage: String) => {
@@ -17,7 +18,7 @@ const Settings = () => {
         <Grid container direction="column">
           {/* header with action buttons */}
           <SectionHeading
-            heading={"Analytics"}
+            heading={"Your Commissions"}
             actionButton={null}
           ></SectionHeading>
 
@@ -49,4 +50,4 @@ const Settings = () => {
   );
 };
 
-export default Settings;
+export default PatronCommissions;
