@@ -1,5 +1,13 @@
+import { useFetchType, data, returnValue } from "../interfaces";
+
 const useFetch = () => {
-  const fetchData = async (endpoint, method, body, token, isExtAPI = false) => {
+  const fetchData: useFetchType = async (
+    endpoint,
+    method,
+    body,
+    token,
+    isExtAPI = false
+  ) => {
     const path = isExtAPI ? endpoint : import.meta.env.VITE_SERVER + endpoint;
 
     const res = await fetch(path, {
@@ -10,9 +18,10 @@ const useFetch = () => {
       },
       body: JSON.stringify(body),
     });
-    const data = await res.json();
 
-    let returnValue = {};
+    const data: data = await res.json();
+
+    let returnValue: returnValue;
     if (res.ok) {
       if (data.status === "error") {
         returnValue = { ok: false, data: data.msg };
@@ -33,7 +42,6 @@ const useFetch = () => {
 
     return returnValue;
   };
-
   return fetchData;
 };
 

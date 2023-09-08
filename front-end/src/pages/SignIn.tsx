@@ -1,9 +1,14 @@
-import * as React from "react";
+import React, { useContext } from "react";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import jwtDecode from "jwt-decode";
+
+import UserContext from "../context/UserContext";
+import useFetch from "../hooks/useFetch";
+import { data } from "../interfaces";
+
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -11,7 +16,6 @@ import { Toolbar, Stack, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { Link as RouterLink } from "react-router-dom";
 
 function Copyright(props: any) {
   return (
@@ -31,13 +35,37 @@ function Copyright(props: any) {
 }
 
 export default function SignIn() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const navigate = useNavigate();
+  const userCtx = useContext(UserContext);
+  const fetchData = useFetch();
+
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    const email = data.get("email");
+    const password = data.get("password");
     console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+      email,
+      password,
     });
+    const res: data = await fetchData("/api/auth/login", "POST", {
+      email,
+      password,
+    });
+    if (res.ok) {
+      userCtx?.setAccessToken(res.data?.access);
+      localStorage.setItem("accessToken", JSON.stringify(res.data.access));
+
+      const decoded: any = jwtDecode(res.data?.access);
+      console.log(decoded);
+      userCtx?.setAuthId(decoded.id);
+      localStorage.setItem("authId", JSON.stringify(decoded.id));
+      localStorage.setItem("authEmail", JSON.stringify(decoded.email));
+
+      navigate(`/projects`);
+    } else {
+      alert(JSON.stringify(res.data));
+    }
   };
 
   return (
@@ -73,7 +101,7 @@ export default function SignIn() {
           </Typography>
           <Box
             component="form"
-            onSubmit={handleSubmit}
+            onSubmit={handleLogin}
             noValidate
             sx={{ mt: 1 }}
           >
@@ -97,10 +125,6 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <Button
               type="submit"
               fullWidth
@@ -110,11 +134,6 @@ export default function SignIn() {
               Sign In
             </Button>
             <Grid container>
-              {/* <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid> */}
               <Grid item>
                 <Link href="/registration" variant="body2">
                   {"Don't have an account? Sign Up"}
