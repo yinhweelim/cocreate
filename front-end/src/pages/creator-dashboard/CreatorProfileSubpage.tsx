@@ -45,7 +45,7 @@ const CreatorProfile = () => {
   return (
     <>
       <Grid container paddingTop={2}>
-        <Grid item xs={8}>
+        <Grid item xs={9}>
           {/* Profile */}
           <Paper variant="outlined" elevation={2}>
             <Typography variant="h6" component="h4" padding={2}>

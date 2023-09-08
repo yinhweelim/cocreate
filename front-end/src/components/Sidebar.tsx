@@ -19,6 +19,8 @@ import { Link as RouterLink } from "react-router-dom";
 import AccountCard from "./AccountCard";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useSidebar } from "../context/SidebarContext";
+import { useNavigate } from "react-router-dom";
+
 const drawerWidth = 240;
 
 //dialog to switch accounts
@@ -70,6 +72,7 @@ function SimpleDialog(props: SimpleDialogProps) {
 export default function Sidebar() {
   const userCtx = useContext(UserContext);
   const currentUser = userCtx?.currentUser;
+  const navigate = useNavigate();
 
   //highlight selected item in sidebar
   const { selectedIndex, setSelectedIndex } = useSidebar();
@@ -97,6 +100,11 @@ export default function Sidebar() {
     if (value !== null) {
       userCtx?.setCurrentUser(value);
       setSelectedValue(value); // Update selectedValue when a value is selected
+      {
+        value.role === "PATRON"
+          ? navigate("/commissions")
+          : navigate("/projects");
+      }
     }
   };
 
