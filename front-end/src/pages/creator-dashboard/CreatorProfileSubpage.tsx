@@ -271,16 +271,6 @@ const CreatorProfile = () => {
                     placeholder="Add a description to to let people know more about who you are, what you create and projects you're open to."
                   />
 
-                  <TextField
-                    margin="normal"
-                    fullWidth
-                    id="slotsPerMonth"
-                    label="Slots per month"
-                    name="slotsPerMonth"
-                    placeholder="Display how many project slots you offer per month."
-                    defaultValue={creatorData?.slots_per_month}
-                  />
-
                   {/* <FormControlLabel
                 control={<Checkbox value="showProjectCount" color="primary" />}
                 label="Show total project count"

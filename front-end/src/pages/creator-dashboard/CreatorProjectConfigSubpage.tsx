@@ -58,10 +58,27 @@ const CreatorProjectConfig = () => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    const requestBody = {
-      project_description_guideline: data.get("briefDescriptionGuide"),
-      payment_instructions: data.get("paymentInstructions"),
-    };
+    const requestBody = {};
+
+    const project_description_guideline = data.get("briefDescriptionGuide");
+    if (project_description_guideline) {
+      requestBody.project_description_guideline = project_description_guideline;
+    }
+
+    const payment_instructions = data.get("paymentInstructions");
+    if (payment_instructions) {
+      requestBody.payment_instructions = payment_instructions;
+    }
+
+    const lead_time_in_weeks = data.get("leadTime");
+    if (lead_time_in_weeks) {
+      requestBody.lead_time_in_weeks = lead_time_in_weeks;
+    }
+
+    const slots_per_month = data.get("slotsPerMonth");
+    if (slots_per_month) {
+      requestBody.slots_per_month = slots_per_month;
+    }
 
     const res: data = await fetchData(
       "/api/creators/" + creatorId,
@@ -70,12 +87,12 @@ const CreatorProjectConfig = () => {
     );
     if (res.ok) {
       setSnackbarSeverity("success");
-      setSnackbarMessage("Form updated successfully");
+      setSnackbarMessage("Project settings updated successfully");
       setOpenSnackbar(true);
     } else {
       console.log(JSON.stringify(res.data));
       setSnackbarSeverity("warning");
-      setSnackbarMessage("Form update failed");
+      setSnackbarMessage("Project settings update failed");
       setOpenSnackbar(true);
     }
   };
@@ -147,6 +164,56 @@ const CreatorProjectConfig = () => {
                     name="paymentInstructions"
                     placeholder="Short description of your payment terms. E.g. your bank account information, payment deadlines"
                     defaultValue={creatorData?.payment_instructions}
+                  />
+
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    Save
+                  </Button>
+                </Box>
+              </Paper>
+            </Grid>
+
+            <Grid item xs={9}>
+              <Paper variant="outlined">
+                <Typography variant="h6" component="h4" padding={2}>
+                  Project preferences
+                </Typography>
+                <Typography variant="body1" component="body" padding={2}>
+                  Set up your project preferences. These will be displayed on
+                  your page.
+                </Typography>
+
+                <Box
+                  component="form"
+                  onSubmit={handleUpdateProfile}
+                  noValidate
+                  sx={{ mt: 1 }}
+                  paddingX={2}
+                >
+                  <TextField
+                    margin="normal"
+                    fullWidth
+                    id="slotsPerMonth"
+                    label="Slots per month"
+                    name="slotsPerMonth"
+                    type="number"
+                    placeholder="Display how many project slots you offer per month."
+                    defaultValue={creatorData?.slots_per_month}
+                  />
+
+                  <TextField
+                    margin="normal"
+                    fullWidth
+                    id="leadtime"
+                    label="Lead time in weeks"
+                    name="leadTime"
+                    type="number"
+                    placeholder="Display how much lead time your projects typically need."
+                    defaultValue={creatorData?.slots_per_month}
                   />
 
                   <Button
