@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import useFetch from "../../hooks/useFetch";
 import UserContext from "../../context/UserContext";
 import { data, CreatorData } from "../../interfaces";
-import { Stack, Snackbar, IconButton } from "@mui/material";
+import { Stack, Snackbar } from "@mui/material";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import EditIcon from "@mui/icons-material/Edit";
 import {
@@ -100,15 +100,20 @@ const CreatorProfile = () => {
         body: formData,
       }
     );
-    const data = await res.json();
+    const data: any = await res.json();
 
     let returnValue = {};
     if (res.ok) {
       if (data.status === "error") {
         returnValue = { ok: false, data: data.msg };
+        setSnackbarSeverity("warning");
+        setSnackbarMessage("Logo upload failed");
+        setOpenSnackbar(true);
       } else {
         returnValue = { ok: true, data };
-        alert("Image uploaded");
+        setSnackbarSeverity("success");
+        setSnackbarMessage("Logo updated successfully");
+        setOpenSnackbar(true);
         getCreatorData();
       }
     } else {
@@ -155,9 +160,9 @@ const CreatorProfile = () => {
     return (
       <>
         <Grid container paddingY={4}>
-          <Grid item xs={9} rowSpacing={2}>
+          <Grid container rowSpacing={2}>
             {/* Profile */}
-            <Grid item xs={12}>
+            <Grid item xs={9}>
               <Paper variant="outlined">
                 <Typography variant="h6" component="h4" padding={2}>
                   Profile
@@ -211,7 +216,7 @@ const CreatorProfile = () => {
                       size="small"
                       startIcon={<EditIcon></EditIcon>}
                     >
-                      Update
+                      Add new
                     </Button>
                   </label>
                 </Box>
@@ -250,7 +255,7 @@ const CreatorProfile = () => {
                         name="country"
                         margin="normal"
                         {...params}
-                        label="Country of Operation"
+                        label="Country of Operations"
                       />
                     )}
                   />
@@ -282,7 +287,7 @@ const CreatorProfile = () => {
             </Grid>
 
             {/* Gallery image upload */}
-            <Grid item xs={12}>
+            <Grid item xs={9}>
               <Paper variant="outlined">
                 <Typography variant="h6" component="h4" padding={2}>
                   Portfolio projects
@@ -309,7 +314,7 @@ const CreatorProfile = () => {
                 </Box>
               </Paper>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={9}>
               <Paper variant="outlined">
                 <Typography variant="h6" component="h4" padding={2}>
                   Social media links
