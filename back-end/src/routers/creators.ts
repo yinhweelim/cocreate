@@ -1,5 +1,9 @@
 import express from "express";
-import { getCreatorById, updateCreator } from "../controllers/creators";
+import {
+  getCreatorById,
+  updateCreator,
+  updateCreatorLogo,
+} from "../controllers/creators";
 import {
   getProductsByCreatorId,
   createProductForCreator,
@@ -54,6 +58,11 @@ router.patch(
   validateUpdateCreatorData,
   checkValid,
   updateCreator
+);
+router.patch(
+  "/creators/logos/:creator_id",
+  upload.single("image"),
+  updateCreatorLogo
 );
 
 //products
