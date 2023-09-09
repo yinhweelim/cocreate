@@ -31,7 +31,7 @@ const CreatorProfile = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState<
     "success" | "warning"
   >("success");
-  // const [file, setFile] = useState(); //image file
+  //handle image upload
   const [selectedImage, setSelectedImage] = useState(null);
 
   //fetch creator data on first mount
@@ -271,6 +271,16 @@ const CreatorProfile = () => {
                     placeholder="Add a description to to let people know more about who you are, what you create and projects you're open to."
                   />
 
+                  <TextField
+                    margin="normal"
+                    fullWidth
+                    id="slotsPerMonth"
+                    label="Slots per month"
+                    name="slotsPerMonth"
+                    placeholder="Display how many project slots you offer per month."
+                    defaultValue={creatorData?.slots_per_month}
+                  />
+
                   {/* <FormControlLabel
                 control={<Checkbox value="showProjectCount" color="primary" />}
                 label="Show total project count"
@@ -366,6 +376,8 @@ const CreatorProfile = () => {
             </Grid>
           </Grid>
         </Grid>
+
+        {/* Snackbar */}
         <Stack spacing={2} sx={{ width: "100%" }}>
           <Snackbar
             open={openSnackbar}
