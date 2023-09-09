@@ -3,6 +3,9 @@ import useFetch from "../../hooks/useFetch";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../../context/UserContext";
 import { data, CreatorData } from "../../interfaces";
+import { Stack, Snackbar } from "@mui/material";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
+
 import {
   Grid,
   Paper,
@@ -26,6 +29,13 @@ const CreatorProfile = () => {
   const [creatorData, setCreatorData] = useState<CreatorData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  //snackbar state variables
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<
+    "success" | "warning"
+  >("success");
+
   //fetch creator data on first mount
   const creatorId = userCtx?.currentUser.creator_id;
   console.log(creatorId);
@@ -38,7 +48,7 @@ const CreatorProfile = () => {
       const res: data = await fetchData("/api/creators/" + creatorId);
       setCreatorData(res.data.creator);
     } catch (error) {
-      console.log(res.data);
+      alert(JSON.stringify(res.data));
     } finally {
       setIsLoading(false);
     }
@@ -49,36 +59,60 @@ const CreatorProfile = () => {
   }, []);
 
   //submit data
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleUpdateProfile = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // const email = data.get("email");
-    // const password = data.get("password");
-    // console.log({
-    //   email,
-    //   password,
-    // });
-    // const res: data = await fetchData("/api/auth/login", "POST", {
-    //   email,
-    //   password,
-    // });
-    // if (res.ok) {
-    //   userCtx?.setAccessToken(res.data?.access);
-    //   localStorage.setItem("accessToken", JSON.stringify(res.data.access));
 
-    //   const decoded: any = jwtDecode(res.data?.access);
-    //   console.log(decoded);
-    //   userCtx?.setAuthId(decoded.id);
-    //   localStorage.setItem("authId", JSON.stringify(decoded.id));
-    //   localStorage.setItem("authEmail", JSON.stringify(decoded.email));
+    const requestBody = {
+      display_name: data.get("pageName"),
+      tagline: data.get("tagline"),
+      country_of_operation: data.get("country"),
+      about: data.get("about"),
+    };
+    console.log(requestBody);
 
-    //   navigate(`/projects`);
-    // } else {
-    //   alert(JSON.stringify(res.data));
-    // }
-
-    const setCountry = () => {};
+    const res: data = await fetchData(
+      "/api/creators/" + creatorId,
+      "PATCH",
+      requestBody
+    );
+    if (res.ok) {
+      setSnackbarSeverity("success");
+      setSnackbarMessage("Profile updated successfully");
+      setOpenSnackbar(true);
+    } else {
+      console.log(JSON.stringify(res.data));
+      setSnackbarSeverity("warning");
+      setSnackbarMessage("Profile update failed");
+      setOpenSnackbar(true);
+    }
   };
+
+  const handleUpdateGallery = () => {};
+
+  //snackbar functions
+
+  const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+    props,
+    ref
+  ) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenSnackbar(false);
+  };
+
+  //load page
   if (isLoading) {
     return <div>Loading...</div>;
   } else
@@ -90,7 +124,7 @@ const CreatorProfile = () => {
             <Grid item xs={12}>
               <Paper variant="outlined">
                 <Typography variant="h6" component="h4" padding={2}>
-                  About
+                  Profile
                 </Typography>
                 <Typography variant="body1" component="body" paddingX={2}>
                   Use this space to introduce yourself, your work, and give
@@ -98,7 +132,7 @@ const CreatorProfile = () => {
                 </Typography>
                 <Box
                   component="form"
-                  onSubmit={handleSubmit}
+                  onSubmit={handleUpdateProfile}
                   noValidate
                   sx={{ mt: 1 }}
                   paddingX={2}
@@ -110,7 +144,6 @@ const CreatorProfile = () => {
                     label="Page Name"
                     name="pageName"
                     defaultValue={creatorData?.display_name}
-                    autoFocus
                   />
 
                   <TextField
@@ -121,12 +154,11 @@ const CreatorProfile = () => {
                     name="tagline"
                     placeholder="Add a short tagline to let people know more about who you are"
                     defaultValue={creatorData?.tagline}
-                    autoFocus
                   />
 
                   <Autocomplete
                     disablePortal
-                    options={["SINGAPORE", "USA"]}
+                    options={["SINGAPORE", "UNITED STATES"]}
                     inputValue={country}
                     defaultValue={creatorData?.country_of_operation}
                     onInputChange={(event, newInputValue) => {
@@ -134,6 +166,7 @@ const CreatorProfile = () => {
                     }}
                     renderInput={(params) => (
                       <TextField
+                        name="country"
                         margin="normal"
                         {...params}
                         label="Country of Operation"
@@ -147,10 +180,9 @@ const CreatorProfile = () => {
                     fullWidth
                     id="about"
                     label="About"
-                    name="About"
+                    name="about"
                     defaultValue={creatorData?.about}
                     placeholder="Add a description to to let people know more about who you are, what you create and projects you're open to."
-                    autoFocus
                   />
 
                   {/* <FormControlLabel
@@ -181,7 +213,7 @@ const CreatorProfile = () => {
                 </Typography>
                 <Box
                   component="form"
-                  onSubmit={handleSubmit}
+                  onSubmit={handleUpdateGallery}
                   noValidate
                   sx={{ mt: 1 }}
                   paddingX={2}
@@ -248,6 +280,21 @@ const CreatorProfile = () => {
             </Grid>
           </Grid>
         </Grid>
+        <Stack spacing={2} sx={{ width: "100%" }}>
+          <Snackbar
+            open={openSnackbar}
+            autoHideDuration={2000}
+            onClose={handleClose}
+          >
+            <Alert
+              onClose={handleClose}
+              severity={snackbarSeverity}
+              sx={{ width: "100%" }}
+            >
+              {snackbarMessage}
+            </Alert>
+          </Snackbar>
+        </Stack>
       </>
     );
 };
