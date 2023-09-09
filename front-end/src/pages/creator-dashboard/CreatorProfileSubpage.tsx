@@ -15,6 +15,7 @@ import {
   Autocomplete,
   Card,
   CardContent,
+  CardMedia,
 } from "@mui/material";
 
 const CreatorProfile = () => {
@@ -22,6 +23,7 @@ const CreatorProfile = () => {
   const userCtx = useContext(UserContext);
   const [creatorData, setCreatorData] = useState<CreatorData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const creatorId = userCtx?.currentUser.creator_id;
 
   //snackbar state variables
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -29,11 +31,10 @@ const CreatorProfile = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState<
     "success" | "warning"
   >("success");
+  // const [file, setFile] = useState(); //image file
+  const [selectedImage, setSelectedImage] = useState(null);
 
   //fetch creator data on first mount
-  const creatorId = userCtx?.currentUser.creator_id;
-  console.log(creatorId);
-
   const getCreatorData = async () => {
     // Set isLoading to true before making the API call
     setIsLoading(true);
@@ -84,6 +85,46 @@ const CreatorProfile = () => {
     }
   };
 
+  // Function to handle the image upload
+  const handleImageUpload = async (event: any) => {
+    const imageFile = event.target.files[0];
+    setSelectedImage(imageFile);
+
+    // const formData = new FormData();
+    // formData.append("image", imageFile);
+    // const res = await fetch(
+    //   import.meta.env.VITE_SERVER + "/api/creators/logo/:creator_id",
+    //   {
+    //     method: "POST",
+    //     headers: {},
+    //     body: formData,
+    //   }
+    // );
+    // const data = await res.json();
+
+    // let returnValue = {};
+    // if (res.ok) {
+    //   if (data.status === "error") {
+    //     returnValue = { ok: false, data: data.msg };
+    //   } else {
+    //     returnValue = { ok: true, data };
+    //     alert("Image uploaded");
+    //   }
+    // } else {
+    //   if (data?.errors && Array.isArray(data.errors)) {
+    //     const messages = data.errors.map((item: any) => item.msg);
+    //     returnValue = { ok: false, data: messages };
+    //   } else if (data?.status === "error") {
+    //     returnValue = { ok: false, data: data.message || data.msg };
+    //   } else {
+    //     console.log(data);
+    //     returnValue = { ok: false, data: "An error has occurred" };
+    //   }
+    // }
+
+    // return returnValue;
+  };
+
   const handleUpdateGallery = () => {};
 
   //snackbar functions
@@ -113,17 +154,54 @@ const CreatorProfile = () => {
     return (
       <>
         <Grid container paddingY={4}>
-          <Grid container xs={9} rowSpacing={2}>
+          <Grid item xs={9} rowSpacing={2}>
             {/* Profile */}
             <Grid item xs={12}>
               <Paper variant="outlined">
                 <Typography variant="h6" component="h4" padding={2}>
                   Profile
                 </Typography>
-                <Typography variant="body1" component="body" paddingX={2}>
+                <Typography variant="body1" component="body" padding={2}>
                   Use this space to introduce yourself, your work, and give
                   potential patrons an idea of what they can expect.
                 </Typography>
+                <Typography variant="subtitle1" paddingX={2}>
+                  Brand Logo
+                </Typography>
+
+                {/* //image preview */}
+                <Box paddingX={2}>
+                  <Card>
+                    {selectedImage ? (
+                      <CardMedia
+                        component="img"
+                        alt="Selected"
+                        src={URL.createObjectURL(selectedImage)}
+                        height="200"
+                      />
+                    ) : (
+                      <CardContent>
+                        <Typography variant="body2" color="text.secondary">
+                          No image selected
+                        </Typography>
+                      </CardContent>
+                    )}
+                  </Card>
+                  <input
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    id="image-upload-button"
+                    type="file"
+                    onChange={handleImageUpload}
+                  />
+
+                  <label htmlFor="image-upload-button">
+                    <Button variant="outlined" component="span" color="primary">
+                      Update Logo
+                    </Button>
+                  </label>
+                </Box>
+
                 <Box
                   component="form"
                   onSubmit={handleUpdateProfile}
