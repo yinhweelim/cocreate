@@ -2,9 +2,9 @@ import React, { useState, useContext, useEffect } from "react";
 import useFetch from "../../hooks/useFetch";
 import UserContext from "../../context/UserContext";
 import { data, CreatorData } from "../../interfaces";
-import { Stack, Snackbar } from "@mui/material";
+import { Stack, Snackbar, IconButton } from "@mui/material";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
-
+import EditIcon from "@mui/icons-material/Edit";
 import {
   Grid,
   Paper,
@@ -90,39 +90,40 @@ const CreatorProfile = () => {
     const imageFile = event.target.files[0];
     setSelectedImage(imageFile);
 
-    // const formData = new FormData();
-    // formData.append("image", imageFile);
-    // const res = await fetch(
-    //   import.meta.env.VITE_SERVER + "/api/creators/logo/:creator_id",
-    //   {
-    //     method: "POST",
-    //     headers: {},
-    //     body: formData,
-    //   }
-    // );
-    // const data = await res.json();
+    const formData = new FormData();
+    formData.append("image", imageFile);
+    const res = await fetch(
+      import.meta.env.VITE_SERVER + "/api/creators/logos/" + creatorId,
+      {
+        method: "PATCH",
+        headers: {},
+        body: formData,
+      }
+    );
+    const data = await res.json();
 
-    // let returnValue = {};
-    // if (res.ok) {
-    //   if (data.status === "error") {
-    //     returnValue = { ok: false, data: data.msg };
-    //   } else {
-    //     returnValue = { ok: true, data };
-    //     alert("Image uploaded");
-    //   }
-    // } else {
-    //   if (data?.errors && Array.isArray(data.errors)) {
-    //     const messages = data.errors.map((item: any) => item.msg);
-    //     returnValue = { ok: false, data: messages };
-    //   } else if (data?.status === "error") {
-    //     returnValue = { ok: false, data: data.message || data.msg };
-    //   } else {
-    //     console.log(data);
-    //     returnValue = { ok: false, data: "An error has occurred" };
-    //   }
-    // }
+    let returnValue = {};
+    if (res.ok) {
+      if (data.status === "error") {
+        returnValue = { ok: false, data: data.msg };
+      } else {
+        returnValue = { ok: true, data };
+        alert("Image uploaded");
+        getCreatorData();
+      }
+    } else {
+      if (data?.errors && Array.isArray(data.errors)) {
+        const messages = data.errors.map((item: any) => item.msg);
+        returnValue = { ok: false, data: messages };
+      } else if (data?.status === "error") {
+        returnValue = { ok: false, data: data.message || data.msg };
+      } else {
+        console.log(data);
+        returnValue = { ok: false, data: "An error has occurred" };
+      }
+    }
 
-    // return returnValue;
+    return returnValue;
   };
 
   const handleUpdateGallery = () => {};
@@ -165,7 +166,8 @@ const CreatorProfile = () => {
                   Use this space to introduce yourself, your work, and give
                   potential patrons an idea of what they can expect.
                 </Typography>
-                <Typography variant="subtitle1" paddingX={2}>
+
+                <Typography variant="body2" paddingX={2}>
                   Brand Logo
                 </Typography>
 
@@ -177,14 +179,21 @@ const CreatorProfile = () => {
                         component="img"
                         alt="Selected"
                         src={URL.createObjectURL(selectedImage)}
-                        height="200"
+                        sx={{ maxHeight: "100px" }}
                       />
                     ) : (
-                      <CardContent>
-                        <Typography variant="body2" color="text.secondary">
-                          No image selected
-                        </Typography>
-                      </CardContent>
+                      <>
+                        {creatorData?.logo_image_url ? (
+                          <CardMedia
+                            component="img"
+                            alt="Logo"
+                            src={creatorData?.logo_image_url}
+                            sx={{ maxHeight: "100px" }}
+                          />
+                        ) : (
+                          <CardContent>No image</CardContent>
+                        )}
+                      </>
                     )}
                   </Card>
                   <input
@@ -194,14 +203,18 @@ const CreatorProfile = () => {
                     type="file"
                     onChange={handleImageUpload}
                   />
-
                   <label htmlFor="image-upload-button">
-                    <Button variant="outlined" component="span" color="primary">
-                      Update Logo
+                    <Button
+                      variant="outlined"
+                      component="span"
+                      color="primary"
+                      size="small"
+                      startIcon={<EditIcon></EditIcon>}
+                    >
+                      Update
                     </Button>
                   </label>
                 </Box>
-
                 <Box
                   component="form"
                   onSubmit={handleUpdateProfile}
