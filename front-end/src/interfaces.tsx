@@ -42,3 +42,20 @@ export interface UserInfoType {
   image_url: string | null;
   given_name: string | null;
 }
+
+export interface CreatorData {
+  display_name: string;
+  tagline: string;
+  country_of_operation: string;
+  about: string;
+  logo_image_url: string;
+  slots_per_month: number;
+  display_slots_per_month: boolean;
+  display_project_count: boolean;
+  allow_consultation_booking: boolean;
+  consultation_notice_days: number;
+  lead_time_in_weeks: number;
+  project_description_guideline: string;
+  payment_instructions: string;
+  is_deleted: boolean;
+}
