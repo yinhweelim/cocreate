@@ -14,6 +14,11 @@ import {
 
 const router = express.Router();
 
+const multer = require("multer"); //middleware to read image data
+//functions to store images in memory until uploaded
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage }); //string should be name of input
+
 router.get(
   "/users/:auth_id",
   validateAuthIdInParam,
@@ -31,6 +36,7 @@ router.patch(
   "/users/avatars/:user_id",
   validateIdInParam,
   checkValid,
+  upload.single("image"),
   updateUserAvatar
 );
 

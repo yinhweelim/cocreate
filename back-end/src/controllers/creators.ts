@@ -1,5 +1,22 @@
 import { Request, Response, query } from "express";
 import { pool } from "../db/db";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3"; //AWS s3 client
+import sharp from "sharp";
+import { v4 } from "uuid";
+const uuidv4 = v4;
+
+const bucketName = process.env.BUCKET_NAME;
+const region = process.env.BUCKET_REGION;
+const accessKeyId = process.env.ACCESS_KEY;
+const secretAccessKey = process.env.SECRET_ACCESS_KEY;
+
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: accessKeyId || "",
+    secretAccessKey: secretAccessKey || "",
+  },
+  region: region || "",
+});
 
 const getCreatorById = async (req: Request, res: Response) => {
   try {
@@ -144,4 +161,79 @@ const updateCreator = async (req: Request, res: Response) => {
   }
 };
 
-export { getCreatorById, updateCreator };
+//upload and update logo
+
+const updateCreatorLogo = async (req: Request, res: Response) => {
+  try {
+    const creatorId = req.params.creator_id;
+    const imageFile = req.file;
+    const imageId = uuidv4(); //generate uuid for image
+
+    //check whether creator exists before proceeding
+    const checkQuery = "SELECT * FROM creators WHERE id = $1";
+    const result = await pool.query(checkQuery, [creatorId]);
+
+    if (result.rows.length === 0) {
+      return res
+        .status(400)
+        .json({ status: "error", msg: "creator not found" });
+    }
+
+    // Check if imageFile is defined before processing
+    if (!imageFile) {
+      return res
+        .status(400)
+        .json({ status: "error", msg: "image file not provided" });
+    }
+
+    //resize image
+    const buffer = await sharp(imageFile.buffer)
+      .resize({
+        fit: sharp.fit.contain,
+        width: 300,
+        height: 300,
+      })
+      .toBuffer();
+
+    //send image to s3
+    const params = {
+      Bucket: bucketName,
+      Key: `${creatorId}-creatorlogo-${imageId}.jpeg`, //create unique file name to prevent overrides due to same name
+      Body: buffer,
+      ContentType: imageFile.mimetype,
+      ACL: "public-read", // Make the object publicly accessible
+    };
+
+    const command = new PutObjectCommand(params);
+
+    await s3.send(command);
+
+    //generate URL
+    const imageUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${params.Key}`;
+
+    // Construct the final SQL UPDATE query
+    const updateQuery =
+      "UPDATE creators SET logo_image_url = $1 WHERE id = $2 RETURNING *";
+
+    // Execute the UPDATE query
+    const creatorResult = await pool.query(updateQuery, [
+      imageUrl,
+      req.params.creator_id,
+    ]);
+    const updatedCreator = creatorResult.rows[0];
+
+    res.status(200).json({
+      status: "success",
+      msg: "Creator logo updated successfully",
+      creator: creatorResult.rows[0],
+    });
+  } catch (error) {
+    console.error("Error updating logo:", error);
+    res.status(500).json({
+      status: "error",
+      msg: "An error occurred while updating the logo",
+    });
+  }
+};
+
+export { getCreatorById, updateCreator, updateCreatorLogo };
