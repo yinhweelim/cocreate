@@ -126,7 +126,7 @@ const CreatorProjectConfig = () => {
       <>
         <Grid container paddingY={4}>
           <Grid container rowSpacing={2}>
-            {/* Profile */}
+            {/* Request form settings */}
             <Grid item xs={9}>
               <Paper variant="outlined">
                 <Typography variant="h6" component="h4" padding={2}>
@@ -177,6 +177,7 @@ const CreatorProjectConfig = () => {
               </Paper>
             </Grid>
 
+            {/* Project preferences */}
             <Grid item xs={9}>
               <Paper variant="outlined">
                 <Typography variant="h6" component="h4" padding={2}>
@@ -227,7 +228,7 @@ const CreatorProjectConfig = () => {
               </Paper>
             </Grid>
 
-            {/* Gallery image upload */}
+            {/* Products and services */}
             <Grid item xs={9}>
               <Paper variant="outlined">
                 <Typography variant="h6" component="h4" padding={2}>
@@ -252,6 +253,19 @@ const CreatorProjectConfig = () => {
                     Add
                   </Button>
                 </Box>
+              </Paper>
+            </Grid>
+
+            {/* Project process */}
+            <Grid item xs={9}>
+              <Paper variant="outlined">
+                <Typography variant="h6" component="h4" padding={2}>
+                  Project process
+                </Typography>
+                <Typography variant="body1" component="body" padding={2}>
+                  Set up your project stages to give your patrons an idea of
+                  what to expect in process of commissionning work with you.
+                </Typography>
               </Paper>
             </Grid>
           </Grid>
