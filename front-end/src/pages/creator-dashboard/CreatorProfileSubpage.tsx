@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
 import useFetch from "../../hooks/useFetch";
-import { useNavigate } from "react-router-dom";
 import UserContext from "../../context/UserContext";
 import { data, CreatorData } from "../../interfaces";
 import { Stack, Snackbar } from "@mui/material";
@@ -19,13 +18,8 @@ import {
 } from "@mui/material";
 
 const CreatorProfile = () => {
-  const navigate = useNavigate();
   const fetchData = useFetch();
   const userCtx = useContext(UserContext);
-  const [pageName, setPageName] = useState("");
-  const [bio, setBio] = useState("");
-  const [about, setAbout] = useState("");
-  const [country, setCountry] = useState("");
   const [creatorData, setCreatorData] = useState<CreatorData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -48,7 +42,7 @@ const CreatorProfile = () => {
       const res: data = await fetchData("/api/creators/" + creatorId);
       setCreatorData(res.data.creator);
     } catch (error) {
-      alert(JSON.stringify(res.data));
+      alert(JSON.stringify(error));
     } finally {
       setIsLoading(false);
     }
@@ -159,11 +153,7 @@ const CreatorProfile = () => {
                   <Autocomplete
                     disablePortal
                     options={["SINGAPORE", "UNITED STATES"]}
-                    inputValue={country}
                     defaultValue={creatorData?.country_of_operation}
-                    onInputChange={(event, newInputValue) => {
-                      setCountry(newInputValue);
-                    }}
                     renderInput={(params) => (
                       <TextField
                         name="country"
