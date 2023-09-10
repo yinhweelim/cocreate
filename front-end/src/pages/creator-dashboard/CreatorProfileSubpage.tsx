@@ -61,6 +61,11 @@ const CreatorProfile = () => {
     }
   };
 
+  const handleDeletePortfolioProject = (projectId: string) => {
+    console.log(`Delete project with ID: ${projectId}`);
+    // TODO: add api call
+  };
+
   useEffect(() => {
     getCreatorData();
     getPortfolioProjects();
@@ -317,7 +322,11 @@ const CreatorProfile = () => {
                   paddingLeft={2}
                 >
                   {portfolioItems?.map((data: any, index: number) => (
-                    <CreatorPortfolioCard key={index} {...data} />
+                    <CreatorPortfolioCard
+                      key={index}
+                      {...data}
+                      onDelete={() => handleDeletePortfolioProject(data.id)}
+                    />
                   ))}
                 </Grid>
                 <Box
