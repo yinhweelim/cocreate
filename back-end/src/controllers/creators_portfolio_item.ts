@@ -17,8 +17,8 @@ const s3 = new S3Client({
   region: region || "",
 });
 
-//returns an array of gallery images for that creator_id
-const getCreatorGalleryImages = async (req: Request, res: Response) => {
+//returns an array of portfolio items for that creator_id
+const getCreatorPortfolioItem = async (req: Request, res: Response) => {
   try {
     console.log("here");
     //if creator not found, return error
@@ -30,25 +30,26 @@ const getCreatorGalleryImages = async (req: Request, res: Response) => {
         .json({ status: "error", msg: "creator not found" });
     }
 
-    //get images with creator_id
-    const getImagesQuery =
-      "SELECT id, image_url, caption FROM creator_gallery_images WHERE creator_id = $1 AND is_deleted = false";
-    const results = await pool.query(getImagesQuery, [req.params.creator_id]);
-    const images = results.rows;
+    //get portfolio with creator_id
+    const getItemsQuery =
+      "SELECT id, image_url, title, caption FROM creator_portfolio_items WHERE creator_id = $1 AND is_deleted = false";
+    const results = await pool.query(getItemsQuery, [req.params.creator_id]);
+    const items = results.rows;
 
-    res.status(200).json({ status: "success", images });
+    res.status(200).json({ status: "success", items });
   } catch (error) {
-    console.error("Error getting images:", error);
+    console.error("Error getting items:", error);
     res.status(500).json({
       status: "error",
-      msg: "An error occurred while getting the images",
+      msg: "An error occurred while getting the items",
     });
   }
 };
 
-const uploadCreatorGalleryImage = async (req: Request, res: Response) => {
+const uploadCreatorPortfolioItem = async (req: Request, res: Response) => {
   try {
     const imageFile = req.file;
+    const title = req.body.title;
     const caption = req.body.caption;
     const creatorId = req.params.creator_id;
     const imageId = v4; //generate uuid for image
@@ -82,7 +83,7 @@ const uploadCreatorGalleryImage = async (req: Request, res: Response) => {
     //send image to s3
     const params = {
       Bucket: bucketName,
-      Key: `${creatorId}-gallery-${imageId}.jpeg`, //create unique file name to prevent overrides due to same name
+      Key: `${creatorId}-portfolio-${imageId}.jpeg`, //create unique file name to prevent overrides due to same name
       Body: buffer,
       ContentType: imageFile.mimetype,
       ACL: "public-read", // Make the object publicly accessible
@@ -97,51 +98,51 @@ const uploadCreatorGalleryImage = async (req: Request, res: Response) => {
     const imageUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${params.Key}`;
 
     //Create SQL query to upload image to database
-    const insertImageQuery =
-      "INSERT INTO creator_gallery_images (id, image_url, caption, creator_id) VALUES ($1, $2, $3, $4) RETURNING *";
-    const imageValues = [imageId, imageUrl, caption, creatorId];
-    const imageResult = await pool.query(insertImageQuery, imageValues);
-    const newImage = imageResult.rows[0];
+    const insertItemQuery =
+      "INSERT INTO creator_portfolio_items (id, image_url, caption, creator_id) VALUES ($1, $2, $3, $4) RETURNING *";
+    const values = [imageId, imageUrl, title, caption, creatorId];
+    const itemResult = await pool.query(insertItemQuery, values);
+    const newItem = itemResult.rows[0];
 
-    res.status(201).json({ status: "success", image: newImage });
+    res.status(201).json({ status: "success", item: newItem });
   } catch (error) {
-    console.error("Error uploading gallery image:", error);
+    console.error("Error uploading item:", error);
     res.status(500).json({
       status: "error",
-      msg: "An error occurred while uploading gallery image",
+      msg: "An error occurred while uploading item",
     });
   }
 };
 
-//delete image using id
-const deleteCreatorGalleryImage = async (req: Request, res: Response) => {
+//delete item using id
+const deleteCreatorPortfolioItem = async (req: Request, res: Response) => {
   try {
-    const imageId = req.params.id;
+    const itemId = req.params.id;
 
     // Check if the image exists before processing
-    const getImageQuery = "SELECT * FROM creator_gallery_images WHERE id = $1";
-    const result = await pool.query(getImageQuery, [imageId]);
+    const getQuery = "SELECT * FROM creator_portfolio_items WHERE id = $1";
+    const result = await pool.query(getQuery, [itemId]);
     if (result.rows.length === 0) {
-      return res.status(400).json({ status: "error", msg: "image not found" });
+      return res.status(400).json({ status: "error", msg: "item not found" });
     }
 
     const updateQuery =
-      "UPDATE creator_gallery_images SET is_deleted = true WHERE id = $1";
-    await pool.query(updateQuery, [imageId]);
+      "UPDATE creator_portfolio_items SET is_deleted = true WHERE id = $1";
+    await pool.query(updateQuery, [itemId]);
     res
       .status(200)
-      .json({ status: "success", msg: "Image deleted successfully" });
+      .json({ status: "success", msg: "Item deleted successfully" });
   } catch (error) {
-    console.error("Error deleting image:", error);
+    console.error("Error deleting item:", error);
     res.status(500).json({
       status: "error",
-      msg: "An error occurred while deleting the image",
+      msg: "An error occurred while deleting the item",
     });
   }
 };
 
 export {
-  getCreatorGalleryImages,
-  uploadCreatorGalleryImage,
-  deleteCreatorGalleryImage,
+  getCreatorPortfolioItem,
+  uploadCreatorPortfolioItem,
+  deleteCreatorPortfolioItem,
 };
