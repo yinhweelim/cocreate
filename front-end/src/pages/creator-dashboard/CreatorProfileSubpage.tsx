@@ -198,7 +198,6 @@ const CreatorProfile = () => {
   } else
     return (
       <>
-        {JSON.stringify(portfolioItems)}
         <Grid container paddingY={4}>
           <Grid container rowSpacing={2}>
             {/* Profile */}
@@ -367,7 +366,9 @@ const CreatorProfile = () => {
                 </Box>
               </Paper>
             </Grid>
-            <Grid item xs={9}>
+
+            {/* Social media links */}
+            {/* <Grid item xs={9}>
               <Paper variant="outlined">
                 <Typography variant="h6" component="h4" padding={2}>
                   Social media links
@@ -386,37 +387,41 @@ const CreatorProfile = () => {
                     </CardContent>
                   </Card>
                 </Box>
-                {/* <Box
-              component="form"
-              onSubmit={handleSubmit}
-              noValidate
-              sx={{ mt: 1 }}
-              paddingX={2}
-            >
-              <TextField
-                margin="normal"
-                fullWidth
-                id="socialmediatype"
-                label="Type"
-                name="socialMediaType"
-                autoFocus
-              />
+                <Box
+                  component="form"
+                  onSubmit={handleSubmit}
+                  noValidate
+                  sx={{ mt: 1 }}
+                  paddingX={2}
+                >
+                  <TextField
+                    margin="normal"
+                    fullWidth
+                    id="socialmediatype"
+                    label="Type"
+                    name="socialMediaType"
+                    autoFocus
+                  />
 
-              <TextField
-                margin="normal"
-                fullWidth
-                id="socialmediaurl"
-                label="URL"
-                name="socialMediaURL"
-                autoFocus
-              />
+                  <TextField
+                    margin="normal"
+                    fullWidth
+                    id="socialmediaurl"
+                    label="URL"
+                    name="socialMediaURL"
+                    autoFocus
+                  />
 
-              <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-                Add
-              </Button>
-            </Box> */}
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    Add
+                  </Button>
+                </Box>
               </Paper>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Grid>
 
