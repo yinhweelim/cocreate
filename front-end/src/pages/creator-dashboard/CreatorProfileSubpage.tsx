@@ -34,6 +34,7 @@ const CreatorProfile = () => {
   >("success");
   //handle image upload
   const [selectedImage, setSelectedImage] = useState(null);
+  const [portfolioItems, setPortfolioItems] = useState([]);
 
   //fetch creator data on first mount
   const getCreatorData = async () => {
@@ -50,8 +51,19 @@ const CreatorProfile = () => {
     }
   };
 
+  const getPortfolioProjects = async () => {
+    try {
+      const res: data = await fetchData("/api/creators/portfolio/" + creatorId);
+      setPortfolioItems(res.data.items);
+      console.log("items: " + JSON.stringify(res.data.items));
+    } catch (error) {
+      alert(JSON.stringify(error));
+    }
+  };
+
   useEffect(() => {
     getCreatorData();
+    getPortfolioProjects();
   }, []);
 
   //submit data
@@ -160,6 +172,7 @@ const CreatorProfile = () => {
   } else
     return (
       <>
+        {JSON.stringify(portfolioItems)}
         <Grid container paddingY={4}>
           <Grid container rowSpacing={2}>
             {/* Profile */}
@@ -303,15 +316,9 @@ const CreatorProfile = () => {
                   spacing={1}
                   paddingLeft={2}
                 >
-                  <Grid item xs={4}>
-                    <CreatorPortfolioCard />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <CreatorPortfolioCard />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <CreatorPortfolioCard />
-                  </Grid>
+                  {portfolioItems?.map((data: any, index: number) => (
+                    <CreatorPortfolioCard key={index} {...data} />
+                  ))}
                 </Grid>
                 <Box
                   component="form"
