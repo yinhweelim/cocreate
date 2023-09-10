@@ -19,10 +19,10 @@ import {
   createTestimonial,
 } from "../controllers/creators_testimonials";
 import {
-  deleteCreatorGalleryImage,
-  getCreatorGalleryImages,
-  uploadCreatorGalleryImage,
-} from "../controllers/creators_images";
+  getCreatorPortfolioItem,
+  uploadCreatorPortfolioItem,
+  deleteCreatorPortfolioItem,
+} from "../controllers/creators_portfolio_item";
 import {
   getSocialLinksByCreatorId,
   createSocialLink,
@@ -125,23 +125,23 @@ router.put(
 
 //gallery images
 router.get(
-  "/creators/images/:creator_id",
+  "/creators/portfolio/:creator_id",
   validateCreatorIdInParam,
   checkValid,
-  getCreatorGalleryImages
+  getCreatorPortfolioItem
 );
 router.put(
-  "/creators/images/:creator_id",
+  "/creators/portfolio/:creator_id",
   validateCreatorIdInParam,
   checkValid,
   upload.single("image"),
-  uploadCreatorGalleryImage
+  uploadCreatorPortfolioItem
 );
 router.delete(
-  "/creators/images/:id",
+  "/creators/portfolio/:id",
   validateIdInParam,
   checkValid,
-  deleteCreatorGalleryImage
+  deleteCreatorPortfolioItem
 );
 
 //social links

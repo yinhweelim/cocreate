@@ -17,6 +17,7 @@ import {
   CardContent,
   CardMedia,
 } from "@mui/material";
+import CreatorPortfolioCard from "../../components/CreatorPortfolioCard";
 
 const CreatorProfile = () => {
   const fetchData = useFetch();
@@ -33,6 +34,7 @@ const CreatorProfile = () => {
   >("success");
   //handle image upload
   const [selectedImage, setSelectedImage] = useState(null);
+  const [portfolioItems, setPortfolioItems] = useState([]);
 
   //fetch creator data on first mount
   const getCreatorData = async () => {
@@ -49,8 +51,18 @@ const CreatorProfile = () => {
     }
   };
 
+  const getPortfolioProjects = async () => {
+    try {
+      const res: data = await fetchData("/api/creators/portfolio/" + creatorId);
+      setPortfolioItems(res.data.items);
+    } catch (error) {
+      alert(JSON.stringify(error));
+    }
+  };
+
   useEffect(() => {
     getCreatorData();
+    getPortfolioProjects();
   }, []);
 
   //submit data
@@ -77,6 +89,7 @@ const CreatorProfile = () => {
       setSnackbarSeverity("success");
       setSnackbarMessage("Profile updated successfully");
       setOpenSnackbar(true);
+      getCreatorData();
     } else {
       console.log(JSON.stringify(res.data));
       setSnackbarSeverity("warning");
@@ -85,7 +98,35 @@ const CreatorProfile = () => {
     }
   };
 
-  // Function to handle the image upload
+  //add portfolio project
+  const handleAddPortfolioProject = () => {};
+
+  //delete portfolio project
+  const handleDeletePortfolioProject = async (projectId: string) => {
+    console.log(`Delete project with ID: ${projectId}`);
+
+    const res: data = await fetchData(
+      "/api/creators/portfolio/" + projectId,
+      "DELETE",
+      undefined,
+      undefined
+    );
+
+    if (res.ok) {
+      setSnackbarSeverity("success");
+      setSnackbarMessage("Portfolio item deleted successfully");
+      getPortfolioProjects();
+      setOpenSnackbar(true);
+      getPortfolioProjects();
+    } else {
+      console.log(JSON.stringify(res.data));
+      setSnackbarSeverity("warning");
+      setSnackbarMessage("Failed to delete portfolio item");
+      setOpenSnackbar(true);
+    }
+  };
+
+  //upload creator logo
   const handleImageUpload = async (event: any) => {
     const imageFile = event.target.files[0];
     setSelectedImage(imageFile);
@@ -130,8 +171,6 @@ const CreatorProfile = () => {
 
     return returnValue;
   };
-
-  const handleUpdateGallery = () => {};
 
   //snackbar functions
 
@@ -293,13 +332,26 @@ const CreatorProfile = () => {
                   Portfolio projects
                 </Typography>
                 <Typography variant="body1" component="body" padding={2}>
-                  Upload pictures and short descriptions of portfolio projects
-                  to show people examples of what you can do. Upload up to 6
-                  projects.
+                  Upload pictures and descriptions of portfolio projects to show
+                  people examples of what you can do. Upload up to 3 projects.
                 </Typography>
+                <Grid
+                  container
+                  flexDirection={"row"}
+                  spacing={1}
+                  paddingLeft={2}
+                >
+                  {portfolioItems?.map((data: any, index: number) => (
+                    <CreatorPortfolioCard
+                      key={index}
+                      {...data}
+                      onDelete={() => handleDeletePortfolioProject(data.id)}
+                    />
+                  ))}
+                </Grid>
                 <Box
                   component="form"
-                  onSubmit={handleUpdateGallery}
+                  onSubmit={handleAddPortfolioProject}
                   noValidate
                   sx={{ mt: 1 }}
                   paddingX={2}
@@ -314,7 +366,9 @@ const CreatorProfile = () => {
                 </Box>
               </Paper>
             </Grid>
-            <Grid item xs={9}>
+
+            {/* Social media links */}
+            {/* <Grid item xs={9}>
               <Paper variant="outlined">
                 <Typography variant="h6" component="h4" padding={2}>
                   Social media links
@@ -333,37 +387,41 @@ const CreatorProfile = () => {
                     </CardContent>
                   </Card>
                 </Box>
-                {/* <Box
-              component="form"
-              onSubmit={handleSubmit}
-              noValidate
-              sx={{ mt: 1 }}
-              paddingX={2}
-            >
-              <TextField
-                margin="normal"
-                fullWidth
-                id="socialmediatype"
-                label="Type"
-                name="socialMediaType"
-                autoFocus
-              />
+                <Box
+                  component="form"
+                  onSubmit={handleSubmit}
+                  noValidate
+                  sx={{ mt: 1 }}
+                  paddingX={2}
+                >
+                  <TextField
+                    margin="normal"
+                    fullWidth
+                    id="socialmediatype"
+                    label="Type"
+                    name="socialMediaType"
+                    autoFocus
+                  />
 
-              <TextField
-                margin="normal"
-                fullWidth
-                id="socialmediaurl"
-                label="URL"
-                name="socialMediaURL"
-                autoFocus
-              />
+                  <TextField
+                    margin="normal"
+                    fullWidth
+                    id="socialmediaurl"
+                    label="URL"
+                    name="socialMediaURL"
+                    autoFocus
+                  />
 
-              <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-                Add
-              </Button>
-            </Box> */}
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    Add
+                  </Button>
+                </Box>
               </Paper>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Grid>
 
