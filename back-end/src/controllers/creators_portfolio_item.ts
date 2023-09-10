@@ -20,7 +20,6 @@ const s3 = new S3Client({
 //returns an array of portfolio items for that creator_id
 const getCreatorPortfolioItem = async (req: Request, res: Response) => {
   try {
-    console.log("here");
     //if creator not found, return error
     const getCreatorById = "SELECT * FROM creators WHERE id = $1";
     const result = await pool.query(getCreatorById, [req.params.creator_id]);
