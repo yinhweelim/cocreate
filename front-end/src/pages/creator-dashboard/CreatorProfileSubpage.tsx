@@ -17,6 +17,7 @@ import {
   CardContent,
   CardMedia,
 } from "@mui/material";
+import CreatorPortfolioCard from "../../components/CreatorPortfolioCard";
 
 const CreatorProfile = () => {
   const fetchData = useFetch();
@@ -131,7 +132,7 @@ const CreatorProfile = () => {
     return returnValue;
   };
 
-  const handleUpdateGallery = () => {};
+  const handleAddPortfolioProject = () => {};
 
   //snackbar functions
 
@@ -293,13 +294,28 @@ const CreatorProfile = () => {
                   Portfolio projects
                 </Typography>
                 <Typography variant="body1" component="body" padding={2}>
-                  Upload pictures and short descriptions of portfolio projects
-                  to show people examples of what you can do. Upload up to 6
-                  projects.
+                  Upload pictures and descriptions of portfolio projects to show
+                  people examples of what you can do. Upload up to 3 projects.
                 </Typography>
+                <Grid
+                  container
+                  flexDirection={"row"}
+                  spacing={1}
+                  paddingLeft={2}
+                >
+                  <Grid item xs={4}>
+                    <CreatorPortfolioCard />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <CreatorPortfolioCard />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <CreatorPortfolioCard />
+                  </Grid>
+                </Grid>
                 <Box
                   component="form"
-                  onSubmit={handleUpdateGallery}
+                  onSubmit={handleAddPortfolioProject}
                   noValidate
                   sx={{ mt: 1 }}
                   paddingX={2}
