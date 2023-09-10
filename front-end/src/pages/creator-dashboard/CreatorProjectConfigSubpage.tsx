@@ -58,26 +58,34 @@ const CreatorProjectConfig = () => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    const requestBody = {};
+    interface UpdateProfileRequestBody {
+      project_description_guideline?: string | null;
+      payment_instructions?: string | null;
+      lead_time_in_weeks?: number | null;
+      slots_per_month?: number | null;
+    }
+
+    const requestBody: UpdateProfileRequestBody = {};
 
     const project_description_guideline = data.get("briefDescriptionGuide");
     if (project_description_guideline) {
-      requestBody.project_description_guideline = project_description_guideline;
+      requestBody.project_description_guideline =
+        project_description_guideline.toString();
     }
 
     const payment_instructions = data.get("paymentInstructions");
     if (payment_instructions) {
-      requestBody.payment_instructions = payment_instructions;
+      requestBody.payment_instructions = payment_instructions.toString();
     }
 
     const lead_time_in_weeks = data.get("leadTime");
     if (lead_time_in_weeks) {
-      requestBody.lead_time_in_weeks = lead_time_in_weeks;
+      requestBody.lead_time_in_weeks = parseInt(lead_time_in_weeks.toString());
     }
 
     const slots_per_month = data.get("slotsPerMonth");
     if (slots_per_month) {
-      requestBody.slots_per_month = slots_per_month;
+      requestBody.slots_per_month = parseInt(slots_per_month.toString());
     }
 
     const res: data = await fetchData(
@@ -214,7 +222,7 @@ const CreatorProjectConfig = () => {
                     name="leadTime"
                     type="number"
                     placeholder="Display how much lead time your projects typically need."
-                    defaultValue={creatorData?.slots_per_month}
+                    defaultValue={creatorData?.lead_time_in_weeks}
                   />
 
                   <Button
