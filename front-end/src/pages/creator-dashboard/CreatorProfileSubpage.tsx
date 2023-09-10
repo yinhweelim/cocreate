@@ -55,15 +55,9 @@ const CreatorProfile = () => {
     try {
       const res: data = await fetchData("/api/creators/portfolio/" + creatorId);
       setPortfolioItems(res.data.items);
-      console.log("items: " + JSON.stringify(res.data.items));
     } catch (error) {
       alert(JSON.stringify(error));
     }
-  };
-
-  const handleDeletePortfolioProject = (projectId: string) => {
-    console.log(`Delete project with ID: ${projectId}`);
-    // TODO: add api call
   };
 
   useEffect(() => {
@@ -95,6 +89,7 @@ const CreatorProfile = () => {
       setSnackbarSeverity("success");
       setSnackbarMessage("Profile updated successfully");
       setOpenSnackbar(true);
+      getCreatorData();
     } else {
       console.log(JSON.stringify(res.data));
       setSnackbarSeverity("warning");
@@ -103,7 +98,35 @@ const CreatorProfile = () => {
     }
   };
 
-  // Function to handle the image upload
+  //add portfolio project
+  const handleAddPortfolioProject = () => {};
+
+  //delete portfolio project
+  const handleDeletePortfolioProject = async (projectId: string) => {
+    console.log(`Delete project with ID: ${projectId}`);
+
+    const res: data = await fetchData(
+      "/api/creators/portfolio/" + projectId,
+      "DELETE",
+      undefined,
+      undefined
+    );
+
+    if (res.ok) {
+      setSnackbarSeverity("success");
+      setSnackbarMessage("Portfolio item deleted successfully");
+      getPortfolioProjects();
+      setOpenSnackbar(true);
+      getPortfolioProjects();
+    } else {
+      console.log(JSON.stringify(res.data));
+      setSnackbarSeverity("warning");
+      setSnackbarMessage("Failed to delete portfolio item");
+      setOpenSnackbar(true);
+    }
+  };
+
+  //upload creator logo
   const handleImageUpload = async (event: any) => {
     const imageFile = event.target.files[0];
     setSelectedImage(imageFile);
@@ -148,8 +171,6 @@ const CreatorProfile = () => {
 
     return returnValue;
   };
-
-  const handleAddPortfolioProject = () => {};
 
   //snackbar functions
 
