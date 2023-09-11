@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import useFetch from "../../hooks/useFetch";
 import UserContext from "../../context/UserContext";
 import { data, CreatorData } from "../../interfaces";
-import { Stack, Snackbar, FormControlLabel, Checkbox } from "@mui/material";
+import { useSnackbar } from "../../context/SnackbarContext";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import EditIcon from "@mui/icons-material/Edit";
 import {
@@ -24,23 +24,18 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import CreatorProductCard from "../../components/CreatorProductCard";
 
 const CreatorProjectConfig = () => {
   const fetchData = useFetch();
   const userCtx = useContext(UserContext);
+  const { showSnackbar } = useSnackbar();
+
   const [creatorData, setCreatorData] = useState<CreatorData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const creatorId = userCtx?.currentUser.creator_id;
-
-  //snackbar state variables
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<
-    "success" | "warning"
-  >("success");
 
   // products state variables
   const [openAddProductDialog, setOpenAddProductDialog] = useState(false); //dialog
@@ -120,14 +115,10 @@ const CreatorProjectConfig = () => {
       requestBody
     );
     if (res.ok) {
-      setSnackbarSeverity("success");
-      setSnackbarMessage("Project settings updated successfully");
-      setOpenSnackbar(true);
+      showSnackbar("Project settings updated successfully", "success");
     } else {
       console.log(JSON.stringify(res.data));
-      setSnackbarSeverity("warning");
-      setSnackbarMessage("Project settings update failed");
-      setOpenSnackbar(true);
+      showSnackbar("Project settings updated failed", "warning");
     }
   };
 
@@ -179,17 +170,12 @@ const CreatorProjectConfig = () => {
     if (res.ok) {
       if (data.status === "error") {
         returnValue = { ok: false, data: data.msg };
-
-        setSnackbarSeverity("warning");
-        setSnackbarMessage("Product item upload failed");
-        setOpenSnackbar(true);
+        showSnackbar("Failed to add product", "warning");
         setOpenAddProductDialog(false);
       } else {
         returnValue = { ok: true, data };
         setSelectedProductImage(null); //reset default
-        setSnackbarSeverity("success");
-        setSnackbarMessage("Product item updated successfully");
-        setOpenSnackbar(true);
+        showSnackbar("Product added successfully", "success");
         setOpenAddProductDialog(false);
         getProducts();
       }
@@ -226,36 +212,12 @@ const CreatorProjectConfig = () => {
     );
 
     if (res.ok) {
-      setSnackbarSeverity("success");
-      setSnackbarMessage("Product deleted successfully");
-      getProducts();
-      setOpenSnackbar(true);
+      showSnackbar("Product deleted successfully", "success");
       getProducts();
     } else {
       console.log(JSON.stringify(res.data));
-      setSnackbarSeverity("warning");
-      setSnackbarMessage("Failed to delete product");
-      setOpenSnackbar(true);
+      showSnackbar("Failed to delete product", "warning");
     }
-  };
-
-  //snackbar functions
-  const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-    props,
-    ref
-  ) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
-
-  const handleClose = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpenSnackbar(false);
   };
 
   //load page
@@ -422,23 +384,6 @@ const CreatorProjectConfig = () => {
           </Grid>
         </Grid>
 
-        {/* Snackbar */}
-        <Stack spacing={2} sx={{ width: "100%" }}>
-          <Snackbar
-            open={openSnackbar}
-            autoHideDuration={2000}
-            onClose={handleClose}
-          >
-            <Alert
-              onClose={handleClose}
-              severity={snackbarSeverity}
-              sx={{ width: "100%" }}
-            >
-              {snackbarMessage}
-            </Alert>
-          </Snackbar>
-        </Stack>
-
         {/* dialog for add product */}
         <Dialog
           open={openAddProductDialog}
@@ -498,7 +443,7 @@ const CreatorProjectConfig = () => {
                 label="Description"
                 name="description"
                 type="text"
-                placeholder="Add a short description of this product option such as the size, materials, and complexity"
+                placeholder="Add a short description of this product option, such as the size, materials, and complexity"
               />
 
               <Autocomplete
@@ -521,11 +466,8 @@ const CreatorProjectConfig = () => {
                 label="Starting rate"
                 name="starting_price"
                 type="number"
-                placeholder="Add your starting rate for this project option"
+                placeholder="Add your starting rate for this product option"
               />
-
-              {/* <input onChange={fileSelected} type="file" accept="image/*"></input>
-            <Button onClick={submit}>Add image</Button> */}
             </DialogContent>
             <DialogActions>
               <Button variant="outlined" type="submit">
