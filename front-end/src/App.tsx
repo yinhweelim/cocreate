@@ -24,6 +24,7 @@ import CreatorPageConfig from "./pages/creator-dashboard/CreatorPageConfig";
 import CreatorAnalytics from "./pages/creator-dashboard/CreatorAnalytics";
 import PatronCommissions from "./pages/patron-dashboard/PatronCommissions";
 import { SidebarProvider } from "./context/SidebarContext";
+import CreatorPage from "./pages/creator-public-pages/CreatorPage";
 
 function App() {
   const fetchData = useFetch();
@@ -76,6 +77,8 @@ function App() {
 
             <Container maxWidth="lg">
               <Routes>
+                {/* landing page, signin and registration */}
+
                 <Route path="/" element={<LandingPage></LandingPage>}></Route>
                 <Route
                   path="/sign-in"
@@ -89,7 +92,15 @@ function App() {
                   path="/registration/page-setup"
                   element={<InitialPageSetup></InitialPageSetup>}
                 ></Route>
+                {/* shared pages */}
                 <Route path="/home" element={<Home></Home>}></Route>
+                <Route path="/settings" element={<Settings></Settings>}></Route>
+                <Route
+                  path="/creators/:creator_url"
+                  element={<CreatorPage></CreatorPage>}
+                ></Route>
+
+                {/* creator dashboard */}
                 <Route
                   path="/projects"
                   element={<CreatorProjects></CreatorProjects>}
@@ -102,13 +113,15 @@ function App() {
                   path="/analytics"
                   element={<CreatorAnalytics></CreatorAnalytics>}
                 ></Route>
-                <Route path="/settings" element={<Settings></Settings>}></Route>
+
+                {/* patron dashboard */}
+
                 <Route
                   path="/commissions"
                   element={<PatronCommissions />}
                 ></Route>
                 {/* 
-            <Route path="/creators/:creator_id" element={}></Route>
+           
             <Route path="/creators/createbrief" element={}></Route>
             
  */}

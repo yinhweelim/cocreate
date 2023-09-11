@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import UserContext from "../../context/UserContext";
 import Sidebar from "../../components/Sidebar";
 import { Box, Grid, Button, Stack, Divider } from "@mui/material";
 import SectionHeading from "../../components/SectionHeading";
 import CreatorProfileSubpage from "./CreatorProfileSubpage";
 import CreatorProjectConfig from "./CreatorProjectConfigSubpage";
+import { useNavigate } from "react-router-dom";
 
 const CreatorPageConfig = () => {
+  const userCtx = useContext(UserContext);
+  const navigate = useNavigate();
+  const creatorId = userCtx?.currentUser.creator_id;
   const [selectedSubpage, setSelectedSubpage] =
     useState<String>("business_profile");
 
@@ -22,7 +27,14 @@ const CreatorPageConfig = () => {
           {/* header with action buttons */}
           <SectionHeading
             heading={"My page"}
-            actionButton={<Button variant="contained">View Page</Button>}
+            actionButton={
+              <Button
+                variant="contained"
+                onClick={() => navigate(`/creators/${creatorId}`)}
+              >
+                View Page
+              </Button>
+            }
           ></SectionHeading>
 
           {/* subpages */}
