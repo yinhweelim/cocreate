@@ -13,8 +13,15 @@ import {
   Stack,
   Paper,
   Card,
+  CardContent,
   CardMedia,
+  AppBar,
+  Toolbar,
+  IconButton,
 } from "@mui/material";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import FacebookIcon from "@mui/icons-material/Facebook";
+
 import CreatorPortfolioCard from "../../components/CreatorPortfolioCard";
 
 const CreatorPage = () => {
@@ -98,7 +105,6 @@ const CreatorPage = () => {
               </Button>
             </Stack>
           </Stack>
-
           {/* creator gallery */}
           <Grid container display="flex" justifyContent="center" spacing={2}>
             <Stack direction={"row"} spacing={1}>
@@ -136,30 +142,28 @@ const CreatorPage = () => {
               ))}
             </Stack>
           </Grid>
-
           {/* about */}
           <Grid container paddingTop={4} display="flex" justifyContent="center">
-            <Grid item xs={9}>
+            <Grid item xs={8}>
               <Typography variant="body1">{creatorData?.about}</Typography>
             </Grid>
           </Grid>
-
           {/* creator products */}
           <Stack
-            paddingTop={4}
+            paddingY={4}
             display="flex"
             justifyContent="center"
             spacing={2}
             sx={{ backgroundColor: "rgba(0, 0, 0, 0.04)" }}
           >
-            <Typography variant="h5" textAlign="center">
+            <Typography variant="h6" textAlign="center">
               Create bespoke work with {creatorData?.display_name}
             </Typography>
             <Typography variant="overline" textAlign="center">
               {creatorData?.lead_time_in_weeks} weeks lead time |{" "}
               {creatorData?.slots_per_month} slots per month
             </Typography>
-            <Typography variant="h5" textAlign="center">
+            <Typography variant="h6" textAlign="center">
               Options
             </Typography>
             <Stack direction={"row"} spacing={1} justifyContent="center">
@@ -173,7 +177,82 @@ const CreatorPage = () => {
               ))}
             </Stack>
           </Stack>
+          {/* product stages */}
+          <Stack
+            paddingY={4}
+            display="flex"
+            justifyContent="center"
+            spacing={2}
+          >
+            <Typography variant="h6" textAlign="center">
+              Commissions Process
+            </Typography>
+            <Stack direction={"column"} spacing={1} justifyContent="center">
+              {["Stage 1", "Stage 2", "Stage 3"].map(
+                (data: any, index: number) => (
+                  <Typography textAlign="center">{data}</Typography>
+                )
+              )}
+            </Stack>
+          </Stack>
+          {/* TODO: add testimonials */}
+
+          <Stack paddingY={4} display="flex" alignItems="center" spacing={2}>
+            <Typography variant="h6">
+              Testimonials for {creatorData?.display_name}
+            </Typography>
+            <Card sx={{ width: 500, minHeight: 200, display: "flex" }}>
+              <CardMedia
+                component="img"
+                sx={{ width: 151 }}
+                image="/static/images/cards/live-from-space.jpg"
+                alt="Testimonial product image"
+              />
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  backgroundColor: "rgba(0, 0, 0, 0.04)",
+                  width: "100%",
+                }}
+              >
+                <CardContent sx={{ flex: "1 0 auto" }}>
+                  <Typography component="div" variant="Body1">
+                    Testimonial
+                  </Typography>
+                  <Typography
+                    variant="subtitle1"
+                    color="text.secondary"
+                    component="div"
+                  >
+                    Client name
+                  </Typography>
+                </CardContent>
+              </Box>
+            </Card>
+          </Stack>
         </Stack>
+
+        {/* footer bar */}
+        <AppBar
+          position="static"
+          sx={{ backgroundColor: "rgba(46, 125, 50, 0.25)" }}
+        >
+          <Toolbar>
+            <Box display="flex" alignItems="center">
+              <IconButton color="inherit" aria-label="Instagram">
+                <InstagramIcon />
+              </IconButton>
+              <IconButton color="inherit" aria-label="Facebook">
+                <FacebookIcon />
+              </IconButton>
+            </Box>
+            <Typography variant="body2" color="primary" marginLeft="auto">
+              &copy; {new Date().getFullYear()} {creatorData?.display_name}{" "}
+              powered by Cocreate
+            </Typography>
+          </Toolbar>
+        </AppBar>
       </>
     );
 };

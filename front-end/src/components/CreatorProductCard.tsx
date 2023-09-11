@@ -22,13 +22,13 @@ const CreatorPortfolioCard = (props: {
     <Grid item xs={4}>
       <Card
         sx={{
-          maxWidth: 200,
+          width: 200,
           display: "flex",
           flexDirection: "column",
         }}
       >
         <CardMedia
-          sx={{ height: 150, padding: "1em 1em 0 1em", objectFit: "cover" }}
+          sx={{ height: 200, padding: "1em 1em 0 1em", objectFit: "cover" }}
           image={props.image_url || undefined}
           title="Portfolio Image"
         />
@@ -39,8 +39,8 @@ const CreatorPortfolioCard = (props: {
           <Typography variant="body2" color="text.secondary">
             {props.caption || "Caption"}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {props.currency || "Currency"}
+          <Typography variant="subtitle" color="text.secondary">
+            From {props.currency || "Currency"}{" "}
             {props.starting_price || "Starting price"}
           </Typography>
         </CardContent>
