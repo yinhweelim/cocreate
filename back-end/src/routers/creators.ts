@@ -36,7 +36,6 @@ import {
   validateIdInParam,
   validateCreatorIdInParam,
   validateUpdateCreatorData,
-  validateCreateProductData,
   validateUpdateProductData,
   validateSetProjectStagesData,
   validateCreateTestimonialData,
@@ -75,8 +74,8 @@ router.get(
 router.put(
   "/creators/products/:creator_id",
   validateCreatorIdInParam,
-  validateCreateProductData,
   checkValid,
+  upload.single("image"),
   createProductForCreator
 );
 router.patch(

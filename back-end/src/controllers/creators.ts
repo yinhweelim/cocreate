@@ -191,7 +191,6 @@ const updateCreatorLogo = async (req: Request, res: Response) => {
       .resize({
         fit: sharp.fit.contain,
         width: 300,
-        height: 300,
       })
       .toBuffer();
 

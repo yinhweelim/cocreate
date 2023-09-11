@@ -44,10 +44,6 @@ export default function SignIn() {
     const data = new FormData(event.currentTarget);
     const email = data.get("email");
     const password = data.get("password");
-    console.log({
-      email,
-      password,
-    });
     const res: data = await fetchData("/api/auth/login", "POST", {
       email,
       password,
@@ -57,12 +53,12 @@ export default function SignIn() {
       localStorage.setItem("accessToken", JSON.stringify(res.data.access));
 
       const decoded: any = jwtDecode(res.data?.access);
-      console.log(decoded);
+
       userCtx?.setAuthId(decoded.id);
       localStorage.setItem("authId", JSON.stringify(decoded.id));
       localStorage.setItem("authEmail", JSON.stringify(decoded.email));
 
-      navigate(`/projects`);
+      navigate(`/dashboard/projects`);
     } else {
       alert(JSON.stringify(res.data));
     }

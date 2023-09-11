@@ -14,26 +14,43 @@ const CreatorPortfolioCard = (props: {
   caption?: string;
   image_url?: string;
   id?: string;
+  deleteDisplayConfig?: string;
+  cardHeight?: number;
 }) => {
   return (
     <Grid item xs={4}>
-      <Card sx={{ maxWidth: 200 }}>
+      <Card
+        sx={{
+          maxWidth: 200,
+          height: props.cardHeight,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <CardMedia
-          sx={{ height: 140 }}
+          sx={{ height: 150, padding: "1em 1em 0 1em", objectFit: "cover" }}
           image={props.image_url || undefined}
           title="Portfolio Image"
         />
-
-        <CardContent>
-          <Typography gutterBottom variant="body1" component="div">
+        <CardContent style={{ flex: 1 }}>
+          <Typography gutterBottom variant="subtitle1" component="div">
             {props.title || "Title"}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="subtitle2"
+            color="text.secondary"
+            className="caption" // Add this class to the caption
+          >
             {props.caption || "Caption"}
           </Typography>
         </CardContent>
         <CardActions sx={{ justifyContent: "flex-end" }}>
-          <IconButton aria-label="delete" onClick={props.onDelete} size="small">
+          <IconButton
+            aria-label="delete"
+            onClick={props.onDelete}
+            size="small"
+            sx={{ display: props.deleteDisplayConfig }}
+          >
             <DeleteIcon />
           </IconButton>
         </CardActions>

@@ -45,13 +45,14 @@ const getCreatorPortfolioItem = async (req: Request, res: Response) => {
   }
 };
 
+//accepts a multipart form containing image and body params. creates a portfolio item
 const uploadCreatorPortfolioItem = async (req: Request, res: Response) => {
   try {
     const imageFile = req.file;
     const title = req.body.title;
     const caption = req.body.caption;
     const creatorId = req.params.creator_id;
-    const imageId = v4; //generate uuid for image
+    const imageId = v4(); //generate uuid for image
 
     // Check if the creator exists before processing
     const getCreatorById = "SELECT * FROM creators WHERE id = $1";
@@ -74,9 +75,8 @@ const uploadCreatorPortfolioItem = async (req: Request, res: Response) => {
       .resize({
         fit: sharp.fit.contain,
         width: 400,
-        height: 400,
       })
-      .jpeg({ quality: 80 })
+
       .toBuffer();
 
     //send image to s3
@@ -98,8 +98,8 @@ const uploadCreatorPortfolioItem = async (req: Request, res: Response) => {
 
     //Create SQL query to upload image to database
     const insertItemQuery =
-      "INSERT INTO creator_portfolio_items (id, image_url, caption, creator_id) VALUES ($1, $2, $3, $4) RETURNING *";
-    const values = [imageId, imageUrl, title, caption, creatorId];
+      "INSERT INTO creator_portfolio_items (image_url, title, caption, creator_id) VALUES ($1, $2, $3, $4) RETURNING *";
+    const values = [imageUrl, title, caption, creatorId];
     const itemResult = await pool.query(insertItemQuery, values);
     const newItem = itemResult.rows[0];
 
