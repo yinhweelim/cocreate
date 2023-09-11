@@ -17,14 +17,20 @@ const CreatorPortfolioCard = (props: {
 }) => {
   return (
     <Grid item xs={4}>
-      <Card sx={{ maxWidth: 200 }}>
+      <Card
+        sx={{
+          maxWidth: 200,
+          height: 300,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <CardMedia
-          sx={{ height: 140 }}
+          sx={{ height: 150, padding: "1em 1em 0 1em", objectFit: "cover" }}
           image={props.image_url || undefined}
           title="Portfolio Image"
         />
-
-        <CardContent>
+        <CardContent style={{ flex: 1 }}>
           <Typography gutterBottom variant="body1" component="div">
             {props.title || "Title"}
           </Typography>

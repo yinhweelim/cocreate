@@ -202,6 +202,7 @@ const CreatorProfile = () => {
     if (res.ok) {
       if (data.status === "error") {
         returnValue = { ok: false, data: data.msg };
+        setSelectedPortfolioImage(null); //reset default
         setSnackbarSeverity("warning");
         setSnackbarMessage("Portfolio item upload failed");
         setOpenSnackbar(true);
