@@ -50,7 +50,7 @@ const CreatorProfile = () => {
   const [portfolioItems, setPortfolioItems] = useState([]);
   const [selectedPortfolioImage, setSelectedPortfolioImage] = useState(null);
 
-  //fetch creator data on first mount
+  //fetch creator data and portfolio projects on first mount
   const getCreatorData = async () => {
     // Set isLoading to true before making the API call
     setIsLoading(true);
@@ -414,7 +414,7 @@ const CreatorProfile = () => {
               </Paper>
             </Grid>
 
-            {/* Gallery image upload */}
+            {/* Portfolio product image upload */}
             <Grid item xs={9}>
               <Paper variant="outlined">
                 <Typography variant="h6" component="h4" padding={2}>
