@@ -3,7 +3,6 @@ import useFetch from "../../hooks/useFetch";
 import UserContext from "../../context/UserContext";
 import { data, CreatorData } from "../../interfaces";
 import { useSnackbar } from "../../context/SnackbarContext";
-import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import EditIcon from "@mui/icons-material/Edit";
 import {
   Grid,
@@ -21,46 +20,35 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
 } from "@mui/material";
 
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import CreatorProductCard from "../../components/CreatorProductCard";
 
-const CreatorProjectConfig = () => {
-  const fetchData = useFetch();
-  const userCtx = useContext(UserContext);
-  const { showSnackbar } = useSnackbar();
+interface CreatorProjectConfigProps {
+  isLoading: boolean;
+  creatorId: string;
+  handleUpdateCreator: (
+    event: React.FormEvent<HTMLFormElement>
+  ) => Promise<void>;
+  creatorData: CreatorData | null;
+}
 
-  const [creatorData, setCreatorData] = useState<CreatorData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const creatorId = userCtx?.currentUser.creator_id;
+const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
+  const fetchData = useFetch();
+  const { showSnackbar } = useSnackbar();
 
   // products state variables
   const [openAddProductDialog, setOpenAddProductDialog] = useState(false); //dialog
   const [products, setProducts] = useState([]);
   const [selectedProductImage, setSelectedProductImage] = useState(null);
 
-  //fetch creator data on first mount
-  const getCreatorData = async () => {
-    // Set isLoading to true before making the API call
-    setIsLoading(true);
-
-    try {
-      const res: data = await fetchData("/api/creators/" + creatorId);
-      setCreatorData(res.data.creator);
-    } catch (error) {
-      alert(JSON.stringify(error));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const getProducts = async () => {
     try {
-      const res: data = await fetchData("/api/creators/products/" + creatorId);
-      console.log("got products");
+      const res: data = await fetchData(
+        "/api/creators/products/" + props.creatorId
+      );
       setProducts(res.data.products);
     } catch (error) {
       alert(JSON.stringify(error));
@@ -68,59 +56,8 @@ const CreatorProjectConfig = () => {
   };
 
   useEffect(() => {
-    getCreatorData();
     getProducts();
   }, []);
-
-  //update profile data
-  const handleUpdateProfile = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-
-    interface UpdateProfileRequestBody {
-      project_description_guideline?: string | null;
-      payment_instructions?: string | null;
-      lead_time_in_weeks?: number | null;
-      slots_per_month?: number | null;
-    }
-
-    const requestBody: UpdateProfileRequestBody = {};
-
-    const project_description_guideline = data.get("briefDescriptionGuide");
-    if (project_description_guideline) {
-      requestBody.project_description_guideline =
-        project_description_guideline.toString();
-    }
-
-    const payment_instructions = data.get("paymentInstructions");
-    if (payment_instructions) {
-      requestBody.payment_instructions = payment_instructions.toString();
-    }
-
-    const lead_time_in_weeks = data.get("leadTime");
-    if (lead_time_in_weeks) {
-      requestBody.lead_time_in_weeks = parseInt(lead_time_in_weeks.toString());
-    }
-
-    const slots_per_month = data.get("slotsPerMonth");
-    if (slots_per_month) {
-      requestBody.slots_per_month = parseInt(slots_per_month.toString());
-    }
-
-    const res: data = await fetchData(
-      "/api/creators/" + creatorId,
-      "PATCH",
-      requestBody
-    );
-    if (res.ok) {
-      showSnackbar("Project settings updated successfully", "success");
-    } else {
-      console.log(JSON.stringify(res.data));
-      showSnackbar("Project settings updated failed", "warning");
-    }
-  };
 
   //product option functions
 
@@ -157,7 +94,7 @@ const CreatorProjectConfig = () => {
 
     console.log(formData);
     const res = await fetch(
-      import.meta.env.VITE_SERVER + "/api/creators/products/" + creatorId,
+      import.meta.env.VITE_SERVER + "/api/creators/products/" + props.creatorId,
       {
         method: "PUT",
         headers: {},
@@ -221,7 +158,7 @@ const CreatorProjectConfig = () => {
   };
 
   //load page
-  if (isLoading) {
+  if (props.isLoading) {
     return <div>Loading...</div>;
   } else
     return (
@@ -230,6 +167,7 @@ const CreatorProjectConfig = () => {
           <Grid container rowSpacing={2}>
             {/* Request form settings */}
             <Grid item xs={9}>
+              {JSON.stringify(props.creatorData)}
               <Paper variant="outlined">
                 <Typography variant="h6" component="h4" padding={2}>
                   Request form settings
@@ -241,7 +179,7 @@ const CreatorProjectConfig = () => {
 
                 <Box
                   component="form"
-                  onSubmit={handleUpdateProfile}
+                  onSubmit={props.handleUpdateCreator}
                   noValidate
                   sx={{ mt: 1 }}
                   paddingX={2}
@@ -254,7 +192,9 @@ const CreatorProjectConfig = () => {
                     label="Request guidelines"
                     name="briefDescriptionGuide"
                     placeholder="What you want your patrons to enter in the request description box. The more specific the better"
-                    defaultValue={creatorData?.project_description_guideline}
+                    defaultValue={
+                      props.creatorData?.project_description_guideline
+                    }
                   />
 
                   <TextField
@@ -265,7 +205,7 @@ const CreatorProjectConfig = () => {
                     label="Payment instructions"
                     name="paymentInstructions"
                     placeholder="Short description of your payment terms. E.g. your bank account information, payment deadlines"
-                    defaultValue={creatorData?.payment_instructions}
+                    defaultValue={props.creatorData?.payment_instructions}
                   />
 
                   <Button
@@ -292,7 +232,7 @@ const CreatorProjectConfig = () => {
 
                 <Box
                   component="form"
-                  onSubmit={handleUpdateProfile}
+                  onSubmit={props.handleUpdateCreator}
                   noValidate
                   sx={{ mt: 1 }}
                   paddingX={2}
@@ -305,7 +245,7 @@ const CreatorProjectConfig = () => {
                     name="slotsPerMonth"
                     type="number"
                     placeholder="Display how many project slots you offer per month."
-                    defaultValue={creatorData?.slots_per_month}
+                    defaultValue={props.creatorData?.slots_per_month}
                   />
 
                   <TextField
@@ -316,7 +256,7 @@ const CreatorProjectConfig = () => {
                     name="leadTime"
                     type="number"
                     placeholder="Display how much lead time your projects typically need."
-                    defaultValue={creatorData?.lead_time_in_weeks}
+                    defaultValue={props.creatorData?.lead_time_in_weeks}
                   />
 
                   <Button
