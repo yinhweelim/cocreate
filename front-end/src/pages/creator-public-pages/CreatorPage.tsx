@@ -11,7 +11,6 @@ import {
   Button,
   Box,
   Stack,
-  Paper,
   Card,
   CardContent,
   CardMedia,
@@ -21,8 +20,6 @@ import {
 } from "@mui/material";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
-
-import CreatorPortfolioCard from "../../components/CreatorPortfolioCard";
 
 const CreatorPage = () => {
   const params = useParams();
@@ -217,7 +214,7 @@ const CreatorPage = () => {
                 }}
               >
                 <CardContent sx={{ flex: "1 0 auto" }}>
-                  <Typography component="div" variant="Body1">
+                  <Typography component="div" variant="body1">
                     Testimonial
                   </Typography>
                   <Typography

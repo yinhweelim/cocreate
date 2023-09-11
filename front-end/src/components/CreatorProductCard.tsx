@@ -39,7 +39,7 @@ const CreatorPortfolioCard = (props: {
           <Typography variant="body2" color="text.secondary">
             {props.caption || "Caption"}
           </Typography>
-          <Typography variant="subtitle" color="text.secondary">
+          <Typography variant="subtitle1" color="text.secondary">
             From {props.currency || "Currency"}{" "}
             {props.starting_price || "Starting price"}
           </Typography>
