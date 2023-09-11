@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import useFetch from "../../hooks/useFetch";
-import { useParams, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useParams, useNavigate } from "react-router-dom";
 import UserContext from "../../context/UserContext";
 import { CreatorData, data } from "../../interfaces";
 import CreatorProductCard from "../../components/CreatorProductCard";
@@ -236,18 +236,28 @@ const CreatorPage = () => {
           sx={{ backgroundColor: "rgba(46, 125, 50, 0.25)" }}
         >
           <Toolbar>
-            <Box display="flex" alignItems="center">
-              <IconButton color="inherit" aria-label="Instagram">
-                <InstagramIcon />
-              </IconButton>
-              <IconButton color="inherit" aria-label="Facebook">
-                <FacebookIcon />
-              </IconButton>
-            </Box>
-            <Typography variant="body2" color="primary" marginLeft="auto">
-              &copy; {new Date().getFullYear()} {creatorData?.display_name}{" "}
-              powered by Cocreate
-            </Typography>
+            <Stack>
+              <Box display="flex" alignItems="center">
+                <IconButton color="primary" aria-label="Instagram">
+                  <InstagramIcon />
+                </IconButton>
+                <IconButton color="primary" aria-label="Facebook">
+                  <FacebookIcon />
+                </IconButton>
+              </Box>
+              <Typography
+                variant="subtitle1"
+                color="primary"
+                marginLeft="auto"
+                component={RouterLink}
+                to="/"
+                paddingLeft={1}
+                paddingBottom={1}
+              >
+                &copy; {new Date().getFullYear()} {creatorData?.display_name}{" "}
+                powered by Cocreate
+              </Typography>
+            </Stack>
           </Toolbar>
         </AppBar>
       </>
