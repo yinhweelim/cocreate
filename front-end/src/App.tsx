@@ -25,6 +25,7 @@ import CreatorAnalytics from "./pages/creator-dashboard/CreatorAnalytics";
 import PatronCommissions from "./pages/patron-dashboard/PatronCommissions";
 import { SidebarProvider } from "./context/SidebarContext";
 import CreatorPage from "./pages/creator-public-pages/CreatorPage";
+import CreateBrief from "./pages/creator-public-pages/CreateBrief";
 
 function App() {
   const fetchData = useFetch();
@@ -99,6 +100,10 @@ function App() {
                   path="/creators/:creator_url"
                   element={<CreatorPage></CreatorPage>}
                 ></Route>
+                <Route
+                  path="/creators/createbrief/:creator_id"
+                  element={<CreateBrief></CreateBrief>}
+                ></Route>
 
                 {/* creator dashboard */}
                 <Route
@@ -120,11 +125,6 @@ function App() {
                   path="/commissions"
                   element={<PatronCommissions />}
                 ></Route>
-                {/* 
-           
-            <Route path="/creators/createbrief" element={}></Route>
-            
- */}
               </Routes>
             </Container>
           </UserContext.Provider>

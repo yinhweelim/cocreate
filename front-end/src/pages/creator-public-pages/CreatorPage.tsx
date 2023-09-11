@@ -25,6 +25,7 @@ const CreatorPage = () => {
   const params = useParams();
   const fetchData = useFetch();
   const userCtx = useContext(UserContext);
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const creatorId = userCtx?.currentUser.creator_id;
 
@@ -78,7 +79,7 @@ const CreatorPage = () => {
     return (
       <>
         <Stack spacing={3}>
-          {/* logo */}
+          {/* creator bio */}
           <Stack paddingTop={4} display="flex" justifyContent="center">
             <Box alignSelf="center">
               <img src={creatorData?.logo_image_url} alt="creator logo" />
@@ -94,7 +95,11 @@ const CreatorPage = () => {
               paddingTop={1}
               justifyContent={"center"}
             >
-              <Button variant="contained" size="small">
+              <Button
+                variant="contained"
+                size="small"
+                onClick={() => navigate(`/creators/createbrief/${creatorId}`)}
+              >
                 Send brief
               </Button>
               <Button variant="outlined" size="small">
@@ -102,6 +107,7 @@ const CreatorPage = () => {
               </Button>
             </Stack>
           </Stack>
+
           {/* creator gallery */}
           <Grid container display="flex" justifyContent="center" spacing={2}>
             <Stack direction={"row"} spacing={1}>
@@ -139,12 +145,14 @@ const CreatorPage = () => {
               ))}
             </Stack>
           </Grid>
+
           {/* about */}
           <Grid container paddingTop={4} display="flex" justifyContent="center">
             <Grid item xs={8}>
               <Typography variant="body1">{creatorData?.about}</Typography>
             </Grid>
           </Grid>
+
           {/* creator products */}
           <Stack
             paddingY={4}
@@ -174,6 +182,7 @@ const CreatorPage = () => {
               ))}
             </Stack>
           </Stack>
+
           {/* product stages */}
           <Stack
             paddingY={4}
@@ -192,16 +201,16 @@ const CreatorPage = () => {
               )}
             </Stack>
           </Stack>
-          {/* TODO: add testimonials */}
 
+          {/* testimonials */}
           <Stack paddingY={4} display="flex" alignItems="center" spacing={2}>
             <Typography variant="h6">
               Testimonials for {creatorData?.display_name}
             </Typography>
-            <Card sx={{ width: 500, minHeight: 200, display: "flex" }}>
+            <Card sx={{ width: 500, minHeight: 150, display: "flex" }}>
               <CardMedia
                 component="img"
-                sx={{ width: 151 }}
+                sx={{ width: 200 }}
                 image="/static/images/cards/live-from-space.jpg"
                 alt="Testimonial product image"
               />
