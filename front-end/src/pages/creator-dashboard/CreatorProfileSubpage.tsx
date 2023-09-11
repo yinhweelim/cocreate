@@ -6,6 +6,15 @@ import { Stack, Snackbar } from "@mui/material";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import EditIcon from "@mui/icons-material/Edit";
 import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
+import {
   Grid,
   Paper,
   Typography,
@@ -32,9 +41,11 @@ const CreatorProfile = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState<
     "success" | "warning"
   >("success");
-  //handle image upload
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedLogo, setSelectedLogo] = useState(null);
   const [portfolioItems, setPortfolioItems] = useState([]);
+
+  //dialog to add portfolio project
+  const [openAddPortfolioItem, setOpenAddPortfolioItem] = useState(false);
 
   //fetch creator data on first mount
   const getCreatorData = async () => {
@@ -61,8 +72,13 @@ const CreatorProfile = () => {
   };
 
   useEffect(() => {
-    getCreatorData();
-    getPortfolioProjects();
+    if (!creatorData) {
+      getCreatorData();
+    }
+
+    if (portfolioItems.length === 0) {
+      getPortfolioProjects();
+    }
   }, []);
 
   //submit data
@@ -99,7 +115,15 @@ const CreatorProfile = () => {
   };
 
   //add portfolio project
-  const handleAddPortfolioProject = () => {};
+  const handleAddPortfolioProject = () => {
+    console.log("add portfolio item");
+    setOpenAddPortfolioItem(false);
+  };
+
+  //close dialog to add portfolio item
+  const handleCloseAddPortfolioProject = () => {
+    setOpenAddPortfolioItem(false);
+  };
 
   //delete portfolio project
   const handleDeletePortfolioProject = async (projectId: string) => {
@@ -129,7 +153,7 @@ const CreatorProfile = () => {
   //upload creator logo
   const handleImageUpload = async (event: any) => {
     const imageFile = event.target.files[0];
-    setSelectedImage(imageFile);
+    setSelectedLogo(imageFile);
 
     const formData = new FormData();
     formData.append("image", imageFile);
@@ -218,11 +242,11 @@ const CreatorProfile = () => {
                 {/* //image preview */}
                 <Box paddingX={2}>
                   <Card>
-                    {selectedImage ? (
+                    {selectedLogo ? (
                       <CardMedia
                         component="img"
                         alt="Selected"
-                        src={URL.createObjectURL(selectedImage)}
+                        src={URL.createObjectURL(selectedLogo)}
                         sx={{ maxHeight: "100px" }}
                       />
                     ) : (
@@ -349,19 +373,16 @@ const CreatorProfile = () => {
                     />
                   ))}
                 </Grid>
-                <Box
-                  component="form"
-                  onSubmit={handleAddPortfolioProject}
-                  noValidate
-                  sx={{ mt: 1 }}
-                  paddingX={2}
-                >
+                <Box sx={{ mt: 1 }} paddingX={2}>
                   <Button
-                    type="submit"
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
+                    startIcon={<ModeEditOutlineOutlinedIcon />}
+                    onClick={() => {
+                      setOpenAddPortfolioItem(true);
+                    }}
                   >
-                    Add
+                    Add Portfolio item
                   </Button>
                 </Box>
               </Paper>
@@ -441,6 +462,45 @@ const CreatorProfile = () => {
             </Alert>
           </Snackbar>
         </Stack>
+
+        {/* dialog for add portfolio project */}
+        <Dialog
+          open={openAddPortfolioItem}
+          onClose={handleCloseAddPortfolioProject}
+        >
+          <DialogTitle>Add Portfolio project</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Title"
+              type="text"
+              sx={{ width: "32rem" }}
+              variant="outlined"
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Description"
+              multiline
+              minRows={4}
+              type="text"
+              sx={{ width: "32rem" }}
+              variant="outlined"
+            />
+
+            {/* <input onChange={fileSelected} type="file" accept="image/*"></input>
+            <Button onClick={submit}>Add image</Button> */}
+          </DialogContent>
+          <DialogActions>
+            <Button variant="outlined" onClick={handleCloseAddPortfolioProject}>
+              Cancel
+            </Button>
+            <Button variant="outlined" onClick={handleAddPortfolioProject}>
+              Add
+            </Button>
+          </DialogActions>
+        </Dialog>
       </>
     );
 };
