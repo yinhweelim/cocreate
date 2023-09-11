@@ -41,11 +41,14 @@ const CreatorProfile = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState<
     "success" | "warning"
   >("success");
-  const [selectedLogo, setSelectedLogo] = useState(null);
-  const [portfolioItems, setPortfolioItems] = useState([]);
 
-  //dialog to add portfolio project
-  const [openAddPortfolioItem, setOpenAddPortfolioItem] = useState(false);
+  //logo state variable
+  const [selectedLogo, setSelectedLogo] = useState(null);
+
+  // portfolio project state variables
+  const [openAddPortfolioItem, setOpenAddPortfolioItem] = useState(false); //dialog
+  const [portfolioItems, setPortfolioItems] = useState([]);
+  const [selectedPortfolioImage, setSelectedPortfolioImage] = useState(null);
 
   //fetch creator data on first mount
   const getCreatorData = async () => {
@@ -72,13 +75,8 @@ const CreatorProfile = () => {
   };
 
   useEffect(() => {
-    if (!creatorData) {
-      getCreatorData();
-    }
-
-    if (portfolioItems.length === 0) {
-      getPortfolioProjects();
-    }
+    getCreatorData();
+    getPortfolioProjects();
   }, []);
 
   //submit data
@@ -118,6 +116,11 @@ const CreatorProfile = () => {
   const handleAddPortfolioProject = () => {
     console.log("add portfolio item");
     setOpenAddPortfolioItem(false);
+  };
+
+  const handleSelectPortfolioImage = (event: any) => {
+    const imageFile = event.target.files[0];
+    setSelectedPortfolioImage(imageFile);
   };
 
   //close dialog to add portfolio item
@@ -239,7 +242,7 @@ const CreatorProfile = () => {
                   Brand Logo
                 </Typography>
 
-                {/* //image preview */}
+                {/* //logo upload and preview */}
                 <Box paddingX={2}>
                   <Card>
                     {selectedLogo ? (
@@ -279,7 +282,7 @@ const CreatorProfile = () => {
                       size="small"
                       startIcon={<EditIcon></EditIcon>}
                     >
-                      Add new
+                      Upload image
                     </Button>
                   </label>
                 </Box>
@@ -326,6 +329,7 @@ const CreatorProfile = () => {
                   <TextField
                     margin="normal"
                     multiline
+                    minRows={4}
                     fullWidth
                     id="about"
                     label="About"
@@ -470,6 +474,39 @@ const CreatorProfile = () => {
         >
           <DialogTitle>Add Portfolio project</DialogTitle>
           <DialogContent>
+            <Box>
+              <Typography variant="body1">Upload image</Typography>
+              <Card>
+                {selectedPortfolioImage ? (
+                  <CardMedia
+                    component="img"
+                    alt="portfolioimage"
+                    src={URL.createObjectURL(selectedPortfolioImage)}
+                    sx={{ maxWidth: "300px" }}
+                  />
+                ) : (
+                  <CardContent>No image</CardContent>
+                )}
+              </Card>
+              <input
+                accept="image/*"
+                style={{ display: "none" }}
+                id="portfolio-image-upload-button"
+                type="file"
+                onChange={handleSelectPortfolioImage}
+              />
+              <label htmlFor="portfolio-image-upload-button">
+                <Button
+                  variant="outlined"
+                  component="span"
+                  color="primary"
+                  size="small"
+                  startIcon={<EditIcon></EditIcon>}
+                >
+                  Add new
+                </Button>
+              </label>
+            </Box>
             <TextField
               autoFocus
               margin="dense"
@@ -483,7 +520,7 @@ const CreatorProfile = () => {
               margin="dense"
               label="Description"
               multiline
-              minRows={4}
+              minRows={2}
               type="text"
               sx={{ width: "32rem" }}
               variant="outlined"
