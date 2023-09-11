@@ -163,14 +163,6 @@ export default function Registration() {
               {passwordMatchError && (
                 <p style={{ color: "red" }}>Passwords do not match.</p>
               )}
-              {/* <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Checkbox value="allowExtraEmails" color="primary" />
-                  }
-                  label="I accept the Terms and Conditions."
-                />
-              </Grid> */}
             </Grid>
             <Button
               type="submit"

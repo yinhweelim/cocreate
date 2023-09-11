@@ -80,7 +80,6 @@ function App() {
             <Container maxWidth="lg">
               <Routes>
                 {/* landing page, signin and registration */}
-
                 <Route path="/" element={<LandingPage></LandingPage>}></Route>
                 <Route
                   path="/sign-in"
@@ -124,7 +123,6 @@ function App() {
                     </DashboardLayout>
                   }
                 ></Route>
-
                 <Route
                   path="/creators/:creator_url"
                   element={<CreatorPage></CreatorPage>}
