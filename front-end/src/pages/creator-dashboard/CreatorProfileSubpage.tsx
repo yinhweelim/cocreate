@@ -92,7 +92,6 @@ const CreatorProfile = () => {
       country_of_operation: data.get("country"),
       about: data.get("about"),
     };
-    console.log(requestBody);
 
     const res: data = await fetchData(
       "/api/creators/" + creatorId,
@@ -187,6 +186,7 @@ const CreatorProfile = () => {
     }
     formData.append("title", requestBody.title as string);
     formData.append("caption", requestBody.caption as string);
+    console.log(formData);
 
     const res = await fetch(
       import.meta.env.VITE_SERVER + "/api/creators/portfolio/" + creatorId,

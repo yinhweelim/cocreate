@@ -65,7 +65,8 @@ const CreatorProjectConfig = () => {
   const getProducts = async () => {
     try {
       const res: data = await fetchData("/api/creators/products/" + creatorId);
-      setProducts(res.data.items);
+      console.log("got products");
+      setProducts(res.data.products);
     } catch (error) {
       alert(JSON.stringify(error));
     }
@@ -140,7 +141,6 @@ const CreatorProjectConfig = () => {
 
   //add product
   const handleAddProduct = async (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("add product");
     event.preventDefault();
 
     //construct request body
@@ -148,7 +148,7 @@ const CreatorProjectConfig = () => {
 
     const requestBody = {
       title: submittedData.get("title"),
-      caption: submittedData.get("description"),
+      description: submittedData.get("description"),
       currency: submittedData.get("currency"),
       starting_price: submittedData.get("starting_price"),
     };
@@ -160,10 +160,11 @@ const CreatorProjectConfig = () => {
       formData.append("image", selectedProductImage);
     }
     formData.append("title", requestBody.title as string);
-    formData.append("caption", requestBody.caption as string);
+    formData.append("description", requestBody.description as string);
     formData.append("currency", requestBody.currency as string);
     formData.append("starting_price", requestBody.starting_price as string);
 
+    console.log(formData);
     const res = await fetch(
       import.meta.env.VITE_SERVER + "/api/creators/products/" + creatorId,
       {
@@ -178,13 +179,14 @@ const CreatorProjectConfig = () => {
     if (res.ok) {
       if (data.status === "error") {
         returnValue = { ok: false, data: data.msg };
-        setSelectedProductImage(null); //reset default
+
         setSnackbarSeverity("warning");
         setSnackbarMessage("Product item upload failed");
         setOpenSnackbar(true);
         setOpenAddProductDialog(false);
       } else {
         returnValue = { ok: true, data };
+        setSelectedProductImage(null); //reset default
         setSnackbarSeverity("success");
         setSnackbarMessage("Product item updated successfully");
         setOpenSnackbar(true);
@@ -199,6 +201,7 @@ const CreatorProjectConfig = () => {
         returnValue = { ok: false, data: data.message || data.msg };
       } else {
         console.log(data);
+        console.log("error");
         returnValue = { ok: false, data: "An error has occurred" };
       }
     }
