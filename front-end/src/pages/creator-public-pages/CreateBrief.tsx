@@ -22,6 +22,7 @@ import {
   TextFieldVariants,
   Autocomplete,
   InputAdornment,
+  setRef,
 } from "@mui/material";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -31,6 +32,7 @@ import { DateTimePicker } from "@mui/x-date-pickers";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import AddAPhoto from "@mui/icons-material/AddAPhoto";
 import { JSX } from "react/jsx-runtime";
+import BriefProductOption from "../../components/BriefProductOption";
 const CreateBrief = () => {
   const params = useParams();
   const navigate = useNavigate();
@@ -41,7 +43,9 @@ const CreateBrief = () => {
 
   const [creatorData, setCreatorData] = useState<CreatorData | null>(null);
   const [products, setProducts] = useState([]);
+
   const [refImage, setRefImage] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState<String | null>(null);
 
   //fetch creator data and portfolio projects on first mount
   const getCreatorData = async () => {
@@ -72,9 +76,16 @@ const CreateBrief = () => {
     getProducts();
   }, []);
 
-  const handleAddBrief = () => {};
+  const handleSelectProduct = (productId: String) => {
+    setSelectedProduct(productId);
+  };
 
-  const handleImage = () => {};
+  const handleImage = (event: any) => {
+    const imageFile = event.target.files[0];
+    setRefImage(imageFile);
+  };
+
+  const handleAddBrief = () => {};
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -133,12 +144,14 @@ const CreateBrief = () => {
 
                 <Stack direction="row" spacing={1} justifyContent="left">
                   {products?.map((data: any, index: number) => (
-                    <CreatorProductCard
+                    <BriefProductOption
                       key={index}
                       {...data}
-                      displayDelete={false}
-                      onDelete={null}
                       width={200}
+                      handleSelectProduct={handleSelectProduct}
+                      className={`${
+                        selectedProduct === data.id ? "selected" : ""
+                      }`}
                     />
                   ))}
                 </Stack>
@@ -151,7 +164,7 @@ const CreateBrief = () => {
                 noValidate
               >
                 <Typography variant="overline">Add your brief</Typography>
-                <Typography variant="body1" paddingTop={2}>
+                <Typography variant="body1">
                   Add specifics of what you’d like to get done.
                 </Typography>
                 <Typography variant="body1">
@@ -231,7 +244,7 @@ const CreateBrief = () => {
                   {refImage ? (
                     <CardMedia
                       component="img"
-                      alt="portfolioimage"
+                      alt="refImage"
                       src={URL.createObjectURL(refImage)}
                       sx={{ maxWidth: "300px" }}
                     />

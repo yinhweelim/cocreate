@@ -7,7 +7,7 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-const CreatorPortfolioCard = (props: {
+const CreatorProductCard = (props: {
   description: string;
   onClick: React.MouseEventHandler<HTMLLIElement> | undefined;
   onDelete: () => void;
@@ -68,4 +68,4 @@ const CreatorPortfolioCard = (props: {
   );
 };
 
-export default CreatorPortfolioCard;
+export default CreatorProductCard;
