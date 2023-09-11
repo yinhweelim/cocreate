@@ -26,6 +26,7 @@ import PatronCommissions from "./pages/patron-dashboard/PatronCommissions";
 import { SidebarProvider } from "./context/SidebarContext";
 import CreatorPage from "./pages/creator-public-pages/CreatorPage";
 import CreateBrief from "./pages/creator-public-pages/CreateBrief";
+import DashboardLayout from "./pages/creator-dashboard/DashboardLayout";
 
 function App() {
   const fetchData = useFetch();
@@ -94,8 +95,36 @@ function App() {
                   element={<InitialPageSetup></InitialPageSetup>}
                 ></Route>
                 {/* shared pages */}
-                <Route path="/home" element={<Home></Home>}></Route>
-                <Route path="/settings" element={<Settings></Settings>}></Route>
+                <Route
+                  path="/dashboard/*"
+                  element={
+                    <DashboardLayout>
+                      <Routes>
+                        <Route
+                          path="/projects"
+                          element={<CreatorProjects />}
+                        ></Route>
+                        <Route
+                          path="/pagesetup"
+                          element={<CreatorPageConfig />}
+                        ></Route>
+                        <Route
+                          path="/analytics"
+                          element={<CreatorAnalytics />}
+                        ></Route>
+                        <Route
+                          path="/commissions"
+                          element={<PatronCommissions />}
+                        ></Route>
+                        <Route
+                          path="/settings"
+                          element={<Settings></Settings>}
+                        ></Route>
+                      </Routes>
+                    </DashboardLayout>
+                  }
+                ></Route>
+
                 <Route
                   path="/creators/:creator_url"
                   element={<CreatorPage></CreatorPage>}
@@ -103,27 +132,6 @@ function App() {
                 <Route
                   path="/creators/createbrief/:creator_id"
                   element={<CreateBrief></CreateBrief>}
-                ></Route>
-
-                {/* creator dashboard */}
-                <Route
-                  path="/projects"
-                  element={<CreatorProjects></CreatorProjects>}
-                ></Route>
-                <Route
-                  path="/pagesetup"
-                  element={<CreatorPageConfig></CreatorPageConfig>}
-                ></Route>
-                <Route
-                  path="/analytics"
-                  element={<CreatorAnalytics></CreatorAnalytics>}
-                ></Route>
-
-                {/* patron dashboard */}
-
-                <Route
-                  path="/commissions"
-                  element={<PatronCommissions />}
                 ></Route>
               </Routes>
             </Container>

@@ -31,9 +31,11 @@ import CreatorPortfolioCard from "../../components/CreatorPortfolioCard";
 const CreatorProfile = () => {
   const fetchData = useFetch();
   const userCtx = useContext(UserContext);
+
+  //creator variables
+  const creatorId = userCtx?.currentUser.creator_id;
   const [creatorData, setCreatorData] = useState<CreatorData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const creatorId = userCtx?.currentUser.creator_id;
 
   //snackbar state variables
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -65,6 +67,7 @@ const CreatorProfile = () => {
     }
   };
 
+  //fetch portfolio projects on first mount
   const getPortfolioProjects = async () => {
     try {
       const res: data = await fetchData("/api/creators/portfolio/" + creatorId);
@@ -80,7 +83,7 @@ const CreatorProfile = () => {
   }, []);
 
   //update creator profile
-  const handleUpdateProfile = async (
+  const handleUpdateCreator = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
@@ -349,7 +352,7 @@ const CreatorProfile = () => {
                 </Box>
                 <Box
                   component="form"
-                  onSubmit={handleUpdateProfile}
+                  onSubmit={handleUpdateCreator}
                   noValidate
                   sx={{ mt: 1 }}
                   paddingX={2}
@@ -399,10 +402,6 @@ const CreatorProfile = () => {
                     placeholder="Add a description to to let people know more about who you are, what you create and projects you're open to."
                   />
 
-                  {/* <FormControlLabel
-                control={<Checkbox value="showProjectCount" color="primary" />}
-                label="Show total project count"
-              /> */}
                   <Button
                     type="submit"
                     variant="contained"

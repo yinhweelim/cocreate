@@ -62,7 +62,7 @@ export default function SignIn() {
       localStorage.setItem("authId", JSON.stringify(decoded.id));
       localStorage.setItem("authEmail", JSON.stringify(decoded.email));
 
-      navigate(`/projects`);
+      navigate(`/dashboard`);
     } else {
       alert(JSON.stringify(res.data));
     }

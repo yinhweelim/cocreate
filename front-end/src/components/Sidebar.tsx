@@ -72,6 +72,7 @@ function SimpleDialog(props: SimpleDialogProps) {
 export default function Sidebar() {
   const userCtx = useContext(UserContext);
   const currentUser = userCtx?.currentUser;
+
   const navigate = useNavigate();
 
   //highlight selected item in sidebar
@@ -101,8 +102,8 @@ export default function Sidebar() {
       setSelectedValue(value); // Update selectedValue when a value is selected
       {
         value.role === "PATRON"
-          ? navigate("/commissions")
-          : navigate("/projects");
+          ? navigate("/dashboard/commissions")
+          : navigate("/dashboard/projects");
       }
     }
   };
@@ -128,7 +129,11 @@ export default function Sidebar() {
             color="default"
             size="large"
             component={RouterLink}
-            to="/home"
+            to={
+              currentUser.role === "PATRON"
+                ? "/dashboard/commissions"
+                : "/dashboard/projects"
+            }
           >
             <img src="/src/assets/logo-small.png" width={"25px"}></img>
           </IconButton>
@@ -140,7 +145,7 @@ export default function Sidebar() {
               <ListItem key={"projects"} disablePadding>
                 <ListItemButton
                   component={RouterLink}
-                  to="/projects"
+                  to="/dashboard/projects"
                   selected={selectedIndex === 0}
                   onClick={(event) => handleListItemClick(event, 0)}
                 >
@@ -153,7 +158,7 @@ export default function Sidebar() {
               <ListItem key={"page"} disablePadding>
                 <ListItemButton
                   component={RouterLink}
-                  to="/pagesetup"
+                  to="/dashboard/pagesetup"
                   selected={selectedIndex === 1}
                   onClick={(
                     event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
@@ -168,7 +173,7 @@ export default function Sidebar() {
               <ListItem key={"analytics"} disablePadding>
                 <ListItemButton
                   component={RouterLink}
-                  to="/analytics"
+                  to="/dashboard/analytics"
                   selected={selectedIndex === 2}
                   onClick={(event) => handleListItemClick(event, 2)}
                 >
@@ -183,7 +188,7 @@ export default function Sidebar() {
             <ListItem key={"commissions"} disablePadding>
               <ListItemButton
                 component={RouterLink}
-                to="/commissions"
+                to="/dashboard/commissions"
                 selected={selectedIndex === 3}
                 onClick={(event) => handleListItemClick(event, 3)}
               >
@@ -198,7 +203,7 @@ export default function Sidebar() {
           <ListItem key={"settings"} disablePadding>
             <ListItemButton
               component={RouterLink}
-              to="/settings"
+              to="/dashboard/settings"
               selected={selectedIndex === 4}
               onClick={(event) => handleListItemClick(event, 4)}
             >
@@ -218,12 +223,7 @@ export default function Sidebar() {
             avatar_image_url={currentUser.avatar_image_url}
             key={currentUser.user_id}
             iconButton={
-              <IconButton
-                color="default"
-                size="large"
-                component={RouterLink}
-                to="/home"
-              >
+              <IconButton color="default" size="large">
                 <MoreVertIcon />
               </IconButton>
             }
