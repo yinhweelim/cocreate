@@ -79,7 +79,7 @@ const CreatorProfile = () => {
     getPortfolioProjects();
   }, []);
 
-  //submit data
+  //update creator profile
   const handleUpdateProfile = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
@@ -108,47 +108,6 @@ const CreatorProfile = () => {
       console.log(JSON.stringify(res.data));
       setSnackbarSeverity("warning");
       setSnackbarMessage("Profile update failed");
-      setOpenSnackbar(true);
-    }
-  };
-
-  //add portfolio project
-  const handleAddPortfolioProject = () => {
-    console.log("add portfolio item");
-    setOpenAddPortfolioItem(false);
-  };
-
-  const handleSelectPortfolioImage = (event: any) => {
-    const imageFile = event.target.files[0];
-    setSelectedPortfolioImage(imageFile);
-  };
-
-  //close dialog to add portfolio item
-  const handleCloseAddPortfolioProject = () => {
-    setOpenAddPortfolioItem(false);
-  };
-
-  //delete portfolio project
-  const handleDeletePortfolioProject = async (projectId: string) => {
-    console.log(`Delete project with ID: ${projectId}`);
-
-    const res: data = await fetchData(
-      "/api/creators/portfolio/" + projectId,
-      "DELETE",
-      undefined,
-      undefined
-    );
-
-    if (res.ok) {
-      setSnackbarSeverity("success");
-      setSnackbarMessage("Portfolio item deleted successfully");
-      getPortfolioProjects();
-      setOpenSnackbar(true);
-      getPortfolioProjects();
-    } else {
-      console.log(JSON.stringify(res.data));
-      setSnackbarSeverity("warning");
-      setSnackbarMessage("Failed to delete portfolio item");
       setOpenSnackbar(true);
     }
   };
@@ -197,6 +156,107 @@ const CreatorProfile = () => {
     }
 
     return returnValue;
+  };
+
+  //upload portfolio image for preview
+  const handleSelectPortfolioImage = (event: any) => {
+    const imageFile = event.target.files[0];
+    setSelectedPortfolioImage(imageFile);
+  };
+
+  //add portfolio project
+  const handleAddPortfolioProject = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    console.log("add portfolio item");
+    event.preventDefault();
+
+    //construct request body
+    const submittedData = new FormData(event.currentTarget);
+
+    const requestBody = {
+      title: submittedData.get("title"),
+      caption: submittedData.get("description"),
+    };
+    console.log(requestBody);
+
+    //append image and body to formData
+    const formData = new FormData();
+    if (selectedPortfolioImage) {
+      formData.append("image", selectedPortfolioImage);
+    }
+    formData.append("title", requestBody.title as string);
+    formData.append("caption", requestBody.caption as string);
+
+    const res = await fetch(
+      import.meta.env.VITE_SERVER + "/api/creators/portfolio/" + creatorId,
+      {
+        method: "PUT",
+        headers: {},
+        body: formData,
+      }
+    );
+    const data: any = await res.json();
+
+    let returnValue = {};
+    if (res.ok) {
+      if (data.status === "error") {
+        returnValue = { ok: false, data: data.msg };
+        setSnackbarSeverity("warning");
+        setSnackbarMessage("Portfolio item upload failed");
+        setOpenSnackbar(true);
+        setOpenAddPortfolioItem(false);
+      } else {
+        returnValue = { ok: true, data };
+        setSnackbarSeverity("success");
+        setSnackbarMessage("Portfolio item updated successfully");
+        setOpenSnackbar(true);
+        setOpenAddPortfolioItem(false);
+        getPortfolioProjects();
+      }
+    } else {
+      if (data?.errors && Array.isArray(data.errors)) {
+        const messages = data.errors.map((item: any) => item.msg);
+        returnValue = { ok: false, data: messages };
+      } else if (data?.status === "error") {
+        returnValue = { ok: false, data: data.message || data.msg };
+      } else {
+        console.log(data);
+        returnValue = { ok: false, data: "An error has occurred" };
+      }
+    }
+
+    return returnValue;
+  };
+
+  //close dialog to add portfolio item
+  const handleCloseAddPortfolioProject = () => {
+    setOpenAddPortfolioItem(false);
+  };
+
+  //delete portfolio project
+  const handleDeletePortfolioProject = async (projectId: string) => {
+    console.log(`Delete project with ID: ${projectId}`);
+
+    const res: data = await fetchData(
+      "/api/creators/portfolio/" + projectId,
+      "DELETE",
+      undefined,
+      undefined
+    );
+
+    if (res.ok) {
+      setSnackbarSeverity("success");
+      setSnackbarMessage("Portfolio item deleted successfully");
+      getPortfolioProjects();
+      setOpenSnackbar(true);
+      getPortfolioProjects();
+    } else {
+      console.log(JSON.stringify(res.data));
+      setSnackbarSeverity("warning");
+      setSnackbarMessage("Failed to delete portfolio item");
+      setOpenSnackbar(true);
+    }
   };
 
   //snackbar functions
@@ -473,8 +533,8 @@ const CreatorProfile = () => {
           onClose={handleCloseAddPortfolioProject}
         >
           <DialogTitle>Add Portfolio project</DialogTitle>
-          <DialogContent>
-            <Box>
+          <Box component="form" onSubmit={handleAddPortfolioProject} noValidate>
+            <DialogContent>
               <Typography variant="body1">Upload image</Typography>
               <Card>
                 {selectedPortfolioImage ? (
@@ -506,37 +566,44 @@ const CreatorProfile = () => {
                   Add new
                 </Button>
               </label>
-            </Box>
-            <TextField
-              autoFocus
-              margin="dense"
-              label="Title"
-              type="text"
-              sx={{ width: "32rem" }}
-              variant="outlined"
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              label="Description"
-              multiline
-              minRows={2}
-              type="text"
-              sx={{ width: "32rem" }}
-              variant="outlined"
-            />
+              <TextField
+                autoFocus
+                margin="normal"
+                fullWidth
+                id="name"
+                label="Title"
+                name="title"
+                type="text"
+                placeholder="Project title"
+              />
+              <TextField
+                autoFocus
+                multiline
+                minRows={2}
+                margin="normal"
+                fullWidth
+                id="name"
+                label="Description"
+                name="description"
+                type="text"
+                placeholder="Add a short description of this project"
+              />
 
-            {/* <input onChange={fileSelected} type="file" accept="image/*"></input>
+              {/* <input onChange={fileSelected} type="file" accept="image/*"></input>
             <Button onClick={submit}>Add image</Button> */}
-          </DialogContent>
-          <DialogActions>
-            <Button variant="outlined" onClick={handleCloseAddPortfolioProject}>
-              Cancel
-            </Button>
-            <Button variant="outlined" onClick={handleAddPortfolioProject}>
-              Add
-            </Button>
-          </DialogActions>
+            </DialogContent>
+            <DialogActions>
+              <Button variant="outlined" type="submit">
+                Add
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={handleCloseAddPortfolioProject}
+              >
+                Cancel
+              </Button>
+            </DialogActions>
+          </Box>
         </Dialog>
       </>
     );
