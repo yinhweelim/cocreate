@@ -47,10 +47,9 @@ const getProductsByCreatorId = async (req: Request, res: Response) => {
 //accepts a multipart form containing image and body params. creates a product
 const createProductForCreator = async (req: Request, res: Response) => {
   try {
-    console.log("request received");
     const imageFile = req.file;
     const title = req.body.title;
-    const description = req.body.caption;
+    const description = req.body.description;
     const currency = req.body.currency;
     const starting_price = req.body.starting_price;
     const creatorId = req.params.creator_id;

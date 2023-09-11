@@ -39,22 +39,6 @@ const validateUpdateCreatorData = [
   body("is_deleted", "should be boolean type").optional().isBoolean(),
 ];
 
-const validateCreateProductData = [
-  body("title", "title is required").not().isEmpty(),
-  body("description", "description is required").not().isEmpty(),
-  body("currency", "currency is required").not().isEmpty(),
-  body("starting_price", "starting_price is required").not().isEmpty(),
-  body("currency", "invalid currency code").isLength({ max: 3 }).isUppercase(),
-  body("starting_price", "should be an integer").isInt(),
-  body("title", "maximum length is 100 characters")
-    .isString()
-    .isLength({ max: 100 }),
-  body("description", "should be a string").isString(),
-  body("currency", "invalid currency code").isLength({ max: 3 }).isUppercase(),
-  body("starting_price", "should be an integer").isInt(),
-  body("is_deleted", "should be a boolean").optional().isBoolean(),
-];
-
 const validateUpdateProductData = [
   body("title", "maximum length is 100 characters")
     .optional()
@@ -102,7 +86,6 @@ export {
   validateIdInParam,
   validateCreatorIdInParam,
   validateUpdateCreatorData,
-  validateCreateProductData,
   validateUpdateProductData,
   validateSetProjectStagesData,
   validateCreateTestimonialData,
