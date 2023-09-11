@@ -311,7 +311,7 @@ const CreatorProfile = () => {
                         component="img"
                         alt="Selected"
                         src={URL.createObjectURL(selectedLogo)}
-                        sx={{ maxHeight: "100px" }}
+                        sx={{ maxHeight: "100px", maxWidth: "300px" }}
                       />
                     ) : (
                       <>
@@ -320,7 +320,7 @@ const CreatorProfile = () => {
                             component="img"
                             alt="Logo"
                             src={creatorData?.logo_image_url}
-                            sx={{ maxHeight: "100px" }}
+                            sx={{ maxHeight: "100px", maxWidth: "300px" }}
                           />
                         ) : (
                           <CardContent>No image</CardContent>
@@ -434,6 +434,7 @@ const CreatorProfile = () => {
                     <CreatorPortfolioCard
                       key={index}
                       {...data}
+                      cardHeight="250"
                       onDelete={() => handleDeletePortfolioProject(data.id)}
                     />
                   ))}

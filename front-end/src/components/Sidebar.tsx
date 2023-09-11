@@ -86,7 +86,6 @@ export default function Sidebar() {
 
   //switch account dialog states
   const [open, setOpen] = React.useState(false);
-  // const [selectedValue, setSelectedValue] = React.useState("");
   const [selectedValue, setSelectedValue] = React.useState<string | null>(null);
 
   const handleClickOpen = () => {

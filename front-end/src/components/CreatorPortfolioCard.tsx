@@ -14,13 +14,15 @@ const CreatorPortfolioCard = (props: {
   caption?: string;
   image_url?: string;
   id?: string;
+  deleteDisplayConfig?: string;
+  cardHeight?: number;
 }) => {
   return (
     <Grid item xs={4}>
       <Card
         sx={{
           maxWidth: 200,
-          height: 300,
+          height: props.cardHeight,
           display: "flex",
           flexDirection: "column",
         }}
@@ -31,15 +33,24 @@ const CreatorPortfolioCard = (props: {
           title="Portfolio Image"
         />
         <CardContent style={{ flex: 1 }}>
-          <Typography gutterBottom variant="body1" component="div">
+          <Typography gutterBottom variant="subtitle1" component="div">
             {props.title || "Title"}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="subtitle2"
+            color="text.secondary"
+            className="caption" // Add this class to the caption
+          >
             {props.caption || "Caption"}
           </Typography>
         </CardContent>
         <CardActions sx={{ justifyContent: "flex-end" }}>
-          <IconButton aria-label="delete" onClick={props.onDelete} size="small">
+          <IconButton
+            aria-label="delete"
+            onClick={props.onDelete}
+            size="small"
+            sx={{ display: props.deleteDisplayConfig }}
+          >
             <DeleteIcon />
           </IconButton>
         </CardActions>

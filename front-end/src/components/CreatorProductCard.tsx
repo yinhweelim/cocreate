@@ -16,13 +16,13 @@ const CreatorPortfolioCard = (props: {
   starting_price?: number;
   image_url?: string;
   id?: string;
+  displayDelete?: boolean;
 }) => {
   return (
     <Grid item xs={4}>
       <Card
         sx={{
           maxWidth: 200,
-          height: 300,
           display: "flex",
           flexDirection: "column",
         }}
@@ -44,11 +44,23 @@ const CreatorPortfolioCard = (props: {
             {props.starting_price || "Starting price"}
           </Typography>
         </CardContent>
-        <CardActions sx={{ justifyContent: "flex-end" }}>
-          <IconButton aria-label="delete" onClick={props.onDelete} size="small">
-            <DeleteIcon />
-          </IconButton>
-        </CardActions>
+        {props.displayDelete ? (
+          <CardActions
+            sx={{
+              justifyContent: "flex-end",
+            }}
+          >
+            <IconButton
+              aria-label="delete"
+              onClick={props.onDelete}
+              size="small"
+            >
+              <DeleteIcon />
+            </IconButton>
+          </CardActions>
+        ) : (
+          <></>
+        )}
       </Card>
     </Grid>
   );
