@@ -25,15 +25,19 @@ import {
 } from "@mui/material";
 import CreatorPortfolioCard from "../../components/CreatorPortfolioCard";
 
-const CreatorProfile = () => {
-  const fetchData = useFetch();
-  const userCtx = useContext(UserContext);
-  const { showSnackbar } = useSnackbar();
+interface CreatorProfileProps {
+  isLoading: boolean;
+  creatorId: string;
+  handleUpdateCreator: (
+    event: React.FormEvent<HTMLFormElement>
+  ) => Promise<void>;
+  creatorData: CreatorData | null;
+  getCreatorData: () => Promise<void>;
+}
 
-  //creator variables
-  const creatorId = userCtx?.currentUser.creator_id;
-  const [creatorData, setCreatorData] = useState<CreatorData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+const CreatorProfile = (props: CreatorProfileProps) => {
+  const fetchData = useFetch();
+  const { showSnackbar } = useSnackbar();
 
   //logo state variable
   const [selectedLogo, setSelectedLogo] = useState(null);
@@ -43,25 +47,12 @@ const CreatorProfile = () => {
   const [portfolioItems, setPortfolioItems] = useState([]);
   const [selectedPortfolioImage, setSelectedPortfolioImage] = useState(null);
 
-  //fetch creator data and portfolio projects on first mount
-  const getCreatorData = async () => {
-    // Set isLoading to true before making the API call
-    setIsLoading(true);
-
-    try {
-      const res: data = await fetchData("/api/creators/" + creatorId);
-      setCreatorData(res.data.creator);
-    } catch (error) {
-      alert(JSON.stringify(error));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   //fetch portfolio projects on first mount
   const getPortfolioProjects = async () => {
     try {
-      const res: data = await fetchData("/api/creators/portfolio/" + creatorId);
+      const res: data = await fetchData(
+        "/api/creators/portfolio/" + props.creatorId
+      );
       setPortfolioItems(res.data.items);
     } catch (error) {
       alert(JSON.stringify(error));
@@ -69,47 +60,18 @@ const CreatorProfile = () => {
   };
 
   useEffect(() => {
-    getCreatorData();
     getPortfolioProjects();
   }, []);
 
-  //update creator profile
-  const handleUpdateCreator = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-
-    const requestBody = {
-      display_name: data.get("pageName"),
-      tagline: data.get("tagline"),
-      country_of_operation: data.get("country"),
-      about: data.get("about"),
-    };
-
-    const res: data = await fetchData(
-      "/api/creators/" + creatorId,
-      "PATCH",
-      requestBody
-    );
-    if (res.ok) {
-      showSnackbar("Profile updated successfully", "success");
-      getCreatorData();
-    } else {
-      console.log(JSON.stringify(res.data));
-      showSnackbar("Profile update failed", "warning");
-    }
-  };
-
   //upload creator logo
-  const handleImageUpload = async (event: any) => {
+  const handleUpdateLogo = async (event: any) => {
     const imageFile = event.target.files[0];
     setSelectedLogo(imageFile);
 
     const formData = new FormData();
     formData.append("image", imageFile);
     const res = await fetch(
-      import.meta.env.VITE_SERVER + "/api/creators/logos/" + creatorId,
+      import.meta.env.VITE_SERVER + "/api/creators/logos/" + props.creatorId,
       {
         method: "PATCH",
         headers: {},
@@ -126,7 +88,7 @@ const CreatorProfile = () => {
       } else {
         returnValue = { ok: true, data };
         showSnackbar("Logo updated successfully", "success");
-        getCreatorData();
+        props.getCreatorData();
       }
     } else {
       if (data?.errors && Array.isArray(data.errors)) {
@@ -175,7 +137,9 @@ const CreatorProfile = () => {
     console.log(formData);
 
     const res = await fetch(
-      import.meta.env.VITE_SERVER + "/api/creators/portfolio/" + creatorId,
+      import.meta.env.VITE_SERVER +
+        "/api/creators/portfolio/" +
+        props.creatorId,
       {
         method: "PUT",
         headers: {},
@@ -238,7 +202,7 @@ const CreatorProfile = () => {
   };
 
   //load page
-  if (isLoading) {
+  if (props.isLoading) {
     return <div>Loading...</div>;
   } else
     return (
@@ -272,11 +236,11 @@ const CreatorProfile = () => {
                       />
                     ) : (
                       <>
-                        {creatorData?.logo_image_url ? (
+                        {props.creatorData?.logo_image_url ? (
                           <CardMedia
                             component="img"
                             alt="Logo"
-                            src={creatorData?.logo_image_url}
+                            src={props.creatorData?.logo_image_url}
                             sx={{ maxHeight: "100px", maxWidth: "300px" }}
                           />
                         ) : (
@@ -290,7 +254,7 @@ const CreatorProfile = () => {
                     style={{ display: "none" }}
                     id="image-upload-button"
                     type="file"
-                    onChange={handleImageUpload}
+                    onChange={handleUpdateLogo}
                   />
                   <label htmlFor="image-upload-button">
                     <Button
@@ -306,7 +270,7 @@ const CreatorProfile = () => {
                 </Box>
                 <Box
                   component="form"
-                  onSubmit={handleUpdateCreator}
+                  onSubmit={props.handleUpdateCreator}
                   noValidate
                   sx={{ mt: 1 }}
                   paddingX={2}
@@ -317,7 +281,7 @@ const CreatorProfile = () => {
                     id="pageName"
                     label="Page Name"
                     name="pageName"
-                    defaultValue={creatorData?.display_name}
+                    defaultValue={props.creatorData?.display_name}
                   />
 
                   <TextField
@@ -327,13 +291,13 @@ const CreatorProfile = () => {
                     label="Tagline"
                     name="tagline"
                     placeholder="Add a short tagline to let people know more about who you are"
-                    defaultValue={creatorData?.tagline}
+                    defaultValue={props.creatorData?.tagline}
                   />
 
                   <Autocomplete
                     disablePortal
                     options={["SINGAPORE", "UNITED STATES"]}
-                    defaultValue={creatorData?.country_of_operation}
+                    defaultValue={props.creatorData?.country_of_operation}
                     renderInput={(params) => (
                       <TextField
                         name="country"
@@ -352,7 +316,7 @@ const CreatorProfile = () => {
                     id="about"
                     label="About"
                     name="about"
-                    defaultValue={creatorData?.about}
+                    defaultValue={props.creatorData?.about}
                     placeholder="Add a description to to let people know more about who you are, what you create and projects you're open to."
                   />
 

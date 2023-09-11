@@ -38,6 +38,12 @@ interface CreatorProjectConfigProps {
 const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
   const fetchData = useFetch();
   const { showSnackbar } = useSnackbar();
+  const userCtx = useContext(UserContext);
+
+  //creator variables
+  const creatorId = userCtx?.currentUser.creator_id;
+  const [creatorData, setCreatorData] = useState<CreatorData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // products state variables
   const [openAddProductDialog, setOpenAddProductDialog] = useState(false); //dialog
@@ -167,7 +173,6 @@ const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
           <Grid container rowSpacing={2}>
             {/* Request form settings */}
             <Grid item xs={9}>
-              {JSON.stringify(props.creatorData)}
               <Paper variant="outlined">
                 <Typography variant="h6" component="h4" padding={2}>
                   Request form settings

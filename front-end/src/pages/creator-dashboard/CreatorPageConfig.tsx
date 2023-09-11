@@ -57,9 +57,33 @@ const CreatorPageConfig = () => {
       payment_instructions?: string | null;
       lead_time_in_weeks?: number | null;
       slots_per_month?: number | null;
+      display_name?: string | null;
+      tagline?: string | null;
+      country_of_operation?: string | null;
+      about?: string | null;
     }
 
     const requestBody: UpdateProfileRequestBody = {};
+
+    const display_name = data.get("pageName");
+    if (display_name) {
+      requestBody.display_name = display_name.toString();
+    }
+
+    const tagline = data.get("tagline");
+    if (tagline) {
+      requestBody.tagline = tagline.toString();
+    }
+
+    const country_of_operation = data.get("country");
+    if (country_of_operation) {
+      requestBody.country_of_operation = country_of_operation.toString();
+    }
+
+    const about = data.get("about");
+    if (about) {
+      requestBody.about = about.toString();
+    }
 
     const project_description_guideline = data.get("briefDescriptionGuide");
     if (project_description_guideline) {
@@ -138,7 +162,13 @@ const CreatorPageConfig = () => {
         {/* page content */}
 
         {selectedSubpage === "business_profile" ? (
-          <CreatorProfileSubpage />
+          <CreatorProfileSubpage
+            creatorId={creatorId}
+            isLoading={isLoading}
+            handleUpdateCreator={handleUpdateCreator}
+            creatorData={creatorData}
+            getCreatorData={getCreatorData}
+          />
         ) : (
           <CreatorProjectConfig
             creatorId={creatorId}
