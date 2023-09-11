@@ -45,6 +45,7 @@ const getCreatorPortfolioItem = async (req: Request, res: Response) => {
   }
 };
 
+//accepts a multipart form containing image and body params. creates a portfolio item 
 const uploadCreatorPortfolioItem = async (req: Request, res: Response) => {
   try {
     const imageFile = req.file;

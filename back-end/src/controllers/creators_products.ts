@@ -1,5 +1,21 @@
 import { Request, Response, query } from "express";
 import { pool } from "../db/db";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3"; //AWS s3 client
+import sharp from "sharp";
+import { v4 } from "uuid";
+
+const bucketName = process.env.BUCKET_NAME;
+const region = process.env.BUCKET_REGION;
+const accessKeyId = process.env.ACCESS_KEY;
+const secretAccessKey = process.env.SECRET_ACCESS_KEY;
+
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: accessKeyId || "",
+    secretAccessKey: secretAccessKey || "",
+  },
+  region: region || "",
+});
 
 const getProductsByCreatorId = async (req: Request, res: Response) => {
   try {
@@ -28,9 +44,19 @@ const getProductsByCreatorId = async (req: Request, res: Response) => {
   }
 };
 
+//accepts a multipart form containing image and body params. creates a product
 const createProductForCreator = async (req: Request, res: Response) => {
   try {
-    // Check if the creator exists
+    console.log("request received");
+    const imageFile = req.file;
+    const title = req.body.title;
+    const description = req.body.caption;
+    const currency = req.body.currency;
+    const starting_price = req.body.starting_price;
+    const creatorId = req.params.creator_id;
+    const imageId = v4(); //generate uuid for image
+
+    // Check if the creator exists before processing
     const getCreatorById = "SELECT * FROM creators WHERE id = $1";
     const result = await pool.query(getCreatorById, [req.params.creator_id]);
 
@@ -40,19 +66,51 @@ const createProductForCreator = async (req: Request, res: Response) => {
         .json({ status: "error", msg: "creator not found" });
     }
 
+    // Check if imageFile is defined before processing
+    if (!imageFile) {
+      return res
+        .status(400)
+        .json({ status: "error", msg: "image file not provided" });
+    }
+
+    //resize image
+    const buffer = await sharp(imageFile.buffer)
+      .resize({
+        fit: sharp.fit.contain,
+        width: 400,
+        height: 400,
+      })
+      .jpeg({ quality: 80 })
+      .toBuffer();
+
+    //send image to s3
+    const params = {
+      Bucket: bucketName,
+      Key: `${creatorId}-product-${imageId}.jpeg`, //create unique file name to prevent overrides due to same name
+      Body: buffer,
+      ContentType: imageFile.mimetype,
+      ACL: "public-read", // Make the object publicly accessible
+    };
+
+    const command = new PutObjectCommand(params);
+
+    await s3.send(command);
+
+    //TODO: generate presigned url https://aws.amazon.com/blogs/developer/generate-presigned-url-modular-aws-sdk-javascript/
+    //generate URL
+    const imageUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${params.Key}`;
+
     //Create SQL query to create product
     const insertProductQuery =
       "INSERT INTO creator_products (image_url, title, description, currency, starting_price, creator_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *";
 
-    const { image_url, title, description, currency, starting_price } =
-      req.body;
     const productValues = [
-      image_url,
+      imageUrl,
       title,
       description,
       currency,
       starting_price,
-      req.params.creator_id,
+      creatorId,
     ];
 
     //Create product

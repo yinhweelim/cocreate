@@ -77,6 +77,7 @@ router.put(
   validateCreatorIdInParam,
   validateCreateProductData,
   checkValid,
+  upload.single("image"),
   createProductForCreator
 );
 router.patch(
