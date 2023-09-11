@@ -40,11 +40,6 @@ const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
   const { showSnackbar } = useSnackbar();
   const userCtx = useContext(UserContext);
 
-  //creator variables
-  const creatorId = userCtx?.currentUser.creator_id;
-  const [creatorData, setCreatorData] = useState<CreatorData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
   // products state variables
   const [openAddProductDialog, setOpenAddProductDialog] = useState(false); //dialog
   const [products, setProducts] = useState([]);

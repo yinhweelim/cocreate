@@ -54,7 +54,7 @@ export interface CreatorData {
   display_project_count: boolean;
   allow_consultation_booking: boolean;
   consultation_notice_days: number;
-  lead_time_in_weeks: number;
+  lead_time_in_weeks: number | null;
   project_description_guideline: string;
   payment_instructions: string;
   is_deleted: boolean;
