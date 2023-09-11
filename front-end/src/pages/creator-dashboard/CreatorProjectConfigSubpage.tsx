@@ -17,6 +17,16 @@ import {
   CardContent,
   CardMedia,
 } from "@mui/material";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
+import CreatorProductCard from "../../components/CreatorProductCard";
 
 const CreatorProjectConfig = () => {
   const fetchData = useFetch();
@@ -31,6 +41,11 @@ const CreatorProjectConfig = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState<
     "success" | "warning"
   >("success");
+
+  // products state variables
+  const [openAddProductDialog, setOpenAddProductDialog] = useState(false); //dialog
+  const [products, setProducts] = useState([]);
+  const [selectedProductImage, setSelectedProductImage] = useState(null);
 
   //fetch creator data on first mount
   const getCreatorData = async () => {
@@ -47,11 +62,21 @@ const CreatorProjectConfig = () => {
     }
   };
 
+  const getProducts = async () => {
+    try {
+      const res: data = await fetchData("/api/creators/products/" + creatorId);
+      setProducts(res.data.items);
+    } catch (error) {
+      alert(JSON.stringify(error));
+    }
+  };
+
   useEffect(() => {
     getCreatorData();
+    getProducts();
   }, []);
 
-  //submit data
+  //update profile data
   const handleUpdateProfile = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
@@ -105,7 +130,111 @@ const CreatorProjectConfig = () => {
     }
   };
 
-  const handleUpdateProducts = () => {};
+  //product option functions
+
+  //upload product image for preview
+  const handleSelectProductImage = (event: any) => {
+    const imageFile = event.target.files[0];
+    setSelectedProductImage(imageFile);
+  };
+
+  //add product
+  const handleAddProduct = async (event: React.FormEvent<HTMLFormElement>) => {
+    console.log("add product");
+    event.preventDefault();
+
+    //construct request body
+    const submittedData = new FormData(event.currentTarget);
+
+    const requestBody = {
+      title: submittedData.get("title"),
+      caption: submittedData.get("description"),
+      currency: submittedData.get("currency"),
+      starting_price: submittedData.get("starting_price"),
+    };
+    console.log(requestBody);
+
+    //append image and body to formData
+    const formData = new FormData();
+    if (selectedProductImage) {
+      formData.append("image", selectedProductImage);
+    }
+    formData.append("title", requestBody.title as string);
+    formData.append("caption", requestBody.caption as string);
+    formData.append("currency", requestBody.currency as string);
+    formData.append("starting_price", requestBody.starting_price as string);
+
+    const res = await fetch(
+      import.meta.env.VITE_SERVER + "/api/creators/products/" + creatorId,
+      {
+        method: "PUT",
+        headers: {},
+        body: formData,
+      }
+    );
+    const data: any = await res.json();
+
+    let returnValue = {};
+    if (res.ok) {
+      if (data.status === "error") {
+        returnValue = { ok: false, data: data.msg };
+        setSelectedProductImage(null); //reset default
+        setSnackbarSeverity("warning");
+        setSnackbarMessage("Product item upload failed");
+        setOpenSnackbar(true);
+        setOpenAddProductDialog(false);
+      } else {
+        returnValue = { ok: true, data };
+        setSnackbarSeverity("success");
+        setSnackbarMessage("Product item updated successfully");
+        setOpenSnackbar(true);
+        setOpenAddProductDialog(false);
+        getProducts();
+      }
+    } else {
+      if (data?.errors && Array.isArray(data.errors)) {
+        const messages = data.errors.map((item: any) => item.msg);
+        returnValue = { ok: false, data: messages };
+      } else if (data?.status === "error") {
+        returnValue = { ok: false, data: data.message || data.msg };
+      } else {
+        console.log(data);
+        returnValue = { ok: false, data: "An error has occurred" };
+      }
+    }
+
+    return returnValue;
+  };
+
+  //close dialog to add product
+  const handleCloseAddProductDialog = () => {
+    setOpenAddProductDialog(false);
+  };
+
+  //delete product
+  const handleDeleteProduct = async (productId: string) => {
+    console.log(`Delete project with ID: ${productId}`);
+
+    const res: data = await fetchData(
+      "/api/creators/products/" + productId,
+      "DELETE",
+      undefined,
+      undefined
+    );
+
+    if (res.ok) {
+      setSnackbarSeverity("success");
+      setSnackbarMessage("Product deleted successfully");
+      getProducts();
+      setOpenSnackbar(true);
+      getProducts();
+    } else {
+      console.log(JSON.stringify(res.data));
+      setSnackbarSeverity("warning");
+      setSnackbarMessage("Failed to delete product");
+      setOpenSnackbar(true);
+    }
+  };
 
   //snackbar functions
   const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -246,19 +375,30 @@ const CreatorProjectConfig = () => {
                   Provide up to 3 sample product options that potential patrons
                   can choose from.
                 </Typography>
-                <Box
-                  component="form"
-                  onSubmit={handleUpdateProducts}
-                  noValidate
-                  sx={{ mt: 1 }}
-                  paddingX={2}
+                <Grid
+                  container
+                  flexDirection={"row"}
+                  spacing={1}
+                  paddingLeft={2}
                 >
+                  {products?.map((data: any, index: number) => (
+                    <CreatorProductCard
+                      key={index}
+                      {...data}
+                      onDelete={() => handleDeleteProduct(data.id)}
+                    />
+                  ))}
+                </Grid>
+                <Box sx={{ mt: 1 }} paddingX={2}>
                   <Button
-                    type="submit"
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
+                    startIcon={<ModeEditOutlineOutlinedIcon />}
+                    onClick={() => {
+                      setOpenAddProductDialog(true);
+                    }}
                   >
-                    Add
+                    Add Product
                   </Button>
                 </Box>
               </Paper>
@@ -295,6 +435,105 @@ const CreatorProjectConfig = () => {
             </Alert>
           </Snackbar>
         </Stack>
+
+        {/* dialog for add product */}
+        <Dialog
+          open={openAddProductDialog}
+          onClose={handleCloseAddProductDialog}
+        >
+          <DialogTitle>Add Product Option</DialogTitle>
+          <Box component="form" onSubmit={handleAddProduct} noValidate>
+            <DialogContent>
+              <Typography variant="body1">Upload image</Typography>
+              <Card>
+                {selectedProductImage ? (
+                  <CardMedia
+                    component="img"
+                    alt="product-image"
+                    src={URL.createObjectURL(selectedProductImage)}
+                    sx={{ maxWidth: "300px" }}
+                  />
+                ) : (
+                  <CardContent>No image</CardContent>
+                )}
+              </Card>
+              <input
+                accept="image/*"
+                style={{ display: "none" }}
+                id="product-image-upload-button"
+                type="file"
+                onChange={handleSelectProductImage}
+              />
+              <label htmlFor="product-image-upload-button">
+                <Button
+                  variant="outlined"
+                  component="span"
+                  color="primary"
+                  size="small"
+                  startIcon={<EditIcon></EditIcon>}
+                >
+                  Add new
+                </Button>
+              </label>
+              <TextField
+                autoFocus
+                margin="normal"
+                fullWidth
+                id="projectTitle"
+                label="Title"
+                name="title"
+                type="text"
+                placeholder="Product option title"
+              />
+              <TextField
+                autoFocus
+                multiline
+                minRows={2}
+                margin="normal"
+                fullWidth
+                id="projectDescription"
+                label="Description"
+                name="description"
+                type="text"
+                placeholder="Add a short description of this product option such as the size, materials, and complexity"
+              />
+
+              <Autocomplete
+                disablePortal
+                options={["SGD", "USD"]}
+                renderInput={(params) => (
+                  <TextField
+                    name="currency"
+                    margin="normal"
+                    {...params}
+                    label="Currency"
+                  />
+                )}
+              />
+              <TextField
+                autoFocus
+                margin="normal"
+                fullWidth
+                id="startingPrice"
+                label="Starting rate"
+                name="starting_price"
+                type="number"
+                placeholder="Add your starting rate for this project option"
+              />
+
+              {/* <input onChange={fileSelected} type="file" accept="image/*"></input>
+            <Button onClick={submit}>Add image</Button> */}
+            </DialogContent>
+            <DialogActions>
+              <Button variant="outlined" type="submit">
+                Add
+              </Button>
+              <Button variant="outlined" onClick={handleCloseAddProductDialog}>
+                Cancel
+              </Button>
+            </DialogActions>
+          </Box>
+        </Dialog>
       </>
     );
 };
