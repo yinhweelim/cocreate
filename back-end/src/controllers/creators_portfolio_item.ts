@@ -45,7 +45,7 @@ const getCreatorPortfolioItem = async (req: Request, res: Response) => {
   }
 };
 
-//accepts a multipart form containing image and body params. creates a portfolio item 
+//accepts a multipart form containing image and body params. creates a portfolio item
 const uploadCreatorPortfolioItem = async (req: Request, res: Response) => {
   try {
     const imageFile = req.file;
@@ -75,9 +75,8 @@ const uploadCreatorPortfolioItem = async (req: Request, res: Response) => {
       .resize({
         fit: sharp.fit.contain,
         width: 400,
-        height: 400,
       })
-      .jpeg({ quality: 80 })
+
       .toBuffer();
 
     //send image to s3

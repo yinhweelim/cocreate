@@ -157,6 +157,7 @@ const CreatorProfile = (props: CreatorProfileProps) => {
         setOpenAddPortfolioItem(false);
       } else {
         returnValue = { ok: true, data };
+        setSelectedPortfolioImage(null); //reset default
         showSnackbar("Portfolio item updated successfully", "success");
         setOpenAddPortfolioItem(false);
         getPortfolioProjects();

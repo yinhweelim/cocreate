@@ -112,6 +112,7 @@ const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
     let returnValue = {};
     if (res.ok) {
       if (data.status === "error") {
+        setSelectedProductImage(null); //reset default
         returnValue = { ok: false, data: data.msg };
         showSnackbar("Failed to add product", "warning");
         setOpenAddProductDialog(false);
@@ -296,6 +297,7 @@ const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
                       key={index}
                       {...data}
                       onDelete={() => handleDeleteProduct(data.id)}
+                      displayDelete
                     />
                   ))}
                 </Grid>

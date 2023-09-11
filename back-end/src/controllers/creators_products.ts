@@ -77,7 +77,6 @@ const createProductForCreator = async (req: Request, res: Response) => {
       .resize({
         fit: sharp.fit.contain,
         width: 400,
-        height: 400,
       })
       .jpeg({ quality: 80 })
       .toBuffer();
