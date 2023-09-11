@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
 import UserContext from "../../context/UserContext";
 import { CreatorData, data } from "../../interfaces";
+import { useSnackbar, SnackbarContext } from "../../context/SnackbarContext";
 
 //MUI components
 import { Box, Grid, Button, Stack, Divider, Snackbar } from "@mui/material";
@@ -12,7 +13,11 @@ import MuiAlert, { AlertProps } from "@mui/material/Alert";
 //custom components
 import Sidebar from "../../components/Sidebar";
 
-function DashboardLayout({ children }: { children: ReactNode }) {
+interface DashboardLayoutProps {
+  children: ReactNode;
+}
+
+function DashboardLayout({ children }: DashboardLayoutProps) {
   const fetchData = useFetch();
   const userCtx = useContext(UserContext);
 
@@ -32,7 +37,7 @@ function DashboardLayout({ children }: { children: ReactNode }) {
   const getCreatorData = async () => {
     // Set isLoading to true before making the API call
     setIsLoading(true);
-    console.log(creatorId);
+
     try {
       const res: data = await fetchData("/api/creators/" + creatorId);
       setCreatorData(res.data.creator);
@@ -48,6 +53,11 @@ function DashboardLayout({ children }: { children: ReactNode }) {
   }, []);
 
   //snackbar functions
+  const showSnackbar = (message: string, severity: "success" | "warning") => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setOpenSnackbar(true);
+  };
 
   const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -67,31 +77,37 @@ function DashboardLayout({ children }: { children: ReactNode }) {
     setOpenSnackbar(false);
   };
 
+  const snackbarFunctions = {
+    showSnackbar,
+  };
+
   return (
     <>
       {/* Dashboard layout */}
+      <SnackbarContext.Provider value={snackbarFunctions}>
+        <Box sx={{ display: "flex" }}>
+          <Sidebar></Sidebar>
+          {children}
+        </Box>
 
-      <Box sx={{ display: "flex" }}>
-        <Sidebar></Sidebar>
-        {children}
-      </Box>
+        {/* Snackbar */}
 
-      {/* Snackbar */}
-      <Stack spacing={2} sx={{ width: "100%" }}>
-        <Snackbar
-          open={openSnackbar}
-          autoHideDuration={2000}
-          onClose={handleClose}
-        >
-          <Alert
+        <Stack spacing={2} sx={{ width: "100%" }}>
+          <Snackbar
+            open={openSnackbar}
+            autoHideDuration={2000}
             onClose={handleClose}
-            severity={snackbarSeverity}
-            sx={{ width: "100%" }}
           >
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
-      </Stack>
+            <Alert
+              onClose={handleClose}
+              severity={snackbarSeverity}
+              sx={{ width: "100%" }}
+            >
+              {snackbarMessage}
+            </Alert>
+          </Snackbar>
+        </Stack>
+      </SnackbarContext.Provider>
     </>
   );
 }

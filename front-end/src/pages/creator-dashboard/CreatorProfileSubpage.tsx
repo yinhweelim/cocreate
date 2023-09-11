@@ -1,18 +1,15 @@
 import React, { useState, useContext, useEffect } from "react";
 import useFetch from "../../hooks/useFetch";
 import UserContext from "../../context/UserContext";
+import { useSnackbar } from "../../context/SnackbarContext";
 import { data, CreatorData } from "../../interfaces";
-import { Stack, Snackbar } from "@mui/material";
-import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import EditIcon from "@mui/icons-material/Edit";
 import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import {
   Grid,
@@ -31,18 +28,12 @@ import CreatorPortfolioCard from "../../components/CreatorPortfolioCard";
 const CreatorProfile = () => {
   const fetchData = useFetch();
   const userCtx = useContext(UserContext);
+  const { showSnackbar } = useSnackbar();
 
   //creator variables
   const creatorId = userCtx?.currentUser.creator_id;
   const [creatorData, setCreatorData] = useState<CreatorData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  //snackbar state variables
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<
-    "success" | "warning"
-  >("success");
 
   //logo state variable
   const [selectedLogo, setSelectedLogo] = useState(null);
@@ -102,15 +93,11 @@ const CreatorProfile = () => {
       requestBody
     );
     if (res.ok) {
-      setSnackbarSeverity("success");
-      setSnackbarMessage("Profile updated successfully");
-      setOpenSnackbar(true);
+      showSnackbar("Profile updated successfully", "success");
       getCreatorData();
     } else {
       console.log(JSON.stringify(res.data));
-      setSnackbarSeverity("warning");
-      setSnackbarMessage("Profile update failed");
-      setOpenSnackbar(true);
+      showSnackbar("Profile update failed", "warning");
     }
   };
 
@@ -135,14 +122,10 @@ const CreatorProfile = () => {
     if (res.ok) {
       if (data.status === "error") {
         returnValue = { ok: false, data: data.msg };
-        setSnackbarSeverity("warning");
-        setSnackbarMessage("Logo upload failed");
-        setOpenSnackbar(true);
+        showSnackbar("Logo upload failed", "warning");
       } else {
         returnValue = { ok: true, data };
-        setSnackbarSeverity("success");
-        setSnackbarMessage("Logo updated successfully");
-        setOpenSnackbar(true);
+        showSnackbar("Logo updated successfully", "success");
         getCreatorData();
       }
     } else {
@@ -206,15 +189,11 @@ const CreatorProfile = () => {
       if (data.status === "error") {
         returnValue = { ok: false, data: data.msg };
         setSelectedPortfolioImage(null); //reset default
-        setSnackbarSeverity("warning");
-        setSnackbarMessage("Portfolio item upload failed");
-        setOpenSnackbar(true);
+        showSnackbar("Portfolio item upload failed", "warning");
         setOpenAddPortfolioItem(false);
       } else {
         returnValue = { ok: true, data };
-        setSnackbarSeverity("success");
-        setSnackbarMessage("Portfolio item updated successfully");
-        setOpenSnackbar(true);
+        showSnackbar("Portfolio item updated successfully", "success");
         setOpenAddPortfolioItem(false);
         getPortfolioProjects();
       }
@@ -250,37 +229,12 @@ const CreatorProfile = () => {
     );
 
     if (res.ok) {
-      setSnackbarSeverity("success");
-      setSnackbarMessage("Portfolio item deleted successfully");
-      getPortfolioProjects();
-      setOpenSnackbar(true);
+      showSnackbar("Portfolio item deleted successfully", "success");
       getPortfolioProjects();
     } else {
       console.log(JSON.stringify(res.data));
-      setSnackbarSeverity("warning");
-      setSnackbarMessage("Failed to delete portfolio item");
-      setOpenSnackbar(true);
+      showSnackbar("Failed to delete portfolio item", "warning");
     }
-  };
-
-  //snackbar functions
-
-  const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-    props,
-    ref
-  ) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
-
-  const handleClose = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpenSnackbar(false);
   };
 
   //load page
@@ -511,23 +465,6 @@ const CreatorProfile = () => {
           </Grid>
         </Grid>
 
-        {/* Snackbar */}
-        <Stack spacing={2} sx={{ width: "100%" }}>
-          <Snackbar
-            open={openSnackbar}
-            autoHideDuration={2000}
-            onClose={handleClose}
-          >
-            <Alert
-              onClose={handleClose}
-              severity={snackbarSeverity}
-              sx={{ width: "100%" }}
-            >
-              {snackbarMessage}
-            </Alert>
-          </Snackbar>
-        </Stack>
-
         {/* dialog for add portfolio project */}
         <Dialog
           open={openAddPortfolioItem}
@@ -589,9 +526,6 @@ const CreatorProfile = () => {
                 type="text"
                 placeholder="Add a short description of this project"
               />
-
-              {/* <input onChange={fileSelected} type="file" accept="image/*"></input>
-            <Button onClick={submit}>Add image</Button> */}
             </DialogContent>
             <DialogActions>
               <Button variant="outlined" type="submit">
