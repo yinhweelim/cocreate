@@ -8,36 +8,38 @@ import Typography from "@mui/material/Typography";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const CreatorPortfolioCard = (props: {
+  description: string;
   onClick: React.MouseEventHandler<HTMLLIElement> | undefined;
   onDelete: () => void;
   title?: string;
-  caption?: string;
   currency?: string;
   starting_price?: number;
   image_url?: string;
   id?: string;
   displayDelete?: boolean;
+  width?: number;
 }) => {
   return (
     <Grid item xs={4}>
       <Card
         sx={{
-          width: 200,
+          height: 300,
+          width: props.width,
           display: "flex",
           flexDirection: "column",
         }}
       >
         <CardMedia
-          sx={{ height: 200, padding: "1em 1em 0 1em", objectFit: "cover" }}
+          sx={{ height: 300, padding: "1em 1em 0 1em", objectFit: "cover" }}
           image={props.image_url || undefined}
           title="Portfolio Image"
         />
-        <CardContent style={{ flex: 1 }}>
+        <CardContent sx={{ flex: 1 }}>
           <Typography gutterBottom variant="body1" component="div">
             {props.title || "Title"}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {props.caption || "Caption"}
+            {props.description || "Caption"}
           </Typography>
           <Typography variant="subtitle1" color="text.secondary">
             From {props.currency || "Currency"}{" "}

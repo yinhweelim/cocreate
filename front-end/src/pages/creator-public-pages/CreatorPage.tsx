@@ -109,7 +109,13 @@ const CreatorPage = () => {
           </Stack>
 
           {/* creator gallery */}
-          <Grid container display="flex" justifyContent="center" spacing={2}>
+          <Grid
+            container
+            display="flex"
+            justifyContent="center"
+            spacing={2}
+            paddingTop={2}
+          >
             <Stack direction={"row"} spacing={1}>
               {portfolioItems?.map((data: any, index: number) => (
                 <>
@@ -126,28 +132,14 @@ const CreatorPage = () => {
                         title="Portfolio Image"
                       />
                     </Card>
-
-                    {/* <Typography variant="subtitle2" textAlign="center">
-                      {data.title}
-                    </Typography>
-                    <Typography variant="subtitle1" textAlign="center">
-                      {data.caption}
-                    </Typography> */}
                   </Stack>
                 </>
-                //   <CreatorPortfolioCard
-                //     key={index}
-                //     {...data}
-                //     onDelete={null}
-                //     deleteDisplayConfig="none"
-                //     cardHeight={250}
-                //   />
               ))}
             </Stack>
           </Grid>
 
           {/* about */}
-          <Grid container paddingTop={4} display="flex" justifyContent="center">
+          <Grid container paddingY={4} display="flex" justifyContent="center">
             <Grid item xs={8}>
               <Typography variant="body1">{creatorData?.about}</Typography>
             </Grid>
@@ -178,6 +170,7 @@ const CreatorPage = () => {
                   {...data}
                   displayDelete={false}
                   onDelete={null}
+                  width={200}
                 />
               ))}
             </Stack>
