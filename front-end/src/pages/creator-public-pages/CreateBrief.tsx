@@ -33,6 +33,7 @@ import AddAPhoto from "@mui/icons-material/AddAPhoto";
 import { JSX } from "react/jsx-runtime";
 const CreateBrief = () => {
   const params = useParams();
+  const navigate = useNavigate();
   const fetchData = useFetch();
   const userCtx = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(true);
@@ -93,31 +94,32 @@ const CreateBrief = () => {
                   spacing={4}
                   justifyContent="space-between"
                 >
-                  <Box>
-                    <Typography variant="h5" textAlign="left" paddingTop={2}>
-                      Let the magic begin...
-                    </Typography>
-                    <Typography
-                      variant="overline"
-                      textAlign="left"
-                      paddingTop={2}
-                    >
-                      Brief for {creatorData?.display_name} <br />
-                    </Typography>
-                    <Typography variant="body1" textAlign="left" paddingTop={2}>
-                      Fill {creatorData?.display_name} in on your ideas and
-                      requirements
-                    </Typography>
-                  </Box>
+                  <Typography variant="h5" textAlign="left" paddingTop={2}>
+                    Let the magic begin...
+                  </Typography>
                   <IconButton
                     color="default"
-                    size="large"
-                    component={RouterLink}
-                    to="/"
+                    size="small"
+                    onClick={() => {
+                      navigate(-1);
+                    }}
                   >
                     <CloseIcon />
                   </IconButton>
                 </Stack>
+                <Box>
+                  <Typography
+                    variant="overline"
+                    textAlign="left"
+                    paddingTop={2}
+                  >
+                    Brief for {creatorData?.display_name} <br />
+                  </Typography>
+                  <Typography variant="body1" textAlign="left" paddingTop={2}>
+                    Fill {creatorData?.display_name} in on your ideas and
+                    requirements
+                  </Typography>
+                </Box>
               </Stack>
 
               {/* options */}
@@ -260,7 +262,14 @@ const CreateBrief = () => {
                   <Button variant="contained" type="submit">
                     Submit
                   </Button>
-                  <Button variant="contained">Cancel</Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      navigate(-1);
+                    }}
+                  >
+                    Cancel
+                  </Button>
                 </Stack>
               </Stack>
             </Stack>
