@@ -2,20 +2,12 @@ import React, { ReactNode } from "react";
 import { useState } from "react";
 
 //MUI components
-import {
-  Box,
-  Grid,
-  Button,
-  Stack,
-  Divider,
-  Snackbar,
-  Container,
-} from "@mui/material";
+import { Box, Stack, Snackbar, Container } from "@mui/material";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 
 //custom components
 import Sidebar from "../../components/Sidebar";
-import { useSnackbar, SnackbarContext } from "../../context/SnackbarContext";
+import { SnackbarContext } from "../../context/SnackbarContext";
 
 interface DashboardLayoutProps {
   children: ReactNode;

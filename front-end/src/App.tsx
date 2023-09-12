@@ -8,7 +8,6 @@ import { data } from "../src/interfaces";
 
 //MUI and theme
 import CssBaseline from "@mui/material/CssBaseline";
-import Container from "@mui/material/Container";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "./theme";
 
@@ -25,7 +24,9 @@ import PatronCommissions from "./pages/patron-dashboard/PatronCommissions";
 import { SidebarProvider } from "./context/SidebarContext";
 import CreatorPage from "./pages/creator-public-pages/CreatorPage";
 import CreateBrief from "./pages/creator-public-pages/CreateBrief";
+import ConfirmBrief from "./pages/creator-public-pages/ConfirmBrief";
 import DashboardLayout from "./pages/creator-dashboard/DashboardLayout";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   const fetchData = useFetch();
@@ -105,30 +106,32 @@ function App() {
               <Route
                 path="/dashboard/*"
                 element={
-                  <DashboardLayout handleLogout={handleLogout}>
-                    <Routes>
-                      <Route
-                        path="/projects"
-                        element={<CreatorProjects />}
-                      ></Route>
-                      <Route
-                        path="/pagesetup"
-                        element={<CreatorPageConfig />}
-                      ></Route>
-                      <Route
-                        path="/analytics"
-                        element={<CreatorAnalytics />}
-                      ></Route>
-                      <Route
-                        path="/commissions"
-                        element={<PatronCommissions />}
-                      ></Route>
-                      <Route
-                        path="/settings"
-                        element={<Settings></Settings>}
-                      ></Route>
-                    </Routes>
-                  </DashboardLayout>
+                  <PrivateRoute>
+                    <DashboardLayout handleLogout={handleLogout}>
+                      <Routes>
+                        <Route
+                          path="/projects"
+                          element={<CreatorProjects />}
+                        ></Route>
+                        <Route
+                          path="/pagesetup"
+                          element={<CreatorPageConfig />}
+                        ></Route>
+                        <Route
+                          path="/analytics"
+                          element={<CreatorAnalytics />}
+                        ></Route>
+                        <Route
+                          path="/commissions"
+                          element={<PatronCommissions />}
+                        ></Route>
+                        <Route
+                          path="/settings"
+                          element={<Settings></Settings>}
+                        ></Route>
+                      </Routes>
+                    </DashboardLayout>
+                  </PrivateRoute>
                 }
               ></Route>
               <Route
@@ -138,6 +141,10 @@ function App() {
               <Route
                 path="/creators/createbrief/:creator_id"
                 element={<CreateBrief></CreateBrief>}
+              ></Route>
+              <Route
+                path="/creators/confirmBrief/:creator_id"
+                element={<ConfirmBrief></ConfirmBrief>}
               ></Route>
             </Routes>
           </UserContext.Provider>
