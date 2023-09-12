@@ -85,62 +85,61 @@ function App() {
           >
             <CssBaseline />
 
-            <Container maxWidth="lg">
-              <Routes>
-                {/* landing page, signin and registration */}
-                <Route path="/" element={<LandingPage></LandingPage>}></Route>
-                <Route
-                  path="/sign-in"
-                  element={<SignInPage></SignInPage>}
-                ></Route>
-                <Route
-                  path="/registration"
-                  element={<Registration></Registration>}
-                ></Route>
-                <Route
-                  path="/registration/page-setup"
-                  element={<InitialPageSetup></InitialPageSetup>}
-                ></Route>
-                {/* shared pages */}
-                <Route
-                  path="/dashboard/*"
-                  element={
-                    <DashboardLayout handleLogout={handleLogout}>
-                      <Routes>
-                        <Route
-                          path="/projects"
-                          element={<CreatorProjects />}
-                        ></Route>
-                        <Route
-                          path="/pagesetup"
-                          element={<CreatorPageConfig />}
-                        ></Route>
-                        <Route
-                          path="/analytics"
-                          element={<CreatorAnalytics />}
-                        ></Route>
-                        <Route
-                          path="/commissions"
-                          element={<PatronCommissions />}
-                        ></Route>
-                        <Route
-                          path="/settings"
-                          element={<Settings></Settings>}
-                        ></Route>
-                      </Routes>
-                    </DashboardLayout>
-                  }
-                ></Route>
-                <Route
-                  path="/creators/:creator_id"
-                  element={<CreatorPage></CreatorPage>}
-                ></Route>
-                <Route
-                  path="/creators/createbrief/:creator_id"
-                  element={<CreateBrief></CreateBrief>}
-                ></Route>
-              </Routes>
-            </Container>
+            <Routes>
+              {/* landing page, signin and registration */}
+              <Route path="/" element={<LandingPage></LandingPage>}></Route>
+              <Route
+                path="/sign-in"
+                element={<SignInPage></SignInPage>}
+              ></Route>
+              <Route
+                path="/registration"
+                element={<Registration></Registration>}
+              ></Route>
+              <Route
+                path="/registration/page-setup"
+                element={<InitialPageSetup></InitialPageSetup>}
+              ></Route>
+              {/* shared pages */}
+
+              <Route
+                path="/dashboard/*"
+                element={
+                  <DashboardLayout handleLogout={handleLogout}>
+                    <Routes>
+                      <Route
+                        path="/projects"
+                        element={<CreatorProjects />}
+                      ></Route>
+                      <Route
+                        path="/pagesetup"
+                        element={<CreatorPageConfig />}
+                      ></Route>
+                      <Route
+                        path="/analytics"
+                        element={<CreatorAnalytics />}
+                      ></Route>
+                      <Route
+                        path="/commissions"
+                        element={<PatronCommissions />}
+                      ></Route>
+                      <Route
+                        path="/settings"
+                        element={<Settings></Settings>}
+                      ></Route>
+                    </Routes>
+                  </DashboardLayout>
+                }
+              ></Route>
+              <Route
+                path="/creators/:creator_id"
+                element={<CreatorPage></CreatorPage>}
+              ></Route>
+              <Route
+                path="/creators/createbrief/:creator_id"
+                element={<CreateBrief></CreateBrief>}
+              ></Route>
+            </Routes>
           </UserContext.Provider>
         </SidebarProvider>
       </ThemeProvider>

@@ -2,7 +2,15 @@ import React, { ReactNode } from "react";
 import { useState } from "react";
 
 //MUI components
-import { Box, Grid, Button, Stack, Divider, Snackbar } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Button,
+  Stack,
+  Divider,
+  Snackbar,
+  Container,
+} from "@mui/material";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 
 //custom components
@@ -55,28 +63,30 @@ function DashboardLayout({ children, handleLogout }: DashboardLayoutProps) {
     <>
       {/* Dashboard layout */}
       <SnackbarContext.Provider value={snackbarFunctions}>
-        <Box sx={{ display: "flex" }}>
-          <Sidebar handleLogout={handleLogout}></Sidebar>
-          {children}
-        </Box>
+        <Container maxWidth="lg">
+          <Box sx={{ display: "flex" }}>
+            <Sidebar handleLogout={handleLogout}></Sidebar>
+            {children}
+          </Box>
 
-        {/* Snackbar */}
+          {/* Snackbar */}
 
-        <Stack spacing={2} sx={{ width: "100%" }}>
-          <Snackbar
-            open={openSnackbar}
-            autoHideDuration={2000}
-            onClose={handleClose}
-          >
-            <Alert
+          <Stack spacing={2} sx={{ width: "100%" }}>
+            <Snackbar
+              open={openSnackbar}
+              autoHideDuration={2000}
               onClose={handleClose}
-              severity={snackbarSeverity}
-              sx={{ width: "100%" }}
             >
-              {snackbarMessage}
-            </Alert>
-          </Snackbar>
-        </Stack>
+              <Alert
+                onClose={handleClose}
+                severity={snackbarSeverity}
+                sx={{ width: "100%" }}
+              >
+                {snackbarMessage}
+              </Alert>
+            </Snackbar>
+          </Stack>
+        </Container>
       </SnackbarContext.Provider>
     </>
   );

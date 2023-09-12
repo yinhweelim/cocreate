@@ -58,40 +58,8 @@ const CreatorPage = () => {
     }
   };
 
-  // const getPortfolioProjects = async () => {
-  //   try {
-  //     const res: data = await fetchData("/api/creators/portfolio/" + creatorId);
-  //     setPortfolioItems(res.data.items);
-  //   } catch (error) {
-  //     console.error(JSON.stringify(error));
-  //   }
-  // };
-
-  // const getProducts = async () => {
-  //   try {
-  //     const res: data = await fetchData("/api/creators/products/" + creatorId);
-  //     setProducts(res.data.products);
-  //   } catch (error) {
-  //     alert(JSON.stringify(error));
-  //   }
-  // };
-
-  // const getProjectStages = async () => {
-  //   try {
-  //     const res: data = await fetchData(
-  //       "/api/creators/project_stages/" + creatorId
-  //     );
-  //     setProjectStages(res.data.projectStages);
-  //   } catch (error) {
-  //     alert(JSON.stringify(error));
-  //   }
-  // };
-
   useEffect(() => {
     getCreatorData();
-    // getPortfolioProjects();
-    // getProducts();
-    // getProjectStages();
   }, []);
 
   if (isLoading) {
@@ -171,6 +139,7 @@ const CreatorPage = () => {
             <Stack
               paddingY={4}
               display="flex"
+              width={"100%"}
               justifyContent="center"
               spacing={2}
               sx={{ backgroundColor: "rgba(0, 0, 0, 0.04)" }}
