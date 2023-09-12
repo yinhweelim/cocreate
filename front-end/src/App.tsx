@@ -32,10 +32,11 @@ function App() {
   const fetchData = useFetch();
   const initAuthId = JSON.parse(localStorage.getItem("authId")!);
   const initAccessToken = JSON.parse(localStorage.getItem("accessToken")!);
-
+  const initEmail = JSON.parse(localStorage.getItem("authEmail")!);
   // states
   const [accessToken, setAccessToken] = useState(initAccessToken);
   const [authId, setAuthId] = useState(initAuthId);
+  const [email, setEmail] = useState(initEmail);
   const [userArray, setUserArray] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
 
@@ -73,6 +74,8 @@ function App() {
         <SidebarProvider>
           <UserContext.Provider
             value={{
+              email,
+              setEmail,
               accessToken,
               setAccessToken,
               currentUser,
@@ -81,7 +84,6 @@ function App() {
               setUserArray,
               authId,
               setAuthId,
-              // getUserInfo,
             }}
           >
             <CssBaseline />
@@ -127,7 +129,9 @@ function App() {
                         ></Route>
                         <Route
                           path="/settings"
-                          element={<Settings></Settings>}
+                          element={
+                            <Settings getUserInfo={getUserInfo}></Settings>
+                          }
                         ></Route>
                       </Routes>
                     </DashboardLayout>

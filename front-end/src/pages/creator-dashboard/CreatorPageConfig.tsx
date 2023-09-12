@@ -116,7 +116,7 @@ const CreatorPageConfig = () => {
       getCreatorData();
     } else {
       console.log(JSON.stringify(res.data));
-      showSnackbar("Project settings updated failed", "warning");
+      showSnackbar("Project settings update failed", "warning");
     }
   };
 

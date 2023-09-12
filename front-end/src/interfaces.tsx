@@ -1,8 +1,8 @@
 export interface UserContextType {
+  email: String;
+  setEmail: React.Dispatch<React.SetStateAction<string>>;
   accessToken: String;
   setAccessToken: React.Dispatch<React.SetStateAction<String>>;
-  // role: String;
-  // setRole: React.Dispatch<React.SetStateAction<String>>;
   authId: String;
   setAuthId: React.Dispatch<React.SetStateAction<String>>;
   currentUser: UserInfoType;

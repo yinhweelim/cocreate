@@ -50,6 +50,7 @@ export default function SignIn() {
     });
     if (res.ok) {
       userCtx?.setAccessToken(res.data?.access);
+      userCtx?.setEmail(email);
       localStorage.setItem("accessToken", JSON.stringify(res.data.access));
 
       const decoded: any = jwtDecode(res.data?.access);

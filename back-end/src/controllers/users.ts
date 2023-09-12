@@ -33,26 +33,26 @@ const updateUser = async (req: Request, res: Response) => {
     const queryParams = [req.params.id];
 
     if ("country_of_residence" in req.body) {
-      updateFields.push("country_of_residence = $2");
+      updateFields.push("country_of_residence = $" + (queryParams.length + 1));
       queryParams.push(req.body.country_of_residence);
     }
 
     if ("avatar_image_url" in req.body) {
-      updateFields.push("avatar_image_url = $3");
+      updateFields.push("avatar_image_url = $" + (queryParams.length + 1));
       queryParams.push(req.body.avatar_image_url);
     }
 
     if ("given_name" in req.body) {
-      updateFields.push("given_name = $4");
+      updateFields.push("given_name = $" + (queryParams.length + 1));
       queryParams.push(req.body.given_name);
     }
 
     if ("last_name" in req.body) {
-      updateFields.push("last_name = $5");
+      updateFields.push("last_name = $" + (queryParams.length + 1));
       queryParams.push(req.body.last_name);
     }
     if ("is_deleted" in req.body) {
-      updateFields.push("is_deleted = $6");
+      updateFields.push("is_deleted = $" + (queryParams.length + 1));
       queryParams.push(req.body.is_deleted);
     }
 
@@ -167,7 +167,7 @@ const getUsersByAuthId = async (req: Request, res: Response) => {
     //SQL query to get users
 
     const usersQuery =
-      "SELECT id as user_id,role,creator_id,given_name,avatar_image_url FROM users WHERE auth_id = $1 ORDER BY role asc";
+      "SELECT id as user_id,role,creator_id,given_name,last_name, avatar_image_url,country_of_residence FROM users WHERE auth_id = $1 ORDER BY role asc";
     const usersResult = await pool.query(usersQuery, [req.params.auth_id]);
     const users = usersResult.rows;
 
