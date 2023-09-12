@@ -16,7 +16,6 @@ import { theme } from "./theme";
 import LandingPage from "./pages/LandingPage";
 import SignInPage from "./pages/SignIn";
 import Registration from "./pages/Registration";
-import Home from "./pages/Home";
 import Settings from "./pages/Settings";
 import InitialPageSetup from "./pages/InitialPageSetup";
 import CreatorProjects from "./pages/creator-dashboard/CreatorProjects";
@@ -58,6 +57,14 @@ function App() {
     getUserInfo();
   }, [authId]);
 
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("authId");
+    localStorage.removeItem("authEmail");
+    setAccessToken("");
+    setAuthId("");
+  };
+
   return (
     <React.Fragment>
       <ThemeProvider theme={theme}>
@@ -97,7 +104,7 @@ function App() {
                 <Route
                   path="/dashboard/*"
                   element={
-                    <DashboardLayout>
+                    <DashboardLayout handleLogout={handleLogout}>
                       <Routes>
                         <Route
                           path="/projects"

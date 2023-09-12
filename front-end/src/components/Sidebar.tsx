@@ -30,6 +30,11 @@ interface SimpleDialogProps {
   open: boolean;
   selectedValue: string | null;
   onClose: (value: string | null) => void;
+  handleLogout: () => void | null;
+}
+
+interface SidebarProps {
+  handleLogout: () => void | null;
 }
 
 function SimpleDialog(props: SimpleDialogProps) {
@@ -58,7 +63,7 @@ function SimpleDialog(props: SimpleDialogProps) {
           />
         ))}
         <Divider></Divider>
-        <ListItem disablePadding>
+        <ListItem disablePadding onClick={props.handleLogout}>
           <ListItemButton autoFocus component={RouterLink} to="/">
             <ListItemText primary={"Log out"} />
           </ListItemButton>
@@ -69,7 +74,7 @@ function SimpleDialog(props: SimpleDialogProps) {
 }
 
 //sidebar
-export default function Sidebar() {
+export default function Sidebar(props: SidebarProps) {
   const userCtx = useContext(UserContext);
   const currentUser = userCtx?.currentUser;
 
@@ -234,6 +239,7 @@ export default function Sidebar() {
           selectedValue={selectedValue}
           open={open}
           onClose={handleClose}
+          handleLogout={props.handleLogout}
         />
       </Drawer>
     </>

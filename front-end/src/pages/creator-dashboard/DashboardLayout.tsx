@@ -11,9 +11,10 @@ import { useSnackbar, SnackbarContext } from "../../context/SnackbarContext";
 
 interface DashboardLayoutProps {
   children: ReactNode;
+  handleLogout: () => void | null;
 }
 
-function DashboardLayout({ children }: DashboardLayoutProps) {
+function DashboardLayout({ children, handleLogout }: DashboardLayoutProps) {
   //snackbar state variables
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -55,7 +56,7 @@ function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Dashboard layout */}
       <SnackbarContext.Provider value={snackbarFunctions}>
         <Box sx={{ display: "flex" }}>
-          <Sidebar></Sidebar>
+          <Sidebar handleLogout={handleLogout}></Sidebar>
           {children}
         </Box>
 
