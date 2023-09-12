@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import UserContext from "../context/UserContext";
 import useFetch from "../hooks/useFetch";
 import { data } from "../interfaces";
@@ -9,9 +9,6 @@ import {
   Divider,
   Stack,
   Autocomplete,
-  Card,
-  CardContent,
-  CardMedia,
   Paper,
   TextField,
   Typography,
@@ -81,32 +78,19 @@ const Settings = (props: SettingsProps) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    interface UpdateProfileRequestBody {
-      given_name?: string | null;
-      last_name?: string | null;
-      country_of_residence?: string | null;
-    }
     const given_name = data.get("given_name");
     const last_name = data.get("last_name");
     const country_of_residence = data.get("country");
 
-    const requestBody: UpdateProfileRequestBody = {
+    const res: data = await fetchData("/api/users/" + userId, "PATCH", {
       given_name,
       last_name,
-      country_of_residence:
-        typeof country_of_residence === "string" ? country_of_residence : null,
-    };
-
-    const res: data = await fetchData(
-      "/api/users/" + userId,
-      "PATCH",
-      requestBody
-    );
+      country_of_residence,
+    });
     if (res.ok) {
       showSnackbar("User updated successfully", "success");
       props.getUserInfo();
     } else {
-      console.log(JSON.stringify(res.data));
       showSnackbar("User update failed", "warning");
     }
   };
@@ -121,7 +105,7 @@ const Settings = (props: SettingsProps) => {
         ></SectionHeading>
 
         <Divider />
-        {JSON.stringify(userData)}
+
         {/* page content */}
         <Grid container paddingY={4}>
           <Grid container rowSpacing={2}>

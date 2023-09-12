@@ -51,7 +51,7 @@ function App() {
     const userInfo = res.data.users;
 
     // Set current user and user info
-    if (!currentUser) setCurrentUser(userInfo[0]);
+    if (userArray.length == 0) setCurrentUser(userInfo[0]);
     setUserArray(userInfo);
   };
 
