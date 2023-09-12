@@ -134,17 +134,26 @@ function App() {
                   </PrivateRoute>
                 }
               ></Route>
+
               <Route
                 path="/creators/:creator_id"
                 element={<CreatorPage></CreatorPage>}
               ></Route>
               <Route
                 path="/creators/createbrief/:creator_id"
-                element={<CreateBrief></CreateBrief>}
+                element={
+                  <PrivateRoute>
+                    <CreateBrief></CreateBrief>
+                  </PrivateRoute>
+                }
               ></Route>
               <Route
                 path="/creators/confirmBrief/:creator_id"
-                element={<ConfirmBrief></ConfirmBrief>}
+                element={
+                  <PrivateRoute>
+                    <ConfirmBrief></ConfirmBrief>
+                  </PrivateRoute>
+                }
               ></Route>
             </Routes>
           </UserContext.Provider>
