@@ -63,6 +63,7 @@ const PatronCommissions = () => {
     return (
       <>
         {/* {JSON.stringify(briefs)} */}
+
         <Grid container direction="column">
           {/* header with action buttons */}
           <SectionHeading
@@ -75,9 +76,9 @@ const PatronCommissions = () => {
           {/* page content */}
           <Grid container paddingY={4}>
             <Grid container flexDirection="column" rowSpacing={2}>
-              <Stack paddingLeft={2} paddingBottom={2}>
-                <Typography variant="h6" paddingY={2}>
-                  Project Briefs
+              <Stack paddingLeft={2} paddingBottom={4}>
+                <Typography variant="overline" paddingY={1} fontSize="1rem">
+                  briefs
                 </Typography>
                 <Grid container flexDirection={"row"} spacing={1}>
                   {briefs?.map((data: any, index: number) => (
@@ -91,21 +92,16 @@ const PatronCommissions = () => {
                 </Grid>
               </Stack>
 
+              {/* TODO: add pagination */}
+
               <Divider />
               <Stack paddingLeft={2} paddingTop={2}>
-                <Typography variant="h6" paddingY={2}>
-                  Confirmed projects
+                <Typography variant="overline" paddingY={1} fontSize="1rem">
+                  projects
                 </Typography>
 
                 <Grid container flexDirection={"row"} spacing={1}>
-                  {briefs?.map((data: any, index: number) => (
-                    <ProjectBriefCard
-                      key={index}
-                      {...data}
-                      cardHeight="250"
-                      onDelete={() => handleCancelBrief(data.id)}
-                    />
-                  ))}
+                  {/* TODO: Add ongoing projects */}
                 </Grid>
               </Stack>
             </Grid>

@@ -1,6 +1,6 @@
 import * as React from "react";
 import Card from "@mui/material/Card";
-import { Grid, IconButton } from "@mui/material";
+import { Button, CardHeader, Chip, Grid, IconButton } from "@mui/material";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -23,12 +23,14 @@ const ProjectBriefCard = (props: {
   brief_expiry_date?: string;
   consultation_slot?: string;
   status?: string;
+  product_name?: string;
+  creator_name?: string;
 }) => {
   return (
     <Grid item xs={4}>
       <Card
         sx={{
-          height: 300,
+          height: 400,
           display: "flex",
           flexDirection: "column",
         }}
@@ -39,26 +41,24 @@ const ProjectBriefCard = (props: {
           title="Portfolio Image"
         />
         <CardContent sx={{ flex: 1 }}>
-          <Typography variant="body2" color="text.secondary">
-            {props.details || "Details"}
+          <Typography variant="body1" sx={{ fontWeight: "400" }}>
+            {props.product_name}
           </Typography>
-          <Typography variant="subtitle1" color="text.secondary">
-            Budget: {props.budget_currency || "Currency"}{" "}
-            {props.budget_amount || "Budget amount"}
+          <Typography variant="body2" paddingBottom={1}>
+            by {props.creator_name}
           </Typography>
-          <Typography variant="subtitle1" color="text.secondary">
-            {props.status}
-          </Typography>
+
+          <Chip variant="outlined" label={props.status} />
         </CardContent>
 
         <CardActions
           sx={{
-            justifyContent: "flex-end",
+            justifyContent: "flex",
           }}
         >
-          <IconButton aria-label="delete" onClick={props.onDelete} size="small">
-            <DeleteIcon />
-          </IconButton>
+          <Button variant="text" size="small">
+            Manage
+          </Button>
         </CardActions>
       </Card>
     </Grid>
