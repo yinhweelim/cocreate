@@ -87,7 +87,7 @@ const updateUserAvatar = async (req: Request, res: Response) => {
   try {
     const userId = req.params.user_id;
     const imageFile = req.file;
-    const imageId = uuidv4; //generate uuid for image
+    const imageId = uuidv4(); //generate uuid for image
 
     //check whether user exists before proceeding
     const checkUserQuery = "SELECT * FROM users WHERE id = $1";
@@ -136,7 +136,8 @@ const updateUserAvatar = async (req: Request, res: Response) => {
       "UPDATE users SET avatar_image_url = $1 WHERE id = $2 RETURNING *";
 
     // Execute the UPDATE query
-    const userResult = await pool.query(updateQuery, [imageUrl, req.params.id]);
+    const userResult = await pool.query(updateQuery, [imageUrl, userId]);
+
     const updatedUser = userResult.rows[0];
 
     res.status(200).json({

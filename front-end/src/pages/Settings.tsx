@@ -1,6 +1,7 @@
-import React, { useState, useContext, useRef } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import UserContext from "../context/UserContext";
 import useFetch from "../hooks/useFetch";
+import { data } from "../interfaces";
 import {
   Box,
   Grid,
@@ -23,17 +24,57 @@ import { useSnackbar } from "../context/SnackbarContext";
 interface SettingsProps {
   getUserInfo: () => Promise<void>;
 }
-const Settings = (props) => {
+const Settings = (props: SettingsProps) => {
   const fetchData = useFetch();
   const { showSnackbar } = useSnackbar();
   const userCtx = useContext(UserContext);
-  const userData = userCtx.currentUser;
+  const userData = userCtx?.currentUser;
   const userId = userData.user_id;
   const authId = userCtx?.authId;
   // user avatar
   const [selectedAvatar, setSelectedAvatar] = useState(null);
 
-  const handleUpdateAvatar = () => {};
+  const handleUpdateAvatar = async (event: any) => {
+    const imageFile = event.target.files[0];
+    setSelectedAvatar(imageFile);
+
+    const formData = new FormData();
+    formData.append("image", imageFile);
+    const res = await fetch(
+      import.meta.env.VITE_SERVER + "/api/users/avatars/" + userId,
+      {
+        method: "PATCH",
+        headers: {},
+        body: formData,
+      }
+    );
+    const data: any = await res.json();
+
+    let returnValue = {};
+    if (res.ok) {
+      if (data.status === "error") {
+        returnValue = { ok: false, data: data.msg };
+        showSnackbar("Avatar update failed", "warning");
+      } else {
+        returnValue = { ok: true, data };
+        showSnackbar("Avatar updated successfully", "success");
+        props.getUserInfo();
+      }
+    } else {
+      if (data?.errors && Array.isArray(data.errors)) {
+        const messages = data.errors.map((item: any) => item.msg);
+        returnValue = { ok: false, data: messages };
+        console.error(returnValue);
+      } else if (data?.status === "error") {
+        returnValue = { ok: false, data: data.message || data.msg };
+        console.error(returnValue);
+      } else {
+        console.log(data);
+        returnValue = { ok: false, data: "An error has occurred" };
+        console.error(returnValue);
+      }
+    }
+  };
 
   //update creator data
   const handleUpdateUser = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -43,16 +84,17 @@ const Settings = (props) => {
     interface UpdateProfileRequestBody {
       given_name?: string | null;
       last_name?: string | null;
-      country?: string | null;
+      country_of_residence?: string | null;
     }
-    const given_name = data.get("display_name");
+    const given_name = data.get("given_name");
     const last_name = data.get("last_name");
     const country_of_residence = data.get("country");
 
     const requestBody: UpdateProfileRequestBody = {
       given_name,
       last_name,
-      country_of_residence,
+      country_of_residence:
+        typeof country_of_residence === "string" ? country_of_residence : null,
     };
 
     const res: data = await fetchData(
@@ -92,44 +134,46 @@ const Settings = (props) => {
 
                 {/* //logo upload and preview */}
                 <Box paddingX={2}>
-                  {selectedAvatar ? (
-                    <Avatar
-                      alt="Selected"
-                      src={URL.createObjectURL(selectedAvatar)}
-                      sx={{ maxHeight: "100px", maxWidth: "300px" }}
-                    />
-                  ) : (
-                    <>
-                      {userData?.avatar_image_url ? (
-                        <Avatar
-                          alt="Logo"
-                          src={userData?.avatar_image_url}
-                          sx={{ maxHeight: "100px", maxWidth: "300px" }}
-                        />
-                      ) : (
-                        <Avatar></Avatar>
-                      )}
-                    </>
-                  )}
+                  <Stack direction={"row"} alignItems={"center"} spacing={2}>
+                    {selectedAvatar ? (
+                      <Avatar
+                        alt="avatar"
+                        src={URL.createObjectURL(selectedAvatar)}
+                        sx={{ width: 56, height: 56 }}
+                      />
+                    ) : (
+                      <>
+                        {userData?.avatar_image_url ? (
+                          <Avatar
+                            alt="avatar"
+                            src={userData?.avatar_image_url}
+                            sx={{ width: 56, height: 56 }}
+                          />
+                        ) : (
+                          <Avatar></Avatar>
+                        )}
+                      </>
+                    )}
 
-                  <input
-                    accept="image/*"
-                    style={{ display: "none" }}
-                    id="image-upload-button"
-                    type="file"
-                    onChange={handleUpdateAvatar}
-                  />
-                  <label htmlFor="image-upload-button">
-                    <Button
-                      variant="outlined"
-                      component="span"
-                      color="primary"
-                      size="small"
-                      startIcon={<AddAPhoto></AddAPhoto>}
-                    >
-                      Upload Avatar
-                    </Button>
-                  </label>
+                    <input
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      id="image-upload-button"
+                      type="file"
+                      onChange={handleUpdateAvatar}
+                    />
+                    <label htmlFor="image-upload-button">
+                      <Button
+                        variant="outlined"
+                        component="span"
+                        color="primary"
+                        size="small"
+                        startIcon={<AddAPhoto></AddAPhoto>}
+                      >
+                        Update
+                      </Button>
+                    </label>
+                  </Stack>
                 </Box>
                 <Box
                   component="form"
@@ -145,12 +189,14 @@ const Settings = (props) => {
                     id="email"
                     name="email"
                     label="Email"
+                    type="text"
                     defaultValue={userCtx?.email}
                   />
 
                   <TextField
                     margin="normal"
                     fullWidth
+                    type="text"
                     id="given_name"
                     name="given_name"
                     label="Given Name"
@@ -160,6 +206,7 @@ const Settings = (props) => {
                   <TextField
                     margin="normal"
                     fullWidth
+                    type="text"
                     id="last_name"
                     name="last_name"
                     label="Last Name"
