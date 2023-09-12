@@ -72,6 +72,7 @@ const getBriefByPatronId = async (req: Request, res: Response) => {
 //accepts a multipart form containing image and body params. creates a brief
 const createBrief = async (req: Request, res: Response) => {
   try {
+    console.log("received");
     const {
       creator_id,
       product_id,
@@ -79,48 +80,44 @@ const createBrief = async (req: Request, res: Response) => {
       details,
       budget_currency,
       budget_amount,
-      deadline,
-      consultation_slot,
+      // deadline,
+      // consultation_slot,
       delivery_method,
     } = req.body;
     const imageFile = req.file;
     const imageId = v4(); //generate uuid for image
-
+    let imageUrl = null;
     // Check if imageFile is defined before processing
-    if (!imageFile) {
-      return res
-        .status(400)
-        .json({ status: "error", msg: "image file not provided" });
+    if (imageFile) {
+      //resize image
+      const buffer = await sharp(imageFile.buffer)
+        .resize({
+          fit: sharp.fit.contain,
+          width: 400,
+        })
+        .jpeg({ quality: 80 })
+        .toBuffer();
+
+      //send image to s3
+      const params = {
+        Bucket: bucketName,
+        Key: `${patron_id}-brief-${imageId}.jpeg`, //create unique file name to prevent overrides due to same name
+        Body: buffer,
+        ContentType: imageFile.mimetype,
+        ACL: "public-read", // Make the object publicly accessible
+      };
+
+      const command = new PutObjectCommand(params);
+
+      await s3.send(command);
+
+      //generate imageURL
+      imageUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${params.Key}`;
     }
-
-    //resize image
-    const buffer = await sharp(imageFile.buffer)
-      .resize({
-        fit: sharp.fit.contain,
-        width: 400,
-      })
-      .jpeg({ quality: 80 })
-      .toBuffer();
-
-    //send image to s3
-    const params = {
-      Bucket: bucketName,
-      Key: `${patron_id}-brief-${imageId}.jpeg`, //create unique file name to prevent overrides due to same name
-      Body: buffer,
-      ContentType: imageFile.mimetype,
-      ACL: "public-read", // Make the object publicly accessible
-    };
-
-    const command = new PutObjectCommand(params);
-
-    await s3.send(command);
-
-    //generate imageURL
-    const imageUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${params.Key}`;
 
     //Create SQL query to create brief
     const insertQuery =
-      "INSERT INTO project_briefs (creator_id, product_id, patron_id, details,budget_currency,budget_amount,deadline,consultation_slot,delivery_method,image_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,$10) RETURNING *";
+      "INSERT INTO project_briefs (creator_id, product_id, patron_id, details,budget_currency,budget_amount,delivery_method,image_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *";
 
     //construct query values
     const values = [
@@ -130,8 +127,8 @@ const createBrief = async (req: Request, res: Response) => {
       details,
       budget_currency,
       budget_amount,
-      new Date(deadline),
-      new Date(consultation_slot),
+      // new Date(deadline),
+      // new Date(consultation_slot),
       delivery_method,
       imageUrl,
     ];

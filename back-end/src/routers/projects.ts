@@ -59,8 +59,8 @@ router.get(
 );
 router.put(
   "/projects/briefs",
-  validateCreateBriefData,
-  checkValid,
+  // validateCreateBriefData,
+  // checkValid,
   upload.single("image"),
   createBrief
 );
