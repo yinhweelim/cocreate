@@ -3,6 +3,7 @@ import { pool } from "../db/db";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3"; //AWS s3 client
 import sharp from "sharp";
 import { v4 } from "uuid";
+import { getProductsByCreatorId } from "./creators_products";
 const uuidv4 = v4;
 
 const bucketName = process.env.BUCKET_NAME;
@@ -19,10 +20,14 @@ const s3 = new S3Client({
 });
 
 const getCreatorById = async (req: Request, res: Response) => {
+  const client = await pool.connect();
   try {
-    //if creator not found, return error
+    await client.query("BEGIN");
+    const creatorId = req.params.id;
+
+    //1. if creator not found, return error
     const getCreatorById = "SELECT * FROM creators WHERE id = $1";
-    const result = await pool.query(getCreatorById, [req.params.id]);
+    const result = await pool.query(getCreatorById, [creatorId]);
     const creator = result.rows[0];
 
     if (result.rows.length === 0) {
@@ -30,13 +35,67 @@ const getCreatorById = async (req: Request, res: Response) => {
         .status(400)
         .json({ status: "error", msg: "creator not found" });
     }
-    res.status(200).json({ status: "success", creator: creator });
+
+    //2. get portfolio items
+    const getItemsQuery =
+      "SELECT id, image_url, title, caption FROM creator_portfolio_items WHERE creator_id = $1 AND is_deleted = false";
+    const getItemsQueryResults = await pool.query(getItemsQuery, [creatorId]);
+    const portfolioItems = getItemsQueryResults.rows;
+
+    // 3. get products
+
+    const getProductsQuery =
+      "SELECT * FROM creator_products WHERE creator_id = $1 AND is_deleted = false";
+    const getProductsQueryResults = await pool.query(getProductsQuery, [
+      creatorId,
+    ]);
+    const products = getProductsQueryResults.rows;
+
+    // 4. get creator project stages
+
+    const getProjectStagesQuery =
+      "SELECT * FROM creator_project_stages WHERE creator_id = $1 AND is_deleted = false";
+    const getProjectStagesQueryResults = await pool.query(
+      getProjectStagesQuery,
+      [creatorId]
+    );
+    const projectStages = getProjectStagesQueryResults.rows;
+
+    // 5. get testimonials
+    const getTestimonialsQuery =
+      "SELECT * FROM creator_testimonials WHERE creator_id = $1 AND is_deleted = false";
+    const getTestimonialsQueryResults = await pool.query(getTestimonialsQuery, [
+      creatorId,
+    ]);
+    const testimonials = getTestimonialsQueryResults.rows;
+
+    // 6. get social media links
+    const getLinksQueryResults =
+      "SELECT * FROM creator_social_links WHERE creator_id = $1 AND is_deleted = false";
+    const results = await pool.query(getLinksQueryResults, [creatorId]);
+    const socialMediaLinks = results.rows;
+
+    await client.query("COMMIT"); // Commit the transaction
+
+    res.status(200).json({
+      status: "success",
+      creator,
+      portfolioItems,
+      products,
+      projectStages,
+      testimonials,
+      socialMediaLinks,
+    });
   } catch (error) {
+    await client.query("ROLLBACK"); // Roll back the transaction in case of an error
+
     console.error("Error getting creator:", error);
     res.status(500).json({
       status: "error",
       msg: "An error occurred while getting the creator",
     });
+  } finally {
+    client.release();
   }
 };
 

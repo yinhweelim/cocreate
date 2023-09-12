@@ -35,6 +35,8 @@ const CreatorPage = () => {
   const [portfolioItems, setPortfolioItems] = useState([]);
   const [products, setProducts] = useState([]);
   const [projectStages, setProjectStages] = useState([]);
+  const [testimonials, setTestimonials] = useState([]);
+  const [socialMediaLinks, setSocialMediaLinks] = useState([]);
 
   //fetch creator data  on first mount
   const getCreatorData = async () => {
@@ -44,6 +46,11 @@ const CreatorPage = () => {
     try {
       const res: data = await fetchData("/api/creators/" + creatorId);
       setCreatorData(res.data.creator);
+      setProducts(res.data.products);
+      setPortfolioItems(res.data.portfolioItems);
+      setProjectStages(res.data.projectStages);
+      setTestimonials(res.data.testimonials);
+      setSocialMediaLinks(res.data.socialLinks);
     } catch (error) {
       console.error(JSON.stringify(error));
     } finally {
@@ -51,40 +58,40 @@ const CreatorPage = () => {
     }
   };
 
-  const getPortfolioProjects = async () => {
-    try {
-      const res: data = await fetchData("/api/creators/portfolio/" + creatorId);
-      setPortfolioItems(res.data.items);
-    } catch (error) {
-      console.error(JSON.stringify(error));
-    }
-  };
+  // const getPortfolioProjects = async () => {
+  //   try {
+  //     const res: data = await fetchData("/api/creators/portfolio/" + creatorId);
+  //     setPortfolioItems(res.data.items);
+  //   } catch (error) {
+  //     console.error(JSON.stringify(error));
+  //   }
+  // };
 
-  const getProducts = async () => {
-    try {
-      const res: data = await fetchData("/api/creators/products/" + creatorId);
-      setProducts(res.data.products);
-    } catch (error) {
-      alert(JSON.stringify(error));
-    }
-  };
+  // const getProducts = async () => {
+  //   try {
+  //     const res: data = await fetchData("/api/creators/products/" + creatorId);
+  //     setProducts(res.data.products);
+  //   } catch (error) {
+  //     alert(JSON.stringify(error));
+  //   }
+  // };
 
-  const getProjectStages = async () => {
-    try {
-      const res: data = await fetchData(
-        "/api/creators/project_stages/" + creatorId
-      );
-      setProjectStages(res.data.projectStages);
-    } catch (error) {
-      alert(JSON.stringify(error));
-    }
-  };
+  // const getProjectStages = async () => {
+  //   try {
+  //     const res: data = await fetchData(
+  //       "/api/creators/project_stages/" + creatorId
+  //     );
+  //     setProjectStages(res.data.projectStages);
+  //   } catch (error) {
+  //     alert(JSON.stringify(error));
+  //   }
+  // };
 
   useEffect(() => {
     getCreatorData();
-    getPortfolioProjects();
-    getProducts();
-    getProjectStages();
+    // getPortfolioProjects();
+    // getProducts();
+    // getProjectStages();
   }, []);
 
   if (isLoading) {
