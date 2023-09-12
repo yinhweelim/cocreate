@@ -29,8 +29,33 @@ const getBriefByCreatorId = async (req: Request, res: Response) => {
     }
 
     //get briefs with creator_id
-    const getBriefsQuery =
-      "SELECT * FROM project_briefs WHERE creator_id = $1 AND is_deleted = false";
+
+    const getBriefsQuery = `SELECT DISTINCT
+    project_briefs.id AS id,
+    project_briefs.creator_id AS creator_id,
+    creators.display_name AS creator_name,
+    project_briefs.patron_id AS patron_id,
+    users.given_name AS patron_name,
+    project_briefs.product_id AS product_id,
+    creator_products.title AS product_name,
+    project_briefs.product_id,
+    project_briefs.created_at,
+    project_briefs.details,
+    project_briefs.budget_currency,
+    project_briefs.budget_amount,
+    project_briefs.deadline,
+    project_briefs.brief_expiry_date,
+    project_briefs.consultation_slot,
+    project_briefs.delivery_method,
+    project_briefs.status,
+    project_briefs.image_url
+  FROM
+    project_briefs
+    LEFT JOIN creators ON project_briefs.creator_id = creators.id
+    LEFT JOIN users ON project_briefs.patron_id = users.id
+    LEFT JOIN creator_products ON creator_products.id = project_briefs.product_id
+  WHERE project_briefs.creator_id = $1 AND project_briefs.is_deleted = false`;
+
     const results = await pool.query(getBriefsQuery, [req.params.creator_id]);
     const briefs = results.rows;
 
@@ -46,17 +71,41 @@ const getBriefByCreatorId = async (req: Request, res: Response) => {
 
 const getBriefByPatronId = async (req: Request, res: Response) => {
   try {
+    const patronId = req.params.patron_id;
+
     //if patron not found, return error
     const getPatronById = "SELECT * FROM users WHERE id = $1";
-    const result = await pool.query(getPatronById, [req.params.patron_id]);
+    const result = await pool.query(getPatronById, [patronId]);
     if (result.rows.length === 0) {
       return res.status(400).json({ status: "error", msg: "patron not found" });
     }
 
-    //get briefs with patron_id
-    const getBriefsQuery =
-      "SELECT * FROM project_briefs WHERE patron_id = $1 AND is_deleted = false";
-    const results = await pool.query(getBriefsQuery, [req.params.patron_id]);
+    const getBriefsQuery = `SELECT DISTINCT
+    project_briefs.id AS id,
+    project_briefs.creator_id AS creator_id,
+    creators.display_name AS creator_name,
+    project_briefs.patron_id AS patron_id,
+    users.given_name AS patron_name,
+    project_briefs.product_id AS product_id,
+    creator_products.title AS product_name,
+    project_briefs.product_id,
+    project_briefs.created_at,
+    project_briefs.details,
+    project_briefs.budget_currency,
+    project_briefs.budget_amount,
+    project_briefs.deadline,
+    project_briefs.brief_expiry_date,
+    project_briefs.consultation_slot,
+    project_briefs.delivery_method,
+    project_briefs.status,
+    project_briefs.image_url
+  FROM
+    project_briefs
+    LEFT JOIN creators ON project_briefs.creator_id = creators.id
+    LEFT JOIN users ON project_briefs.patron_id = users.id
+    LEFT JOIN creator_products ON creator_products.id = project_briefs.product_id
+  WHERE patron_id = $1 AND project_briefs.is_deleted = false`;
+    const results = await pool.query(getBriefsQuery, [patronId]);
     const briefs = results.rows;
 
     res.status(200).json({ status: "success", briefs });
