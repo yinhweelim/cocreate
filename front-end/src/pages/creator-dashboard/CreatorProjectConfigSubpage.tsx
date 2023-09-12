@@ -1,6 +1,6 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import useFetch from "../../hooks/useFetch";
-import UserContext from "../../context/UserContext";
+
 import { data, CreatorData } from "../../interfaces";
 import { useSnackbar } from "../../context/SnackbarContext";
 import EditIcon from "@mui/icons-material/Edit";
@@ -28,6 +28,7 @@ import CreatorProductCard from "../../components/CreatorProductCard";
 
 interface CreatorProjectConfigProps {
   isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   creatorId: string;
   handleUpdateCreator: (
     event: React.FormEvent<HTMLFormElement>
@@ -38,26 +39,45 @@ interface CreatorProjectConfigProps {
 const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
   const fetchData = useFetch();
   const { showSnackbar } = useSnackbar();
-  const userCtx = useContext(UserContext);
 
   // products state variables
   const [openAddProductDialog, setOpenAddProductDialog] = useState(false); //dialog
   const [products, setProducts] = useState([]);
+  const [projectStages, setProjectStages] = useState([]);
   const [selectedProductImage, setSelectedProductImage] = useState(null);
 
   const getProducts = async () => {
     try {
+      props.setIsLoading(true);
       const res: data = await fetchData(
         "/api/creators/products/" + props.creatorId
       );
       setProducts(res.data.products);
+      props.setIsLoading(false);
     } catch (error) {
       alert(JSON.stringify(error));
+      props.setIsLoading(false);
+    }
+  };
+
+  const getCreatorProjectStages = async () => {
+    try {
+      props.setIsLoading(true);
+      const res: data = await fetchData(
+        "/api/creators/project_stages/" + props.creatorId
+      );
+      setProjectStages(res.data.projectStages);
+      console.log(res.data);
+      props.setIsLoading(false);
+    } catch (error) {
+      alert(JSON.stringify(error));
+      props.setIsLoading(false);
     }
   };
 
   useEffect(() => {
     getProducts();
+    getCreatorProjectStages();
   }, []);
 
   //product option functions
@@ -161,7 +181,7 @@ const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
 
   //load page
   if (props.isLoading) {
-    return <div>Loading...</div>;
+    return <Typography variant="body1">Loading...</Typography>;
   } else
     return (
       <>

@@ -1,6 +1,5 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import useFetch from "../../hooks/useFetch";
-import UserContext from "../../context/UserContext";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { data, CreatorData } from "../../interfaces";
 import EditIcon from "@mui/icons-material/Edit";
@@ -27,6 +26,7 @@ import CreatorPortfolioCard from "../../components/CreatorPortfolioCard";
 
 interface CreatorProfileProps {
   isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   creatorId: string;
   handleUpdateCreator: (
     event: React.FormEvent<HTMLFormElement>
@@ -50,11 +50,14 @@ const CreatorProfile = (props: CreatorProfileProps) => {
   //fetch portfolio projects on first mount
   const getPortfolioProjects = async () => {
     try {
+      props.setIsLoading(true);
       const res: data = await fetchData(
         "/api/creators/portfolio/" + props.creatorId
       );
       setPortfolioItems(res.data.items);
+      props.setIsLoading(false);
     } catch (error) {
+      props.setIsLoading(false);
       alert(JSON.stringify(error));
     }
   };
@@ -204,7 +207,7 @@ const CreatorProfile = (props: CreatorProfileProps) => {
 
   //load page
   if (props.isLoading) {
-    return <div>Loading...</div>;
+    return <Typography variant="body1">Loading...</Typography>;
   } else
     return (
       <>

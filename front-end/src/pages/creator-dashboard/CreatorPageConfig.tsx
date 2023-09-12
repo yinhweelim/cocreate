@@ -4,7 +4,7 @@ import { data, CreatorData } from "../../interfaces";
 import UserContext from "../../context/UserContext";
 import { useSnackbar } from "../../context/SnackbarContext";
 
-import { Box, Grid, Button, Stack, Divider } from "@mui/material";
+import { Grid, Button, Stack, Divider } from "@mui/material";
 import SectionHeading from "../../components/SectionHeading";
 import CreatorProfileSubpage from "./CreatorProfileSubpage";
 import CreatorProjectConfig from "./CreatorProjectConfigSubpage";
@@ -165,6 +165,7 @@ const CreatorPageConfig = () => {
           <CreatorProfileSubpage
             creatorId={creatorId}
             isLoading={isLoading}
+            setIsLoading={setIsLoading}
             handleUpdateCreator={handleUpdateCreator}
             creatorData={creatorData}
             getCreatorData={getCreatorData}
@@ -173,6 +174,7 @@ const CreatorPageConfig = () => {
           <CreatorProjectConfig
             creatorId={creatorId}
             isLoading={isLoading}
+            setIsLoading={setIsLoading}
             handleUpdateCreator={handleUpdateCreator}
             creatorData={creatorData}
           />

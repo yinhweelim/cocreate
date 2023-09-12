@@ -83,10 +83,7 @@ export default function Sidebar(props: SidebarProps) {
   //highlight selected item in sidebar
   const { selectedIndex, setSelectedIndex } = useSidebar();
 
-  const handleListItemClick = (
-    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-    index: number
-  ) => {
+  const handleListItemClick = (index: number) => {
     setSelectedIndex(index);
   };
 
@@ -152,7 +149,7 @@ export default function Sidebar(props: SidebarProps) {
                   component={RouterLink}
                   to="/dashboard/projects"
                   selected={selectedIndex === 0}
-                  onClick={(event) => handleListItemClick(event, 0)}
+                  onClick={() => handleListItemClick(0)}
                 >
                   <ListItemIcon>
                     <InboxIcon />
@@ -165,9 +162,7 @@ export default function Sidebar(props: SidebarProps) {
                   component={RouterLink}
                   to="/dashboard/pagesetup"
                   selected={selectedIndex === 1}
-                  onClick={(
-                    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-                  ) => handleListItemClick(event, 1)}
+                  onClick={() => handleListItemClick(1)}
                 >
                   <ListItemIcon>
                     <AutoAwesomeIcon />
@@ -180,7 +175,7 @@ export default function Sidebar(props: SidebarProps) {
                   component={RouterLink}
                   to="/dashboard/analytics"
                   selected={selectedIndex === 2}
-                  onClick={(event) => handleListItemClick(event, 2)}
+                  onClick={() => handleListItemClick(2)}
                 >
                   <ListItemIcon>
                     <InsightsIcon />
@@ -195,7 +190,7 @@ export default function Sidebar(props: SidebarProps) {
                 component={RouterLink}
                 to="/dashboard/commissions"
                 selected={selectedIndex === 3}
-                onClick={(event) => handleListItemClick(event, 3)}
+                onClick={() => handleListItemClick(3)}
               >
                 <ListItemIcon>
                   <InboxIcon />
@@ -210,7 +205,7 @@ export default function Sidebar(props: SidebarProps) {
               component={RouterLink}
               to="/dashboard/settings"
               selected={selectedIndex === 4}
-              onClick={(event) => handleListItemClick(event, 4)}
+              onClick={() => handleListItemClick(4)}
             >
               <ListItemIcon>
                 <SettingsIcon />
