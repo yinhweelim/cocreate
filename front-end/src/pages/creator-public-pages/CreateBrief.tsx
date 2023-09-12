@@ -99,8 +99,10 @@ const CreateBrief = () => {
 
     //construct request body
     const submittedData = new FormData(event.currentTarget);
-    const budget: number = submittedData.get("budget");
-    const details: string = submittedData.get("description");
+    const budget: number =
+      parseInt(submittedData.get("budget") as string, 10) || 0;
+    const details: string = (submittedData.get("description") as string) || "";
+
     //append image and body to formData
     const formData = new FormData();
     if (refImage) {
@@ -110,7 +112,7 @@ const CreateBrief = () => {
     formData.append("patron_id", patronId as string);
     formData.append("product_id", selectedProduct as string);
     formData.append("details", details);
-    formData.append("budget_amount", budget);
+    formData.append("budget_amount", budget.toString());
     formData.append(
       "delivery_method",
       submittedData.get("deliveryMethod") as string
