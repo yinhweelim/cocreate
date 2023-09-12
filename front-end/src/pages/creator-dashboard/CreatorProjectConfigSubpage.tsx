@@ -173,7 +173,7 @@ const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
                 <Typography variant="h6" component="h4" padding={2}>
                   Request form settings
                 </Typography>
-                <Typography variant="body1" component="body" padding={2}>
+                <Typography variant="body1" component="body" paddingX={2}>
                   Set up your project request form. Patrons will see these
                   guidelines when they submit a request to you.
                 </Typography>
@@ -226,7 +226,7 @@ const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
                 <Typography variant="h6" component="h4" padding={2}>
                   Project preferences
                 </Typography>
-                <Typography variant="body1" component="body" padding={2}>
+                <Typography variant="body1" component="body" paddingX={2}>
                   Set up your project preferences. These will be displayed on
                   your page.
                 </Typography>
@@ -277,7 +277,7 @@ const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
                 <Typography variant="h6" component="h4" padding={2}>
                   Products and Services
                 </Typography>
-                <Typography variant="body1" component="body" padding={2}>
+                <Typography variant="body1" component="body" paddingX={2}>
                   Provide up to 3 sample product options that potential patrons
                   can choose from.
                 </Typography>
@@ -317,7 +317,7 @@ const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
                 <Typography variant="h6" component="h4" padding={2}>
                   Project process
                 </Typography>
-                <Typography variant="body1" component="body" padding={2}>
+                <Typography variant="body1" component="body" paddingX={2}>
                   Set up your project stages to give your patrons an idea of
                   what to expect in process of commissionning work with you.
                 </Typography>

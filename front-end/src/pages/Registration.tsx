@@ -146,6 +146,7 @@ export default function Registration() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  helperText="Must have at least 8 characters"
                 />
               </Grid>
               <Grid item xs={12}>
