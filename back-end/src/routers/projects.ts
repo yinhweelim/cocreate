@@ -61,6 +61,7 @@ router.put(
   "/projects/briefs",
   validateCreateBriefData,
   checkValid,
+  upload.single("image"),
   createBrief
 );
 router.patch(

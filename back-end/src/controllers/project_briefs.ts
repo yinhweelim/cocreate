@@ -1,5 +1,21 @@
 import { Request, Response, query } from "express";
 import { pool } from "../db/db";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3"; //AWS s3 client
+import sharp from "sharp";
+import { v4 } from "uuid";
+
+const bucketName = process.env.BUCKET_NAME;
+const region = process.env.BUCKET_REGION;
+const accessKeyId = process.env.ACCESS_KEY;
+const secretAccessKey = process.env.SECRET_ACCESS_KEY;
+
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: accessKeyId || "",
+    secretAccessKey: secretAccessKey || "",
+  },
+  region: region || "",
+});
 
 const getBriefByCreatorId = async (req: Request, res: Response) => {
   try {
@@ -53,13 +69,9 @@ const getBriefByPatronId = async (req: Request, res: Response) => {
   }
 };
 
-//TODO: Add image upload
+//accepts a multipart form containing image and body params. creates a brief
 const createBrief = async (req: Request, res: Response) => {
   try {
-    //Create SQL query to create brief
-    const insertQuery =
-      "INSERT INTO project_briefs (creator_id, product_id, patron_id, details,budget_currency,budget_amount,deadline,consultation_slot,delivery_method) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *";
-
     const {
       creator_id,
       product_id,
@@ -71,7 +83,46 @@ const createBrief = async (req: Request, res: Response) => {
       consultation_slot,
       delivery_method,
     } = req.body;
+    const imageFile = req.file;
+    const imageId = v4(); //generate uuid for image
 
+    // Check if imageFile is defined before processing
+    if (!imageFile) {
+      return res
+        .status(400)
+        .json({ status: "error", msg: "image file not provided" });
+    }
+
+    //resize image
+    const buffer = await sharp(imageFile.buffer)
+      .resize({
+        fit: sharp.fit.contain,
+        width: 400,
+      })
+      .jpeg({ quality: 80 })
+      .toBuffer();
+
+    //send image to s3
+    const params = {
+      Bucket: bucketName,
+      Key: `${patron_id}-brief-${imageId}.jpeg`, //create unique file name to prevent overrides due to same name
+      Body: buffer,
+      ContentType: imageFile.mimetype,
+      ACL: "public-read", // Make the object publicly accessible
+    };
+
+    const command = new PutObjectCommand(params);
+
+    await s3.send(command);
+
+    //generate imageURL
+    const imageUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${params.Key}`;
+
+    //Create SQL query to create brief
+    const insertQuery =
+      "INSERT INTO project_briefs (creator_id, product_id, patron_id, details,budget_currency,budget_amount,deadline,consultation_slot,delivery_method,image_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,$10) RETURNING *";
+
+    //construct query values
     const values = [
       creator_id,
       product_id,
@@ -82,6 +133,7 @@ const createBrief = async (req: Request, res: Response) => {
       new Date(deadline),
       new Date(consultation_slot),
       delivery_method,
+      imageUrl,
     ];
 
     //Create brief
