@@ -108,22 +108,20 @@ const CreatorPage = () => {
             >
               <Stack direction={"row"} spacing={1}>
                 {portfolioItems?.map((data: any, index: number) => (
-                  <>
-                    <Stack>
-                      <Card>
-                        <CardMedia
-                          sx={{
-                            height: 200,
-                            width: 200,
-                            padding: "1em 1em 0 1em",
-                            objectFit: "cover",
-                          }}
-                          image={data.image_url || undefined}
-                          title="Portfolio Image"
-                        />
-                      </Card>
-                    </Stack>
-                  </>
+                  <Stack key={index}>
+                    <Card>
+                      <CardMedia
+                        sx={{
+                          height: 200,
+                          width: 200,
+                          padding: "1em 1em 0 1em",
+                          objectFit: "cover",
+                        }}
+                        image={data.image_url || undefined}
+                        title="Portfolio Image"
+                      />
+                    </Card>
+                  </Stack>
                 ))}
               </Stack>
             </Grid>
@@ -197,7 +195,7 @@ const CreatorPage = () => {
                 <CardMedia
                   component="img"
                   sx={{ width: 200 }}
-                  image="/static/images/cards/live-from-space.jpg"
+                  image=""
                   alt="Testimonial product image"
                 />
                 <Box
