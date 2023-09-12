@@ -219,7 +219,7 @@ const CreatorProfile = (props: CreatorProfileProps) => {
                 <Typography variant="h6" component="h4" padding={2}>
                   Profile
                 </Typography>
-                <Typography variant="body1" component="body" padding={2}>
+                <Typography variant="body1" padding={2}>
                   Use this space to introduce yourself, your work, and give
                   potential patrons an idea of what they can expect.
                 </Typography>
@@ -341,7 +341,7 @@ const CreatorProfile = (props: CreatorProfileProps) => {
                 <Typography variant="h6" component="h4" padding={2}>
                   Portfolio projects
                 </Typography>
-                <Typography variant="body1" component="body" padding={2}>
+                <Typography variant="body1" padding={2}>
                   Upload pictures and descriptions of portfolio projects to show
                   people examples of what you can do. Upload up to 3 projects.
                 </Typography>
@@ -381,7 +381,7 @@ const CreatorProfile = (props: CreatorProfileProps) => {
                 <Typography variant="h6" component="h4" padding={2}>
                   Social media links
                 </Typography>
-                <Typography variant="body1" component="body" paddingX={2}>
+                <Typography variant="body1" paddingX={2}>
                   Help people find you wherever you are. Connect your other
                   accounts to show them on your page. We'll never post on your
                   behalf.
@@ -389,7 +389,7 @@ const CreatorProfile = (props: CreatorProfileProps) => {
                 <Box sx={{ mt: 1 }} paddingX={2}>
                   <Card>
                     <CardContent>
-                      <Typography component="body" variant="body1">
+                      <Typography  variant="body1">
                         Social media link 1
                       </Typography>
                     </CardContent>
