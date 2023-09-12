@@ -13,7 +13,7 @@ interface ProjectStages {
 const CreatorProjectStagesCard = (props: ProjectStages) => {
   return (
     <>
-      <Paper>
+      <Paper sx={{ width: "100%" }}>
         <Stack direction="row" margin={1}>
           {/* <IconButton>
             <DragHandleIcon></DragHandleIcon>

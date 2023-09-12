@@ -42,6 +42,7 @@ function App() {
 
   // get user and patron info with authid
   const getUserInfo = async () => {
+    if (!authId) return;
     const res: data = await fetchData("/api/users/" + authId);
 
     // Store userInfo to localStorage and set as initial state
@@ -131,7 +132,7 @@ function App() {
                   }
                 ></Route>
                 <Route
-                  path="/creators/:creator_url"
+                  path="/creators/:creator_id"
                   element={<CreatorPage></CreatorPage>}
                 ></Route>
                 <Route
