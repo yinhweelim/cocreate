@@ -1,6 +1,7 @@
 import { Request, Response, query } from "express";
 import { pool } from "../db/db";
 import uuidValidate from "uuid-validate";
+import { get } from "http";
 
 const getProjectByCreatorId = async (req: Request, res: Response) => {
   try {
@@ -111,18 +112,49 @@ const getProjectById = async (req: Request, res: Response) => {
     const getQuery = "SELECT * FROM projects WHERE id = $1";
     const result = await pool.query(getQuery, [projectId]);
     const project = result.rows[0];
-
+    const briefId = result.rows[0].brief_id;
     if (result.rows.length === 0) {
       return res
         .status(400)
-        .json({ status: "error", msg: "creator not found" });
+        .json({ status: "error", msg: "project not found" });
     }
+
+    // 2. get initial brief
+    const getBriefQuery =
+      "SELECT * FROM project_briefs WHERE id = $1 AND is_deleted = false";
+    const getBriefResults = await pool.query(getBriefQuery, [briefId]);
+    const brief = getBriefResults.rows[0];
+    const productId = getBriefResults.rows[0].product_id;
+
+    // 3. get product option
+    const getProductQuery =
+      "SELECT * FROM creator_products WHERE id = $1 AND is_deleted = false";
+    const getProductResults = await pool.query(getProductQuery, [productId]);
+    const product = getProductResults.rows[0];
+
+    // 4. get proposals
+    const getProposalsQuery =
+      "SELECT * FROM project_proposals WHERE project_id = $1 AND is_deleted = false";
+    const getProposalsResults = await pool.query(getProposalsQuery, [
+      projectId,
+    ]);
+    const proposals = getProposalsResults.rows;
+
+    // 5. get project stages
+    const getStagesQuery =
+      "SELECT * FROM project_stages WHERE project_id = $1 AND is_deleted = false";
+    const getStagesResults = await pool.query(getStagesQuery, [projectId]);
+    const stages = getStagesResults.rows;
 
     await client.query("COMMIT"); // Commit the transaction
 
     res.status(200).json({
       status: "success",
       project,
+      brief,
+      product,
+      proposals,
+      stages,
     });
   } catch (error) {
     await client.query("ROLLBACK"); // Roll back the transaction in case of an error
