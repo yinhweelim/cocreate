@@ -41,16 +41,18 @@ const CreatorProjectsSubpage = (props: SubpageProps) => {
   const [pendingProjects, setPendingProjects] = useState([]);
 
   useEffect(() => {
-    // Filter and set completed projects when props.projects change
-    const completedProjects = props.projects.filter(
-      (project: any) => project.is_completed
-    );
-    setCompletedProjects(completedProjects);
+    if (props.projects) {
+      // Filter and set completed projects when props.projects change
+      const completedProjects = props.projects.filter(
+        (project: any) => project.is_completed
+      );
+      setCompletedProjects(completedProjects);
 
-    const pendingProjects = props.projects.filter(
-      (project: any) => !project.is_completed
-    );
-    setPendingProjects(pendingProjects);
+      const pendingProjects = props.projects.filter(
+        (project: any) => !project.is_completed
+      );
+      setPendingProjects(pendingProjects);
+    }
   }, [props.projects]);
 
   if (props.isLoading) {
@@ -65,7 +67,7 @@ const CreatorProjectsSubpage = (props: SubpageProps) => {
               <Typography variant="overline" paddingY={1} fontSize="1rem">
                 In progress
               </Typography>
-              {props.projects?.length == 0 ? (
+              {props.projects?.length === 0 ? (
                 <Typography variant="body1">
                   No projects yet. Go out and get some!
                 </Typography>
@@ -91,7 +93,7 @@ const CreatorProjectsSubpage = (props: SubpageProps) => {
                 Completed
               </Typography>
               {/* display completed projects here */}
-              {props.projects?.length == 0 ? (
+              {props.projects?.length === 0 ? (
                 <Typography variant="body1">
                   No projects yet. Go out and support some creators!
                 </Typography>
