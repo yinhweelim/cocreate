@@ -55,9 +55,16 @@ const ProjectBriefCard = (props: {
             justifyContent: "flex",
           }}
         >
-          <Button variant="outlined" size="small" onClick={props.onClick}>
-            Manage
-          </Button>
+          {" "}
+          {props.status != "PENDING_RESPONSE" ? (
+            <Button variant="outlined" size="small" onClick={props.onClick}>
+              View
+            </Button>
+          ) : (
+            <Button variant="outlined" size="small" onClick={props.onClick}>
+              Manage
+            </Button>
+          )}
         </CardActions>
       </Card>
     </Grid>

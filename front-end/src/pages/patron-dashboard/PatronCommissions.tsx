@@ -203,40 +203,50 @@ const PatronCommissions = () => {
           <DialogTitle>Manage Brief</DialogTitle>
           <Box component="form" onSubmit={handleUpdateBrief} noValidate>
             <DialogContent>
-              <Stack
+              <Grid
+                container
                 direction="row"
                 justifyContent="space-between"
                 paddingBottom={2}
               >
-                <Box>
+                <Grid item xs={6}>
                   {" "}
                   <Typography variant="overline">Creator</Typography>
                   <br />
                   <Typography variant="body1">
                     {selectedBrief?.creator_name} <br />
                   </Typography>
-                </Box>
-                <Box>
+                </Grid>
+                <Grid item xs={6}>
                   {" "}
                   <Typography variant="overline">Product</Typography>
                   <br />
                   <Typography variant="body1">
                     {selectedBrief?.product_name} <br />
                   </Typography>
-                </Box>
-                <Box>
+                </Grid>
+                <Grid item xs={6}>
+                  {" "}
+                  <Typography variant="overline">Status</Typography>
+                  <br />
+                  <Typography variant="body1">
+                    {selectedBrief?.status} <br />
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
                   {" "}
                   <Typography variant="overline">Request sent</Typography>
                   <br />
                   <Typography variant="body1">
                     {selectedBrief?.created_at} <br />
                   </Typography>
-                </Box>
-              </Stack>
+                </Grid>
+              </Grid>
 
               <Typography variant="overline" paddingTop={2}>
                 Your request
               </Typography>
+
               <Card>
                 {selectedBriefImage ? (
                   <CardMedia
@@ -256,29 +266,36 @@ const PatronCommissions = () => {
                   <CardContent>No image</CardContent>
                 )}
               </Card>
-              <input
-                accept="image/*"
-                style={{ display: "none" }}
-                id="brief-image-upload-button"
-                type="file"
-                onChange={handleSelectBriefImage}
-              />
-              <label htmlFor="brief-image-upload-button">
-                <Button
-                  variant="outlined"
-                  component="span"
-                  color="primary"
-                  size="small"
-                  startIcon={<AddAPhoto></AddAPhoto>}
-                >
-                  Update
-                </Button>
-              </label>
+
+              {selectedBrief?.status === "PENDING_RESPONSE" ? (
+                <>
+                  <input
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    id="brief-image-upload-button"
+                    type="file"
+                    onChange={handleSelectBriefImage}
+                  />
+                  <label htmlFor="brief-image-upload-button">
+                    <Button
+                      variant="outlined"
+                      component="span"
+                      color="primary"
+                      size="small"
+                      startIcon={<AddAPhoto></AddAPhoto>}
+                    >
+                      Update
+                    </Button>
+                  </label>
+                </>
+              ) : (
+                ""
+              )}
+
               <TextField
                 disabled={selectedBrief?.status === "CANCELLED"}
                 autoFocus
                 multiline
-                minRows={2}
                 margin="normal"
                 fullWidth
                 id="name"
@@ -299,29 +316,30 @@ const PatronCommissions = () => {
                 placeholder="Update your budget"
                 defaultValue={selectedBrief?.budget_amount}
               />
-              <Stack direction={"row"} spacing={1}>
-                {" "}
-                <Button variant="outlined" type="submit">
-                  Update
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="error"
-                  onClick={handleCancelBrief}
-                >
-                  Cancel Brief
-                </Button>
-              </Stack>
+              {selectedBrief?.status === "PENDING_RESPONSE" ? (
+                <Stack direction={"row"} spacing={1}>
+                  {" "}
+                  <Button variant="outlined" type="submit">
+                    Update
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={handleCancelBrief}
+                  >
+                    Cancel Brief
+                  </Button>
+                </Stack>
+              ) : (
+                ""
+              )}
             </DialogContent>
-            {selectedBrief?.status === "PENDING_RESPONSE" ? (
-              <DialogActions>
-                <Button variant="outlined" onClick={handleCloseAddBrief}>
-                  Close
-                </Button>
-              </DialogActions>
-            ) : (
-              ""
-            )}
+
+            <DialogActions>
+              <Button variant="outlined" onClick={handleCloseAddBrief}>
+                Close
+              </Button>
+            </DialogActions>
           </Box>
         </Dialog>
       </>
