@@ -65,7 +65,7 @@ const PatronCommissions = () => {
     try {
       const res: data = await fetchData("/api/projects/patrons/" + patronId);
       setProjects(res.data.projects);
-      console.log(projects);
+      
     } catch (error) {
       alert(JSON.stringify(error));
     } finally {
@@ -117,7 +117,7 @@ const PatronCommissions = () => {
         returnValue = { ok: false, data: data.message || data.msg };
         console.error(returnValue);
       } else {
-        console.log(data);
+        
         returnValue = { ok: false, data: "An error has occurred" };
         console.error(returnValue);
       }
