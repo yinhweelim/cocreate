@@ -21,24 +21,59 @@ import {
 } from "@mui/material";
 import ProjectBriefCard from "../../components/PatronBriefCard";
 import SectionHeading from "../../components/SectionHeading";
-import { useSnackbar } from "../../context/SnackbarContext";
 import CreatorBriefCard from "../../components/CreatorBriefCard";
+import { useSnackbar } from "../../context/SnackbarContext";
 
 interface SubpageProps {
   isLoading: boolean;
   briefs: Brief[];
   setBriefs: React.Dispatch<React.SetStateAction<never[]>>;
+  getBriefs: () => Promise<void>;
 }
 const CreatorRequestsSubpage = (props: SubpageProps) => {
+  const fetchData = useFetch();
   const [openBrief, setOpenBrief] = useState(false); //dialog to manage brief
+  const { showSnackbar } = useSnackbar();
   const [selectedBrief, setSelectedBrief] = useState<Brief | null>(null); // selected brief for update
   const [selectedBriefImage, setSelectedBriefImage] = useState(null);
 
-  const handleAcceptBrief = () => {
-    console.log("accept brief");
+  const handleAcceptBrief = async () => {
+    const res: data = await fetchData(
+      "/api/projects/briefs/" + selectedBrief?.id,
+      "PATCH",
+      { status: "ACCEPTED" },
+      undefined
+    );
+
+    if (res.ok) {
+      showSnackbar("Brief accepted", "success");
+      props.getBriefs();
+      setOpenBrief(false);
+    } else {
+      console.log(JSON.stringify(res.data));
+      showSnackbar("Failed to accept brief", "warning");
+      setOpenBrief(false);
+    }
   };
-  const handleDeclineBrief = () => {
+
+  const handleDeclineBrief = async () => {
     console.log("decline brief");
+    const res: data = await fetchData(
+      "/api/projects/briefs/" + selectedBrief?.id,
+      "PATCH",
+      { status: "DECLINED" },
+      undefined
+    );
+
+    if (res.ok) {
+      showSnackbar("Brief declined", "success");
+      props.getBriefs();
+      setOpenBrief(false);
+    } else {
+      console.log(JSON.stringify(res.data));
+      showSnackbar("Failed to declined brief", "warning");
+      setOpenBrief(false);
+    }
   };
 
   //close dialog for brief

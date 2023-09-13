@@ -62,7 +62,8 @@ const CreatorProjects = () => {
         {/* header with action buttons */}
         <SectionHeading
           heading={"Projects"}
-          actionButton={<Button variant="contained">Create Project</Button>}
+          // actionButton={<Button variant="contained">Create Project</Button>}
+          actionButton={null}
         ></SectionHeading>
 
         {/* subpages */}
@@ -96,6 +97,7 @@ const CreatorProjects = () => {
               isLoading={isLoading}
               briefs={briefs}
               setBriefs={setBriefs}
+              getBriefs={getBriefs}
             />
           )}
         </Grid>
