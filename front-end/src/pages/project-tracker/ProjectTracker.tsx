@@ -1,10 +1,21 @@
 import { useState, useEffect } from "react";
-import { Container, Stack, Box, Typography, IconButton } from "@mui/material";
+import {
+  Container,
+  Stack,
+  Box,
+  Typography,
+  IconButton,
+  Grid,
+  Button,
+  Divider,
+} from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import SectionSubpages from "../../components/SectionSubpages";
 import CloseIcon from "@mui/icons-material/Close";
 import useFetch from "../../hooks/useFetch";
 import { data, Project, CreatorData, Brief } from "../../interfaces";
+import ProjectDetailsSubpage from "./ProjectDetailsSubpage";
+import ProjectOverviewSubpage from "./ProjectOverviewSubpage";
 
 const ProjectTracker = () => {
   const params = useParams();
@@ -21,14 +32,21 @@ const ProjectTracker = () => {
   const [proposalData, setProposalData] = useState([]);
   const [creatorData, setCreatorData] = useState<CreatorData | null>([]);
 
-  //fetch project data  on first mount
+  //subpage handling
+  const [selectedSubpage, setSelectedSubpage] = useState<String>("overview");
+
+  const handleSubpageChange = (subpage: String) => {
+    setSelectedSubpage(subpage);
+  };
+
+  //fetch project data and creator data on first mount
   const getProjectData = async () => {
     // Set isLoading to true before making the API call
     setIsLoading(true);
 
     try {
       const res: data = await fetchData("/api/projects/" + projectId);
-      setProjectData(res.data.product);
+      setProjectData(res.data.project);
       setBriefData(res.data.brief);
       setProductData(res.data.product);
       setStages(res.data.stages);
@@ -69,10 +87,14 @@ const ProjectTracker = () => {
     return (
       <>
         <Container maxWidth="md">
-          <Stack spacing={3}>
-            {JSON.stringify(projectData)}
-            {/* logo */}
-            <Stack paddingTop={4} display="flex" justifyContent="centre">
+          {/* header */}
+          <Grid container direction="column">
+            <Stack
+              paddingTop={4}
+              spacing={2}
+              display="flex"
+              justifyContent="centre"
+            >
               <Box alignSelf="center">
                 <img src={creatorData?.logo_image_url} alt="creator logo" />
               </Box>
@@ -90,20 +112,52 @@ const ProjectTracker = () => {
                   <CloseIcon />
                 </IconButton>
               </Stack>
-              <Box>
-                <Typography variant="overline" textAlign="left" paddingTop={2}>
-                  TEXT
-                </Typography>
-                <Typography variant="body1" textAlign="left" paddingTop={2}>
-                  TEXT
-                </Typography>
-              </Box>
+              <Typography variant="body1" textAlign="left">
+                {projectData?.current_stage}
+                <br />
+                Started: {productData?.created_at}
+                <br />
+                {proposalData?.estimated_delivery_date}
+              </Typography>
             </Stack>
-            <SectionSubpages
-              actionButton={undefined}
-              heading={undefined}
-            ></SectionSubpages>
+          </Grid>
+          {/* subpages */}
+          <Stack direction={"row"} spacing={1} paddingTop={2}>
+            <Button
+              variant="text"
+              onClick={() => handleSubpageChange("overview")}
+            >
+              Overview
+            </Button>
+            <Button
+              variant="text"
+              onClick={() => handleSubpageChange("details")}
+            >
+              Details
+            </Button>
+            <Button
+              disabled
+              variant="text"
+              onClick={() => handleSubpageChange("details")}
+            >
+              Updates
+            </Button>
           </Stack>
+          <Divider />
+          {/* page content */}
+
+          {isLoading ? (
+            <Typography variant="body1">Loading...</Typography>
+          ) : (
+            <>
+              {" "}
+              {selectedSubpage === "overview" ? (
+                <ProjectOverviewSubpage />
+              ) : (
+                <ProjectDetailsSubpage />
+              )}
+            </>
+          )}
 
           {/* Snackbar */}
           {/* 

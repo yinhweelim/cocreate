@@ -27,7 +27,7 @@ import CreateBrief from "./pages/creator-public-pages/CreateBrief";
 import ConfirmBrief from "./pages/creator-public-pages/ConfirmBrief";
 import DashboardLayout from "./pages/creator-dashboard/DashboardLayout";
 import PrivateRoute from "./components/PrivateRoute";
-import ProjectTracker from "./pages/creator-public-pages/ProjectTracker";
+import ProjectTracker from "./pages/project-tracker/ProjectTracker";
 
 function App() {
   const fetchData = useFetch();

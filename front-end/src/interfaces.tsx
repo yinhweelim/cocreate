@@ -80,6 +80,15 @@ export interface Brief {
 }
 
 export interface Project {
+  creator_name: string;
+  patron_name: string;
+  product_image_url: string;
+  requested_deadline: string | null;
+  budget_currency: string;
+  budget_amount: number;
+  current_stage: string;
+  current_stage_index: number;
+  total_stage_count: string;
   id: string;
   created_at: string;
   patron_id: string;
