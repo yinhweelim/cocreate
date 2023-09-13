@@ -3,6 +3,7 @@ import UserContext from "../../context/UserContext";
 import useFetch from "../../hooks/useFetch";
 import { data, Brief } from "../../interfaces";
 import { AddAPhoto } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 import {
   Typography,
   Grid,
@@ -29,12 +30,15 @@ interface SubpageProps {
   getBriefs: () => Promise<void>;
 }
 const CreatorRequestsSubpage = (props: SubpageProps) => {
+  const navigate = useNavigate();
   const fetchData = useFetch();
-  const [openBrief, setOpenBrief] = useState(false); //dialog to manage brief
   const { showSnackbar } = useSnackbar();
+  const [openBrief, setOpenBrief] = useState(false); //dialog to manage brief
+  const [openAddProjectDialog, setOpenAddProjectDialog] = useState(false); //dialog to manage project
   const [selectedBrief, setSelectedBrief] = useState<Brief | null>(null); // selected brief for update
-  const [selectedBriefImage, setSelectedBriefImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 
+  //functions
   const handleAcceptBrief = async () => {
     const res: data = await fetchData(
       "/api/projects/briefs/" + selectedBrief?.id,
@@ -47,6 +51,7 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
       showSnackbar("Brief accepted", "success");
       props.getBriefs();
       setOpenBrief(false);
+      setOpenAddProjectDialog(true);
     } else {
       console.log(JSON.stringify(res.data));
       showSnackbar("Failed to accept brief", "warning");
@@ -74,9 +79,35 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
     }
   };
 
-  //close dialog for brief
+  //close dialog
   const handleCloseBrief = () => {
     setOpenBrief(false);
+  };
+
+  // add new project
+  const handleAddProject = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const name = data.get("name");
+
+    const res: data = await fetchData("/api/projects", "PUT", {
+      name,
+      brief_id: selectedBrief?.id,
+      creator_id: selectedBrief?.creator_id,
+      patron_id: selectedBrief?.patron_id,
+    });
+    if (res.ok) {
+      showSnackbar("Project added successfully", "success");
+      setOpenAddProjectDialog(false);
+      navigate(`/dashboard/projects`);
+    } else {
+      showSnackbar("Something went wrong", "warning");
+    }
+  };
+
+  //close dialog for project
+  const handleCloseProjectDialog = () => {
+    setOpenAddProjectDialog(false);
   };
 
   if (props.isLoading) {
@@ -157,6 +188,15 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
                   {selectedBrief?.status} <br />
                 </Typography>
               </Grid>
+              <Grid item xs={6}>
+                {" "}
+                <Typography variant="overline" paddingTop={2}>
+                  Delivery method
+                </Typography>
+                <Typography variant="body1">
+                  {selectedBrief?.delivery_method} <br />
+                </Typography>
+              </Grid>
             </Grid>
             <Typography variant="overline" paddingTop={2}>
               Brief details
@@ -191,6 +231,7 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
                 {selectedBrief?.consultation_slot} <br />
               </Typography>
             </Box>
+
             {selectedBrief?.status === "PENDING_RESPONSE" ? (
               <>
                 <Divider></Divider>
@@ -226,6 +267,40 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
               Close
             </Button>
           </DialogActions>
+        </Dialog>
+
+        {/* dialog to create project */}
+        <Dialog open={openAddProjectDialog} onClose={handleCloseProjectDialog}>
+          <DialogTitle>Add new project</DialogTitle>
+          <Box component="form" onSubmit={handleAddProject} noValidate>
+            <DialogContent>
+              <Typography variant="h6">
+                {selectedBrief?.product_name} for {selectedBrief?.patron_name}
+              </Typography>
+              <Typography variant="subtitle1" paddingBottom={2}>
+                Budget {selectedBrief?.budget_currency}{" "}
+                {selectedBrief?.budget_amount}
+              </Typography>
+              <TextField
+                autoFocus
+                margin="normal"
+                fullWidth
+                id="name"
+                label="Project name"
+                name="name"
+                type="text"
+                placeholder="Name your new project"
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button variant="outlined" type="submit">
+                Add
+              </Button>
+              <Button variant="outlined" onClick={handleCloseProjectDialog}>
+                Cancel
+              </Button>
+            </DialogActions>
+          </Box>
         </Dialog>
       </>
     );

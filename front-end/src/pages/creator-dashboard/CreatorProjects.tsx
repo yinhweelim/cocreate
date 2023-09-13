@@ -5,7 +5,19 @@ import useFetch from "../../hooks/useFetch";
 import { data, Brief } from "../../interfaces";
 
 //components
-import { Box, Grid, Button, Divider, Stack } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Button,
+  Divider,
+  Stack,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  Typography,
+} from "@mui/material";
 import SectionHeading from "../../components/SectionHeading";
 import CreatorProjectsSubpage from "./CreatorProjectsSubpage";
 import CreatorRequestsSubpage from "./CreatorRequestsSubpage";
@@ -28,8 +40,6 @@ const CreatorProjects = () => {
   };
 
   //get briefs
-
-  //fetch briefs
   const getBriefs = async () => {
     // Set isLoading to true before making the API call
     setIsLoading(true);
@@ -62,7 +72,6 @@ const CreatorProjects = () => {
         {/* header with action buttons */}
         <SectionHeading
           heading={"Projects"}
-          // actionButton={<Button variant="contained">Create Project</Button>}
           actionButton={null}
         ></SectionHeading>
 

@@ -23,11 +23,19 @@ import ProjectBriefCard from "../../components/PatronBriefCard";
 import SectionHeading from "../../components/SectionHeading";
 import { useSnackbar } from "../../context/SnackbarContext";
 
+interface Project {}
+
 interface SubpageProps {
   isLoading: boolean;
   setProjects: React.Dispatch<React.SetStateAction<never[]>>;
 }
 const CreatorProjectsSubpage = (props: SubpageProps) => {
+  const { showSnackbar } = useSnackbar();
+  const fetchData = useFetch();
+  const userCtx = useContext(UserContext);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null); // selected brief for update
+  const [selectedImage, setSelectedImage] = useState(null);
+
   if (props.isLoading) {
     return <Typography variant="body1">Loading...</Typography>;
   } else
@@ -40,28 +48,13 @@ const CreatorProjectsSubpage = (props: SubpageProps) => {
               <Typography variant="overline" paddingY={1} fontSize="1rem">
                 Current projects
               </Typography>
-              {/* 
-              {props.projects.length == 0 ? (
+              {/* {props.briefs?.length == 0 ? (
                 <Typography variant="body1">
-                  No projects yet. Go out and get some creators!
+                  No projects yet. Go out and get some!
                 </Typography>
               ) : (
                 ""
-              )} */}
-              <Grid container flexDirection={"row"} spacing={1}>
-                {/* add project cards here */}
-                {/* {briefs?.map((data: any, index: number) => (
-                    <ProjectBriefCard
-                      key={index}
-                      {...data}
-                      cardHeight="250"
-                      onClick={() => {
-                        setSelectedBrief(data);
-                        setOpenUpdateBrief(true);
-                      }}
-                    />
-                  ))} */}
-              </Grid>
+              )}{" "} */}
             </Stack>
 
             <Divider />
@@ -70,15 +63,13 @@ const CreatorProjectsSubpage = (props: SubpageProps) => {
                 Completed projects
               </Typography>
 
-              <Grid container flexDirection={"row"} spacing={1}>
-                {/* {projects.length == 0 ? (
+              {/* {projects.length == 0 ? (
                     <Typography variant="body1">
                       No projects yet. Go out and support some creators!
                     </Typography>
                   ) : (
                     ""
                   )} */}
-              </Grid>
             </Stack>
           </Grid>
         </Grid>
