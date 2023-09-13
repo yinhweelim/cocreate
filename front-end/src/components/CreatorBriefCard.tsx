@@ -35,10 +35,11 @@ const CreatorBriefCard = (props: CardProps) => {
     chip = <Chip variant="outlined" color="primary" label="PENDING RESPONSE" />;
   } else if (props.status === "ACCEPTED") {
     chip = <Chip variant="outlined" color="success" label="ACCEPTED" />;
-  } else {
+  } else if (props.status === "CANCELLED") {
     chip = <Chip variant="outlined" color="secondary" label="CANCELLED" />;
+  } else if (props.status === "DECLINED") {
+    chip = <Chip variant="outlined" color="secondary" label="DECLINED" />;
   }
-
   return (
     <Grid item xs={4}>
       <Card

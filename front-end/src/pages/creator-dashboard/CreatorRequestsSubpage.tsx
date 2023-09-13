@@ -19,8 +19,6 @@ import {
   TextField,
   DialogActions,
 } from "@mui/material";
-import ProjectBriefCard from "../../components/PatronBriefCard";
-import SectionHeading from "../../components/SectionHeading";
 import CreatorBriefCard from "../../components/CreatorBriefCard";
 import { useSnackbar } from "../../context/SnackbarContext";
 

@@ -1,6 +1,6 @@
 import * as React from "react";
 import Card from "@mui/material/Card";
-import { Button, CardHeader, Chip, Grid, IconButton } from "@mui/material";
+import { Button, Chip, Grid } from "@mui/material";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -25,6 +25,16 @@ const ProjectBriefCard = (props: {
   product_name?: string;
   creator_name?: string;
 }) => {
+  let chip = null;
+  if (props.status === "PENDING_RESPONSE") {
+    chip = <Chip variant="outlined" color="primary" label="PENDING RESPONSE" />;
+  } else if (props.status === "ACCEPTED") {
+    chip = <Chip variant="outlined" color="success" label="ACCEPTED" />;
+  } else if (props.status === "CANCELLED") {
+    chip = <Chip variant="outlined" color="secondary" label="CANCELLED" />;
+  } else if (props.status === "DECLINED") {
+    chip = <Chip variant="outlined" color="secondary" label="DECLINED" />;
+  }
   return (
     <Grid item xs={4}>
       <Card
@@ -46,8 +56,7 @@ const ProjectBriefCard = (props: {
           <Typography variant="body2" paddingBottom={1}>
             by {props.creator_name}
           </Typography>
-
-          <Chip variant="outlined" label={props.status} />
+          {chip}
         </CardContent>
 
         <CardActions
