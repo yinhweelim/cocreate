@@ -30,16 +30,19 @@ interface SubpageProps {
   setBriefs: React.Dispatch<React.SetStateAction<never[]>>;
 }
 const CreatorRequestsSubpage = (props: SubpageProps) => {
-  const [openUpdateBrief, setOpenUpdateBrief] = useState(false); //dialog to manage brief
   const [openBrief, setOpenBrief] = useState(false); //dialog to manage brief
   const [selectedBrief, setSelectedBrief] = useState<Brief | null>(null); // selected brief for update
   const [selectedBriefImage, setSelectedBriefImage] = useState(null);
 
-  const handleAcceptBrief = () => {};
-  const handleDeclineBrief = () => {};
+  const handleAcceptBrief = () => {
+    console.log("accept brief");
+  };
+  const handleDeclineBrief = () => {
+    console.log("decline brief");
+  };
 
-  //close dialog to add portfolio item
-  const handleCloseAddBrief = () => {
+  //close dialog for brief
+  const handleCloseBrief = () => {
     setOpenBrief(false);
   };
 
@@ -82,6 +85,115 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
             </Stack>
           </Grid>
         </Grid>
+
+        {/* dialog for add portfolio project */}
+        <Dialog open={openBrief} onClose={handleCloseBrief}>
+          <DialogTitle>
+            Project brief from {selectedBrief?.patron_name}
+          </DialogTitle>
+
+          <DialogContent>
+            <Typography variant="subtitle1">
+              {" "}
+              Received {selectedBrief?.created_at}
+            </Typography>
+            <Grid container direction="row" justifyContent="space-between">
+              <Grid item xs={6}>
+                {" "}
+                <Typography variant="overline">Option</Typography>
+                <br />
+                <Typography variant="body1">
+                  {selectedBrief?.product_name} <br />
+                </Typography>
+              </Grid>
+              <Grid item xs={6}>
+                {" "}
+                <Typography variant="overline">Their budget</Typography>
+                <br />
+                <Typography variant="body1">
+                  {selectedBrief?.budget_currency}
+                  {selectedBrief?.budget_amount} <br />
+                </Typography>
+              </Grid>
+
+              <Grid item xs={6}>
+                {" "}
+                <Typography variant="overline">Status</Typography>
+                <br />
+                <Typography variant="body1">
+                  {selectedBrief?.status} <br />
+                </Typography>
+              </Grid>
+            </Grid>
+            <Typography variant="overline" paddingTop={2}>
+              Brief details
+            </Typography>
+            <Typography variant="body1">
+              {selectedBrief?.details} <br />
+            </Typography>
+            <Typography variant="overline" paddingTop={2}>
+              Reference images
+            </Typography>
+            <Card sx={{ maxWidth: "300px" }}>
+              <CardMedia
+                component="img"
+                alt="portfolioimage"
+                src={selectedBrief?.image_url}
+                sx={{ maxWidth: "300px" }}
+              />
+            </Card>
+            <Box paddingY={1}>
+              <Typography variant="overline" paddingTop={2}>
+                Deadline
+              </Typography>
+              <Typography variant="body1">
+                {selectedBrief?.deadline} <br />
+              </Typography>
+            </Box>
+            <Box paddingY={1}>
+              <Typography variant="overline" paddingTop={2}>
+                Consultation Slot
+              </Typography>
+              <Typography variant="body1">
+                {selectedBrief?.consultation_slot} <br />
+              </Typography>
+            </Box>
+            {selectedBrief?.status === "PENDING_RESPONSE" ? (
+              <>
+                <Divider></Divider>
+                <Stack direction={"row"} spacing={1} paddingTop={1}>
+                  {" "}
+                  <Button
+                    variant="contained"
+                    color="success"
+                    onClick={handleAcceptBrief}
+                  >
+                    Accept
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={handleDeclineBrief}
+                  >
+                    Decline
+                  </Button>
+                </Stack>
+                <Typography variant="subtitle1">
+                  Once accepted, you'll initiate a new project with{" "}
+                  {selectedBrief?.patron_name}{" "}
+                </Typography>
+              </>
+            ) : (
+              ""
+            )}
+          </DialogContent>
+
+          <DialogActions>
+            <Button variant="outlined" onClick={handleCloseBrief}>
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
       </>
     );
 };
