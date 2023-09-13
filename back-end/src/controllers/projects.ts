@@ -14,8 +14,31 @@ const getProjectByCreatorId = async (req: Request, res: Response) => {
     }
 
     //1. get projects with creator_id
-    const getProjectsQuery =
-      "SELECT * FROM projects WHERE creator_id = $1 AND is_deleted = false";
+    const getProjectsQuery = `SELECT DISTINCT
+      creators.display_name AS creator_name,
+      users.given_name AS patron_name,
+      creator_products.image_url AS product_image_url,
+      project_briefs.deadline AS requested_deadline,
+      project_briefs.budget_currency AS budget_currency,
+      project_briefs.budget_amount AS budget_amount,
+      project_stages.name AS current_stage,
+      project_stages.index AS current_stage_index,
+      (
+        SELECT
+          COUNT(*)
+        FROM
+          project_stages AS ps
+        WHERE
+          ps.project_id = projects.id) AS total_stage_count, projects.*
+      FROM
+        projects
+      LEFT JOIN creators ON projects.creator_id = creators.id
+      LEFT JOIN users ON projects.patron_id = users.id
+      LEFT JOIN project_briefs ON project_briefs.id = projects.brief_id
+      LEFT JOIN creator_products ON project_briefs.product_id = creator_products.id
+      LEFT JOIN project_stages ON project_stages.id = projects.current_stage_id
+    WHERE
+      projects.creator_id = $1`;
     const results = await pool.query(getProjectsQuery, [req.params.creator_id]);
     const projects = results.rows;
 
@@ -39,8 +62,32 @@ const getProjectByPatronId = async (req: Request, res: Response) => {
     }
 
     //get projects with patron_id
-    const getProjectsQuery =
-      "SELECT * FROM projects WHERE patron_id = $1 AND is_deleted = false";
+
+    const getProjectsQuery = `SELECT DISTINCT
+    creators.display_name AS creator_name,
+    users.given_name AS patron_name,
+    creator_products.image_url AS product_image_url,
+    project_briefs.deadline AS requested_deadline,
+    project_briefs.budget_currency AS budget_currency,
+    project_briefs.budget_amount AS budget_amount,
+    project_stages.name AS current_stage,
+    project_stages.index AS current_stage_index,
+    (
+      SELECT
+        COUNT(*)
+      FROM
+        project_stages AS ps
+      WHERE
+        ps.project_id = projects.id) AS total_stage_count, projects.*
+    FROM
+      projects
+    LEFT JOIN creators ON projects.creator_id = creators.id
+    LEFT JOIN users ON projects.patron_id = users.id
+    LEFT JOIN project_briefs ON project_briefs.id = projects.brief_id
+    LEFT JOIN creator_products ON project_briefs.product_id = creator_products.id
+    LEFT JOIN project_stages ON project_stages.id = projects.current_stage_id
+  WHERE
+    projects.patron_id = $1`;
     const results = await pool.query(getProjectsQuery, [req.params.patron_id]);
     const projects = results.rows;
 
