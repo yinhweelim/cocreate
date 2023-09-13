@@ -152,7 +152,10 @@ const ProjectTracker = () => {
             <>
               {" "}
               {selectedSubpage === "overview" ? (
-                <ProjectOverviewSubpage />
+                <ProjectOverviewSubpage
+                  stages={stages}
+                  currentStageId={projectData?.current_stage_id}
+                />
               ) : (
                 <ProjectDetailsSubpage />
               )}
