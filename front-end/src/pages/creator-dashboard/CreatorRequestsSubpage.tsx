@@ -19,10 +19,12 @@ import {
   Button,
   TextField,
   DialogActions,
+  Chip,
 } from "@mui/material";
 import CreatorBriefCard from "../../components/CreatorBriefCard";
 import { useSnackbar } from "../../context/SnackbarContext";
-
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 interface SubpageProps {
   isLoading: boolean;
   briefs: Brief[];
@@ -43,6 +45,15 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
     (brief) => brief.status === "PENDING_RESPONSE"
   );
   const allRequests = props.briefs;
+  //Variables for sort
+  const [sortBy, setSortBy] = useState<"budget" | "createdAt" | null>(null);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [newRequestsSortBy, setNewRequestsSortBy] = useState<
+    "budget" | "createdAt" | null
+  >(null);
+  const [newRequestsSortOrder, setNewRequestsSortOrder] = useState<
+    "asc" | "desc"
+  >("asc");
 
   //functions
   const handleAcceptBrief = async () => {
@@ -116,6 +127,43 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
     setOpenAddProjectDialog(false);
   };
 
+  //sorting functions
+
+  const sortedAllRequests = [...props.briefs].sort((a, b) => {
+    if (sortBy === "budget") {
+      return sortOrder === "asc"
+        ? a.budget_amount - b.budget_amount
+        : b.budget_amount - a.budget_amount;
+    } else if (sortBy === "createdAt") {
+      const dateA = new Date(a.created_at).getTime();
+      const dateB = new Date(b.created_at).getTime();
+      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+    }
+    return 0;
+  });
+
+  const handleSortAllRequestsClick = (sortField: "budget" | "createdAt") => {
+    if (sortField === sortBy) {
+      // Toggle the sort order if the same field is clicked again
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      // Set the new sorting field
+      setSortBy(sortField);
+      setSortOrder("asc");
+    }
+  };
+
+  const handleSortNewRequestsClick = (sortField: "budget" | "createdAt") => {
+    if (sortField === newRequestsSortBy) {
+      // Toggle the sort order if the same field is clicked again
+      setNewRequestsSortOrder(newRequestsSortOrder === "asc" ? "desc" : "asc");
+    } else {
+      // Set the new sorting field
+      setNewRequestsSortBy(sortField);
+      setNewRequestsSortOrder("asc");
+    }
+  };
+
   if (props.isLoading) {
     return <Typography variant="body1">Loading...</Typography>;
   } else
@@ -128,10 +176,34 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
               <Typography variant="overline" paddingTop={1} fontSize="1rem">
                 New requests
               </Typography>
-              <Typography variant="body1" paddingBottom={4}>
-                View and manage incoming requests. Accept a request to initiate
-                a new project!
-              </Typography>
+              <Stack direction="row" spacing={2} paddingBottom={2}>
+                <Chip
+                  icon={
+                    newRequestsSortBy === "budget" &&
+                    newRequestsSortOrder === "asc" ? (
+                      <KeyboardArrowUpIcon />
+                    ) : (
+                      <KeyboardArrowDownIcon />
+                    )
+                  }
+                  variant="outlined"
+                  onClick={() => handleSortNewRequestsClick("budget")}
+                  label="Budget"
+                />
+                <Chip
+                  icon={
+                    newRequestsSortBy === "createdAt" &&
+                    newRequestsSortOrder === "asc" ? (
+                      <KeyboardArrowUpIcon />
+                    ) : (
+                      <KeyboardArrowDownIcon />
+                    )
+                  }
+                  variant="outlined"
+                  onClick={() => handleSortNewRequestsClick("createdAt")}
+                  label="Created Date"
+                />
+              </Stack>
               {props.briefs?.length == 0 ? (
                 <Typography variant="body1">
                   No new briefs yet. Go out and get some!
@@ -159,9 +231,37 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
               <Typography variant="overline" paddingTop={1} fontSize="1rem">
                 All requests
               </Typography>
+
+              <Stack direction="row" spacing={2} paddingBottom={2}>
+                <Chip
+                  icon={
+                    sortBy === "budget" && sortOrder === "asc" ? (
+                      <KeyboardArrowUpIcon />
+                    ) : (
+                      <KeyboardArrowDownIcon />
+                    )
+                  }
+                  variant="outlined"
+                  onClick={() => handleSortAllRequestsClick("budget")}
+                  label="Budget"
+                ></Chip>
+                <Chip
+                  icon={
+                    sortBy === "createdAt" && sortOrder === "asc" ? (
+                      <KeyboardArrowUpIcon />
+                    ) : (
+                      <KeyboardArrowDownIcon />
+                    )
+                  }
+                  variant="outlined"
+                  onClick={() => handleSortAllRequestsClick("createdAt")}
+                  label="Created Date"
+                ></Chip>
+              </Stack>
+
               {/* all briefs should be displayed here */}
               <Grid container flexDirection={"row"} spacing={1}>
-                {allRequests?.map((data: any, index: number) => (
+                {sortedAllRequests?.map((data: any, index: number) => (
                   <CreatorBriefCard
                     key={index}
                     {...data}
