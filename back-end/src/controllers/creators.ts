@@ -25,7 +25,7 @@ const getCreatorById = async (req: Request, res: Response) => {
     await client.query("BEGIN");
     const creatorId = req.params.id;
 
-    //1. if creator not found, return error
+    //1. get creator. if creator not found, return error
     const getCreatorById = "SELECT * FROM creators WHERE id = $1";
     const result = await pool.query(getCreatorById, [creatorId]);
     const creator = result.rows[0];
@@ -43,7 +43,6 @@ const getCreatorById = async (req: Request, res: Response) => {
     const portfolioItems = getItemsQueryResults.rows;
 
     // 3. get products
-
     const getProductsQuery =
       "SELECT * FROM creator_products WHERE creator_id = $1 AND is_deleted = false";
     const getProductsQueryResults = await pool.query(getProductsQuery, [
@@ -52,7 +51,6 @@ const getCreatorById = async (req: Request, res: Response) => {
     const products = getProductsQueryResults.rows;
 
     // 4. get creator project stages
-
     const getProjectStagesQuery =
       "SELECT * FROM creator_project_stages WHERE creator_id = $1 AND is_deleted = false";
     const getProjectStagesQueryResults = await pool.query(

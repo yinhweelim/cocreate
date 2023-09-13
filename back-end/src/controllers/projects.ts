@@ -13,7 +13,7 @@ const getProjectByCreatorId = async (req: Request, res: Response) => {
         .json({ status: "error", msg: "creator not found" });
     }
 
-    //get projects with creator_id
+    //1. get projects with creator_id
     const getProjectsQuery =
       "SELECT * FROM projects WHERE creator_id = $1 AND is_deleted = false";
     const results = await pool.query(getProjectsQuery, [req.params.creator_id]);
@@ -91,21 +91,21 @@ const createProject = async (req: Request, res: Response) => {
 
     // Step 1: Fetch the template project stages based on creator_id
     const templateStagesQuery =
-      "SELECT * FROM creator_project_stages WHERE creator_id = $1";
+      "SELECT * FROM creator_project_stages WHERE creator_id = $1 AND is_deleted=false";
     const templateStagesValues = [req.body.creator_id];
     const templateStagesResult = await client.query(
       templateStagesQuery,
       templateStagesValues
     );
     const templateStages = templateStagesResult.rows;
-
+    console.log(templateStages);
     //step 2: store array of items in project_stages database, and set project_id = created project id
     const projectStagesInsertQuery =
       "INSERT INTO project_stages (project_id, index, name, description, time_estimate_unit, time_estimate_start, time_estimate_end) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id";
 
     const projectStagesPromises = templateStages.map(async (templateStage) => {
       const stageValues = [
-        project.id,
+        project.id, // Assign the project_id from the newly created project
         templateStage.index,
         templateStage.name,
         templateStage.description,
@@ -117,6 +117,7 @@ const createProject = async (req: Request, res: Response) => {
         projectStagesInsertQuery,
         stageValues
       );
+      console.log(stageResult);
       return stageResult.rows[0].id;
     });
 
