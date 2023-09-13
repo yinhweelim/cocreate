@@ -1,30 +1,17 @@
 import React, { useContext, useState, useEffect } from "react";
-import { useSnackbar } from "../../context/SnackbarContext";
 import UserContext from "../../context/UserContext";
 import useFetch from "../../hooks/useFetch";
-import { data, Brief } from "../../interfaces";
+import { data } from "../../interfaces";
 
 //components
-import {
-  Box,
-  Grid,
-  Button,
-  Divider,
-  Stack,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Grid, Button, Divider, Stack } from "@mui/material";
 import SectionHeading from "../../components/SectionHeading";
 import CreatorProjectsSubpage from "./CreatorProjectsSubpage";
 import CreatorRequestsSubpage from "./CreatorRequestsSubpage";
 
 const CreatorProjects = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { showSnackbar } = useSnackbar();
+
   const fetchData = useFetch();
   const userCtx = useContext(UserContext);
 
@@ -58,7 +45,6 @@ const CreatorProjects = () => {
 
   //get projects
   const getProjects = async () => {
-    console.log(creatorId);
     try {
       const res: data = await fetchData("/api/projects/creators/" + creatorId);
       setProjects(res.data.projects);

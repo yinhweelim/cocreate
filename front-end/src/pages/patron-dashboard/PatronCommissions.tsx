@@ -59,8 +59,20 @@ const PatronCommissions = () => {
     }
   };
 
+  //get projects
+  const getProjects = async () => {
+    try {
+      const res: data = await fetchData("/api/projects/patrons/" + patronId);
+      setProjects(res.data.projects);
+      console.log(projects);
+    } catch (error) {
+      alert(JSON.stringify(error));
+    }
+  };
+
   useEffect(() => {
     getBriefs();
+    getProjects();
   }, []);
 
   //update brief image
@@ -204,21 +216,20 @@ const PatronCommissions = () => {
                   ))}
                 </Grid>
               </Stack>
-
               <Divider />
               <Stack paddingLeft={2} paddingTop={2}>
                 <Typography variant="overline" paddingY={1} fontSize="1rem">
                   Projects
                 </Typography>
-
+                {projects.length == 0 ? (
+                  <Typography variant="body1">
+                    No projects yet. Go out and support some creators!
+                  </Typography>
+                ) : (
+                  ""
+                )}
                 <Grid container flexDirection={"row"} spacing={1}>
-                  {projects.length == 0 ? (
-                    <Typography variant="body1">
-                      No projects yet. Go out and support some creators!
-                    </Typography>
-                  ) : (
-                    ""
-                  )}
+                  {JSON.stringify(projects)}
                 </Grid>
               </Stack>
             </Grid>
