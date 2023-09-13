@@ -230,7 +230,40 @@ const PatronCommissions = () => {
           <DialogTitle>Manage Brief</DialogTitle>
           <Box component="form" onSubmit={handleUpdateBrief} noValidate>
             <DialogContent>
-              <Typography variant="body1">Update reference image</Typography>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                paddingBottom={2}
+              >
+                <Box>
+                  {" "}
+                  <Typography variant="overline">Creator</Typography>
+                  <br />
+                  <Typography variant="body1">
+                    {selectedBrief?.creator_name} <br />
+                  </Typography>
+                </Box>
+                <Box>
+                  {" "}
+                  <Typography variant="overline">Product</Typography>
+                  <br />
+                  <Typography variant="body1">
+                    {selectedBrief?.product_name} <br />
+                  </Typography>
+                </Box>
+                <Box>
+                  {" "}
+                  <Typography variant="overline">Request sent</Typography>
+                  <br />
+                  <Typography variant="body1">
+                    {selectedBrief?.created_at} <br />
+                  </Typography>
+                </Box>
+              </Stack>
+
+              <Typography variant="overline" paddingTop={2}>
+                Your request
+              </Typography>
               <Card>
                 {selectedBriefImage ? (
                   <CardMedia
@@ -284,16 +317,14 @@ const PatronCommissions = () => {
               />
               <TextField
                 disabled={selectedBrief?.status === "CANCELLED"}
-                autoFocus
-                multiline
-                minRows={2}
                 margin="normal"
                 fullWidth
-                id="name"
-                label="Description"
-                name="description"
+                id="budget"
+                label="Budget"
+                name="budget"
                 type="text"
-                placeholder="Add a short description of this project"
+                placeholder="Update your budget"
+                defaultValue={selectedBrief?.budget_amount}
               />
               <Stack direction={"row"} spacing={1}>
                 {" "}
