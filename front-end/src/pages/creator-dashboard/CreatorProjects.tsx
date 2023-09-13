@@ -45,11 +45,14 @@ const CreatorProjects = () => {
 
   //get projects
   const getProjects = async () => {
+    setIsLoading(true);
     try {
       const res: data = await fetchData("/api/projects/creators/" + creatorId);
       setProjects(res.data.projects);
     } catch (error) {
       alert(JSON.stringify(error));
+    } finally {
+      setIsLoading(false);
     }
   };
 

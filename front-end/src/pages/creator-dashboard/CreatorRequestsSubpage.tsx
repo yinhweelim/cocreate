@@ -38,6 +38,12 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
   const [selectedBrief, setSelectedBrief] = useState<Brief | null>(null); // selected brief for update
   const [selectedImage, setSelectedImage] = useState(null);
 
+  // Separate briefs into pending and all requests
+  const pendingRequests = props.briefs.filter(
+    (brief) => brief.status === "PENDING_RESPONSE"
+  );
+  const allRequests = props.briefs;
+
   //functions
   const handleAcceptBrief = async () => {
     const res: data = await fetchData(
@@ -120,7 +126,7 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
           <Grid container flexDirection="column" rowSpacing={2}>
             <Stack paddingLeft={2} paddingBottom={4}>
               <Typography variant="overline" paddingTop={1} fontSize="1rem">
-                Requests
+                New requests
               </Typography>
               <Typography variant="body1" paddingBottom={4}>
                 View and manage incoming requests. Accept a request to initiate
@@ -128,13 +134,34 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
               </Typography>
               {props.briefs?.length == 0 ? (
                 <Typography variant="body1">
-                  No briefs yet. Go out and get some!
+                  No new briefs yet. Go out and get some!
                 </Typography>
               ) : (
                 ""
               )}
               <Grid container flexDirection={"row"} spacing={1}>
-                {props.briefs?.map((data: any, index: number) => (
+                {/* only briefs that have status = PENDING_RESPONSE should be displayed here */}
+                {pendingRequests?.map((data: any, index: number) => (
+                  <CreatorBriefCard
+                    key={index}
+                    {...data}
+                    cardHeight="250"
+                    onClick={() => {
+                      setSelectedBrief(data);
+                      setOpenBrief(true);
+                    }}
+                  />
+                ))}
+              </Grid>
+            </Stack>
+            <Divider />
+            <Stack paddingLeft={2} paddingBottom={4}>
+              <Typography variant="overline" paddingTop={1} fontSize="1rem">
+                All requests
+              </Typography>
+              {/* all briefs should be displayed here */}
+              <Grid container flexDirection={"row"} spacing={1}>
+                {allRequests?.map((data: any, index: number) => (
                   <CreatorBriefCard
                     key={index}
                     {...data}
