@@ -32,7 +32,6 @@ const CreatorPageConfig = () => {
 
     try {
       const res: data = await fetchData("/api/creators/" + creatorId);
-      console.log("got data");
       setCreatorData(res.data.creator);
     } catch (error) {
       alert(JSON.stringify(error));

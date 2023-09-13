@@ -12,7 +12,6 @@ import {
   TextField,
 } from "@mui/material";
 import SectionHeading from "../../components/SectionHeading";
-import { useNavigate } from "react-router-dom";
 import UserContext from "../../context/UserContext";
 import useFetch from "../../hooks/useFetch";
 import { data } from "../../interfaces";
@@ -31,8 +30,6 @@ const PatronCommissions = () => {
   const { showSnackbar } = useSnackbar();
   const fetchData = useFetch();
   const userCtx = useContext(UserContext);
-  const navigate = useNavigate();
-
   const [isLoading, setIsLoading] = useState(false);
   const patronId: string = userCtx?.currentUser.user_id;
 
@@ -60,6 +57,9 @@ const PatronCommissions = () => {
   const [openUpdateBrief, setOpenUpdateBrief] = useState(false); //dialog to manage brief
   const [selectedBrief, setSelectedBrief] = useState<Brief | null>(null); // selected brief for update
   const [selectedBriefImage, setSelectedBriefImage] = useState(null);
+
+  //project variables
+  const [projects, setProjects] = useState([]);
 
   //fetch briefs
   const getBriefs = async () => {
@@ -129,11 +129,8 @@ const PatronCommissions = () => {
     }
   };
 
-  //update brief ref image
-
   //update brief
   const handleUpdateBrief = async (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("update brief" + selectedBrief?.id);
     event.preventDefault();
     const submittedData = new FormData(event.currentTarget);
     const details = submittedData.get("details");
@@ -160,8 +157,6 @@ const PatronCommissions = () => {
 
   //cancel brief
   const handleCancelBrief = async () => {
-    console.log(`Cancel brief with ID: ${selectedBrief?.id}`);
-
     const res: data = await fetchData(
       "/api/projects/briefs/" + selectedBrief?.id,
       "PATCH",
@@ -208,6 +203,14 @@ const PatronCommissions = () => {
                 <Typography variant="overline" paddingY={1} fontSize="1rem">
                   briefs
                 </Typography>
+
+                {briefs.length == 0 ? (
+                  <Typography variant="body1">
+                    No briefs yet. Go out and support some creators!
+                  </Typography>
+                ) : (
+                  ""
+                )}
                 <Grid container flexDirection={"row"} spacing={1}>
                   {briefs?.map((data: any, index: number) => (
                     <ProjectBriefCard
@@ -223,16 +226,20 @@ const PatronCommissions = () => {
                 </Grid>
               </Stack>
 
-              {/* TODO: add pagination */}
-
               <Divider />
               <Stack paddingLeft={2} paddingTop={2}>
                 <Typography variant="overline" paddingY={1} fontSize="1rem">
-                  projects
+                  Projects
                 </Typography>
 
                 <Grid container flexDirection={"row"} spacing={1}>
-                  {/* TODO: Add ongoing projects */}
+                  {projects.length == 0 ? (
+                    <Typography variant="body1">
+                      No projects yet. Go out and support some creators!
+                    </Typography>
+                  ) : (
+                    ""
+                  )}
                 </Grid>
               </Stack>
             </Grid>
