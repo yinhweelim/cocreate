@@ -109,10 +109,35 @@ const getProjectById = async (req: Request, res: Response) => {
     const projectId = req.params.id;
 
     //1. get project. if project not found, return error
-    const getQuery = "SELECT * FROM projects WHERE id = $1";
+    const getQuery = `SELECT DISTINCT
+    creators.display_name AS creator_name,
+    users.given_name AS patron_name,
+    creator_products.image_url AS product_image_url,
+    project_briefs.deadline AS requested_deadline,
+    project_briefs.budget_currency AS budget_currency,
+    project_briefs.budget_amount AS budget_amount,
+    project_stages.name AS current_stage,
+    project_stages.index AS current_stage_index,
+    (
+      SELECT
+        COUNT(*)
+      FROM
+        project_stages AS ps
+      WHERE
+        ps.project_id = projects.id) AS total_stage_count, projects.*
+    FROM
+      projects
+    LEFT JOIN creators ON projects.creator_id = creators.id
+    LEFT JOIN users ON projects.patron_id = users.id
+    LEFT JOIN project_briefs ON project_briefs.id = projects.brief_id
+    LEFT JOIN creator_products ON project_briefs.product_id = creator_products.id
+    LEFT JOIN project_stages ON project_stages.id = projects.current_stage_id
+  WHERE
+    projects.id = $1`;
     const result = await pool.query(getQuery, [projectId]);
     const project = result.rows[0];
     const briefId = result.rows[0].brief_id;
+
     if (result.rows.length === 0) {
       return res
         .status(400)
