@@ -61,7 +61,7 @@ const createProject = async (req: Request, res: Response) => {
 
     //Create SQL query to create project
     const insertQuery =
-      "INSERT INTO projects (creator_id, patron_id, brief_id, agreed_proposal_id, agreed_date, current_stage_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *";
+      "INSERT INTO projects (creator_id, patron_id, brief_id, agreed_proposal_id, agreed_date, current_stage_id, name) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *";
 
     const {
       creator_id,
@@ -70,6 +70,7 @@ const createProject = async (req: Request, res: Response) => {
       agreed_proposal_id,
       agreed_date,
       current_stage_id,
+      name,
     } = req.body;
 
     const values = [
@@ -79,12 +80,13 @@ const createProject = async (req: Request, res: Response) => {
       agreed_proposal_id || null, // Use null if not provided
       agreed_date || null, // Use null if not provided
       current_stage_id || null, // Use null if not provided
+      name || null,
     ];
 
     //Create project
     const projectResult = await pool.query(insertQuery, values);
     const project = projectResult.rows[0];
-
+    console.log(project);
     //Add project stages based on creator_project_stages template
 
     // Step 1: Fetch the template project stages based on creator_id
@@ -123,11 +125,13 @@ const createProject = async (req: Request, res: Response) => {
     // Step 3: Set the first stage as current_stage_id
     const currentStageId = projectStageIds[0];
 
-    // Step 4: Create the project with current_stage_id
-    const updateQuery = "UPDATE projects SET current_stage_id = $1 RETURNING *";
+    // Step 4: Set current_stage_id for the created project
+    const updateQuery =
+      "UPDATE projects SET current_stage_id = $1 WHERE id = $2 RETURNING *";
 
     const updatedProjectResult = await client.query(updateQuery, [
       currentStageId,
+      project.id,
     ]);
     const updatedProject = updatedProjectResult.rows[0];
 
