@@ -59,7 +59,6 @@ const CreatorProjects = () => {
   return (
     <>
       <Grid container direction="column">
-        {JSON.stringify(briefs)}
         {/* header with action buttons */}
         <SectionHeading
           heading={"Projects"}

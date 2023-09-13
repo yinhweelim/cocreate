@@ -15,7 +15,7 @@ import SectionHeading from "../../components/SectionHeading";
 import UserContext from "../../context/UserContext";
 import useFetch from "../../hooks/useFetch";
 import { data, Brief } from "../../interfaces";
-import ProjectBriefCard from "../../components/ProjectBriefCard";
+import ProjectBriefCard from "../../components/PatronBriefCard";
 import AddAPhoto from "@mui/icons-material/AddAPhoto";
 import { useSnackbar } from "../../context/SnackbarContext";
 

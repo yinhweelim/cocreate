@@ -19,7 +19,7 @@ import {
   TextField,
   DialogActions,
 } from "@mui/material";
-import ProjectBriefCard from "../../components/ProjectBriefCard";
+import ProjectBriefCard from "../../components/PatronBriefCard";
 import SectionHeading from "../../components/SectionHeading";
 import { useSnackbar } from "../../context/SnackbarContext";
 
