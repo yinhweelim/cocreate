@@ -64,7 +64,7 @@ const CreatorProfile = (props: CreatorProfileProps) => {
 
   useEffect(() => {
     getPortfolioProjects();
-  }, []);
+  }, [props.creatorId]);
 
   //upload creator logo
   const handleUpdateLogo = async (event: any) => {

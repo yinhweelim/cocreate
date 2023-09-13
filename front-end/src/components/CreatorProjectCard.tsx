@@ -10,50 +10,42 @@ interface CardProps {
   onClick: React.MouseEventHandler<HTMLButtonElement> | undefined;
   onDelete: () => void;
   id?: string;
+  name?: string;
   title?: string;
-  image_url?: string;
+  product_image_url?: string;
   deadline?: string;
   product_name?: string;
   patron_name?: string;
+  budget_currency?: string;
+  budget_amount?: string;
 }
 
 const CreatorProjectCard = (props: CardProps) => {
-  //format chip
-  let chip = null; // Initialize chip as null by default
-
-  if (props.status === "PENDING_RESPONSE") {
-    chip = <Chip variant="outlined" color="primary" label="PENDING RESPONSE" />;
-  } else if (props.status === "ACCEPTED") {
-    chip = <Chip variant="outlined" color="success" label="ACCEPTED" />;
-  } else if (props.status === "CANCELLED") {
-    chip = <Chip variant="outlined" color="secondary" label="CANCELLED" />;
-  } else if (props.status === "DECLINED") {
-    chip = <Chip variant="outlined" color="secondary" label="DECLINED" />;
-  }
   return (
     <Grid item xs={4}>
       <Card
         sx={{
           height: 400,
+          maxWidth: 280,
           display: "flex",
           flexDirection: "column",
         }}
       >
         <CardMedia
           sx={{ height: 300, padding: "1em 1em 0 1em", objectFit: "cover" }}
-          image={props.image_url || undefined}
-          title="Portfolio Image"
+          image={props.product_image_url}
+          title="Product Image"
         />
         <CardContent sx={{ flex: 1 }}>
           <Typography variant="body1" sx={{ fontWeight: "400" }}>
-            {props.product_name}
+            {props.name}
           </Typography>
-          <Typography variant="body2">From {props.patron_name}</Typography>
+          <Typography variant="body2">
+            {props.product_name} for {props.patron_name}
+          </Typography>
           <Typography variant="body2" paddingBottom={1}>
             Budget {props.budget_currency} {props.budget_amount}
           </Typography>
-
-          {chip}
         </CardContent>
 
         <CardActions

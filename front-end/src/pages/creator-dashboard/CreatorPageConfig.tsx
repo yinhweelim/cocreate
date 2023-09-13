@@ -46,7 +46,7 @@ const CreatorPageConfig = () => {
 
   useEffect(() => {
     getCreatorData();
-  }, []);
+  }, [creatorId]);
 
   //update creator data
   const handleUpdateCreator = async (
