@@ -14,7 +14,7 @@ import {
 import SectionHeading from "../../components/SectionHeading";
 import UserContext from "../../context/UserContext";
 import useFetch from "../../hooks/useFetch";
-import { data } from "../../interfaces";
+import { data, Brief } from "../../interfaces";
 import ProjectBriefCard from "../../components/ProjectBriefCard";
 import AddAPhoto from "@mui/icons-material/AddAPhoto";
 import { useSnackbar } from "../../context/SnackbarContext";
@@ -32,25 +32,6 @@ const PatronCommissions = () => {
   const userCtx = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const patronId: string = userCtx?.currentUser.user_id;
-
-  interface Brief {
-    id: string;
-    creator_id: string;
-    creator_name: string;
-    patron_id: string;
-    patron_name: string;
-    product_id: string;
-    product_name: string;
-    details: string;
-    budget_currency: string;
-    budget_amount: number;
-    created_at: string;
-    deadline: Date;
-    consultation_slot: Date;
-    delivery_method: string;
-    status: string;
-    image_url: string;
-  }
 
   //brief variables
   const [briefs, setBriefs] = useState([]);
@@ -185,8 +166,6 @@ const PatronCommissions = () => {
   } else
     return (
       <>
-        {/* {JSON.stringify(briefs)} */}
-
         <Grid container direction="column">
           {/* header with action buttons */}
           <SectionHeading

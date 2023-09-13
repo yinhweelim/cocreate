@@ -14,6 +14,7 @@ const CreatorPageConfig = () => {
   const fetchData = useFetch();
   const userCtx = useContext(UserContext);
   const navigate = useNavigate();
+  const { showSnackbar } = useSnackbar();
 
   // creator data state variables
   const [creatorData, setCreatorData] = useState<CreatorData | null>(null);
@@ -23,7 +24,10 @@ const CreatorPageConfig = () => {
   //subpage handling
   const [selectedSubpage, setSelectedSubpage] =
     useState<String>("business_profile");
-  const { showSnackbar } = useSnackbar();
+
+  const handleSubpageChange = (subpage: String) => {
+    setSelectedSubpage(subpage);
+  };
 
   //fetch creator data on first mount
   const getCreatorData = async () => {
@@ -117,11 +121,6 @@ const CreatorPageConfig = () => {
       console.log(JSON.stringify(res.data));
       showSnackbar("Project settings update failed", "warning");
     }
-  };
-
-  //subpage handling
-  const handleSubpageChange = (subpage: String) => {
-    setSelectedSubpage(subpage);
   };
 
   return (
