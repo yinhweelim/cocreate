@@ -65,7 +65,7 @@ const CreatorProjectsSubpage = (props: SubpageProps) => {
             <Typography variant="overline" paddingY={1} fontSize="1rem">
               Completed
             </Typography>
-            {/* display completed projects here */}
+            {/* display completed projects */}
             {props.projects?.length === 0 ? (
               <Typography variant="body1">
                 No projects yet. Go out and support some creators!

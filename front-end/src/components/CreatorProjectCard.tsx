@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useContext } from "react";
 import Card from "@mui/material/Card";
 import {
   Button,
@@ -18,6 +19,7 @@ import LinearProgress, {
   linearProgressClasses,
 } from "@mui/material/LinearProgress";
 import Box from "@mui/material";
+import UserContext from "../context/UserContext";
 
 interface CardProps {
   onClick: React.MouseEventHandler<HTMLButtonElement> | undefined;
@@ -34,11 +36,14 @@ interface CardProps {
   current_stage?: string;
   current_stage_index?: number;
   total_stage_count?: number;
+  created_at?: string;
+  creator_name?: string;
 }
 
 const CreatorProjectCard = (props: CardProps) => {
+  const userCtx = useContext(UserContext);
   const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
-    height: 10,
+    height: 5,
     borderRadius: 5,
     [`&.${linearProgressClasses.colorPrimary}`]: {
       backgroundColor:
@@ -65,7 +70,7 @@ const CreatorProjectCard = (props: CardProps) => {
       >
         <CardActionArea onClick={props.onClick}>
           <CardMedia
-            sx={{ height: 250, padding: "1em 1em 0 1em", objectFit: "cover" }}
+            sx={{ height: 240, padding: "1em 1em 0 1em", objectFit: "cover" }}
             image={props.product_image_url}
             title="Product Image"
           />
@@ -73,27 +78,26 @@ const CreatorProjectCard = (props: CardProps) => {
             <Typography variant="body1" sx={{ fontWeight: "400" }}>
               {props.name}
             </Typography>
-            <Typography variant="body2">for {props.patron_name}</Typography>
-            <Typography variant="body2" paddingBottom={1}>
+            {userCtx?.currentUser.role === "CREATOR" ? (
+              <Typography variant="body1">for {props.patron_name}</Typography>
+            ) : (
+              <Typography variant="body1">by {props.creator_name}</Typography>
+            )}
+
+            <Typography variant="subtitle1">
+              Started {props.created_at}
+            </Typography>
+            <Typography variant="subtitle1" paddingBottom={1}>
               {props.budget_currency} {props.budget_amount}
             </Typography>
 
             <BorderLinearProgress variant="determinate" value={progressValue} />
 
-            <Typography variant="body2" paddingY={1}>
+            <Typography variant="subtitle1" paddingY={1}>
               Stage: {props.current_stage}
             </Typography>
           </CardContent>
         </CardActionArea>
-        {/* <CardActions
-          sx={{
-            justifyContent: "flex",
-          }}
-        >
-          <Button variant="outlined" size="small" onClick={props.onClick}>
-            View
-          </Button>
-        </CardActions> */}
       </Card>
     </Grid>
   );

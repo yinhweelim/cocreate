@@ -40,6 +40,7 @@ const ProjectBriefCard = (props: {
       <Card
         sx={{
           height: 400,
+          maxWidth: 280,
           display: "flex",
           flexDirection: "column",
         }}

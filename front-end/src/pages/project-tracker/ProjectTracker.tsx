@@ -30,7 +30,7 @@ const ProjectTracker = () => {
   const [productData, setProductData] = useState(null);
   const [stages, setStages] = useState([]);
   const [proposalData, setProposalData] = useState([]);
-  const [creatorData, setCreatorData] = useState<CreatorData | null>([]);
+  const [creatorData, setCreatorData] = useState<CreatorData | null>(null);
 
   //subpage handling
   const [selectedSubpage, setSelectedSubpage] = useState<String>("overview");
@@ -115,7 +115,7 @@ const ProjectTracker = () => {
               <Typography variant="body1" textAlign="left">
                 {projectData?.current_stage}
                 <br />
-                Started: {productData?.created_at}
+                Started: {projectData?.created_at}
                 <br />
                 {proposalData?.estimated_delivery_date}
               </Typography>
