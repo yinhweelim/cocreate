@@ -27,6 +27,7 @@ interface Project {}
 
 interface SubpageProps {
   isLoading: boolean;
+  projects: any;
   setProjects: React.Dispatch<React.SetStateAction<never[]>>;
 }
 const CreatorProjectsSubpage = (props: SubpageProps) => {
@@ -43,12 +44,13 @@ const CreatorProjectsSubpage = (props: SubpageProps) => {
       <>
         {/* page content */}
         <Grid container paddingY={4}>
+          {JSON.stringify(props.projects)}
           <Grid container flexDirection="column" rowSpacing={2}>
             <Stack paddingLeft={2} paddingBottom={4}>
               <Typography variant="overline" paddingY={1} fontSize="1rem">
                 Current projects
               </Typography>
-              {/* {props.briefs?.length == 0 ? (
+              {/* {props.projects?.length == 0 ? (
                 <Typography variant="body1">
                   No projects yet. Go out and get some!
                 </Typography>

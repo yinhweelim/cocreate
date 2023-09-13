@@ -58,7 +58,13 @@ const CreatorProjects = () => {
 
   //get projects
   const getProjects = async () => {
-    console.log("got projects");
+    console.log(creatorId);
+    try {
+      const res: data = await fetchData("/api/projects/creators/" + creatorId);
+      setProjects(res.data.projects);
+    } catch (error) {
+      alert(JSON.stringify(error));
+    }
   };
 
   useEffect(() => {
@@ -98,7 +104,7 @@ const CreatorProjects = () => {
           {selectedSubpage === "projects" ? (
             <CreatorProjectsSubpage
               isLoading={isLoading}
-              // projects={projects}
+              projects={projects}
               setProjects={setProjects}
             />
           ) : (
