@@ -7,7 +7,6 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
 
 const AccountCard = (props: {
   iconButton?: ReactNode;

@@ -4,6 +4,7 @@ import {
   getBriefByPatronId,
   createBrief,
   updateBrief,
+  updateBriefImage,
 } from "../controllers/project_briefs";
 import {
   getProjectByCreatorId,
@@ -25,7 +26,6 @@ import {
   validateCreatorIdInParam,
   validatePatronIdInParam,
   validateProjectIdInParam,
-  validateCreateBriefData,
   validateUpdateBriefData,
   validateCreateProjectData,
   validateUpdateProjectData,
@@ -59,8 +59,9 @@ router.get(
 );
 router.put(
   "/projects/briefs",
-  validateCreateBriefData,
-  checkValid,
+  // validateCreateBriefData,
+  // checkValid,
+  upload.single("image"),
   createBrief
 );
 router.patch(
@@ -69,6 +70,11 @@ router.patch(
   validateIdInParam,
   checkValid,
   updateBrief
+);
+router.patch(
+  "/projects/briefs/images/:id",
+  upload.single("image"),
+  updateBriefImage
 );
 
 //projects

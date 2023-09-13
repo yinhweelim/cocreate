@@ -13,9 +13,32 @@ const getProjectByCreatorId = async (req: Request, res: Response) => {
         .json({ status: "error", msg: "creator not found" });
     }
 
-    //get projects with creator_id
-    const getProjectsQuery =
-      "SELECT * FROM projects WHERE creator_id = $1 AND is_deleted = false";
+    //1. get projects with creator_id
+    const getProjectsQuery = `SELECT DISTINCT
+      creators.display_name AS creator_name,
+      users.given_name AS patron_name,
+      creator_products.image_url AS product_image_url,
+      project_briefs.deadline AS requested_deadline,
+      project_briefs.budget_currency AS budget_currency,
+      project_briefs.budget_amount AS budget_amount,
+      project_stages.name AS current_stage,
+      project_stages.index AS current_stage_index,
+      (
+        SELECT
+          COUNT(*)
+        FROM
+          project_stages AS ps
+        WHERE
+          ps.project_id = projects.id) AS total_stage_count, projects.*
+      FROM
+        projects
+      LEFT JOIN creators ON projects.creator_id = creators.id
+      LEFT JOIN users ON projects.patron_id = users.id
+      LEFT JOIN project_briefs ON project_briefs.id = projects.brief_id
+      LEFT JOIN creator_products ON project_briefs.product_id = creator_products.id
+      LEFT JOIN project_stages ON project_stages.id = projects.current_stage_id
+    WHERE
+      projects.creator_id = $1`;
     const results = await pool.query(getProjectsQuery, [req.params.creator_id]);
     const projects = results.rows;
 
@@ -39,8 +62,32 @@ const getProjectByPatronId = async (req: Request, res: Response) => {
     }
 
     //get projects with patron_id
-    const getProjectsQuery =
-      "SELECT * FROM projects WHERE patron_id = $1 AND is_deleted = false";
+
+    const getProjectsQuery = `SELECT DISTINCT
+    creators.display_name AS creator_name,
+    users.given_name AS patron_name,
+    creator_products.image_url AS product_image_url,
+    project_briefs.deadline AS requested_deadline,
+    project_briefs.budget_currency AS budget_currency,
+    project_briefs.budget_amount AS budget_amount,
+    project_stages.name AS current_stage,
+    project_stages.index AS current_stage_index,
+    (
+      SELECT
+        COUNT(*)
+      FROM
+        project_stages AS ps
+      WHERE
+        ps.project_id = projects.id) AS total_stage_count, projects.*
+    FROM
+      projects
+    LEFT JOIN creators ON projects.creator_id = creators.id
+    LEFT JOIN users ON projects.patron_id = users.id
+    LEFT JOIN project_briefs ON project_briefs.id = projects.brief_id
+    LEFT JOIN creator_products ON project_briefs.product_id = creator_products.id
+    LEFT JOIN project_stages ON project_stages.id = projects.current_stage_id
+  WHERE
+    projects.patron_id = $1`;
     const results = await pool.query(getProjectsQuery, [req.params.patron_id]);
     const projects = results.rows;
 
@@ -61,7 +108,7 @@ const createProject = async (req: Request, res: Response) => {
 
     //Create SQL query to create project
     const insertQuery =
-      "INSERT INTO projects (creator_id, patron_id, brief_id, agreed_proposal_id, agreed_date, current_stage_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *";
+      "INSERT INTO projects (creator_id, patron_id, brief_id, agreed_proposal_id, agreed_date, current_stage_id, name) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *";
 
     const {
       creator_id,
@@ -70,6 +117,7 @@ const createProject = async (req: Request, res: Response) => {
       agreed_proposal_id,
       agreed_date,
       current_stage_id,
+      name,
     } = req.body;
 
     const values = [
@@ -79,31 +127,32 @@ const createProject = async (req: Request, res: Response) => {
       agreed_proposal_id || null, // Use null if not provided
       agreed_date || null, // Use null if not provided
       current_stage_id || null, // Use null if not provided
+      name || null,
     ];
 
     //Create project
     const projectResult = await pool.query(insertQuery, values);
     const project = projectResult.rows[0];
-
+    console.log(project);
     //Add project stages based on creator_project_stages template
 
     // Step 1: Fetch the template project stages based on creator_id
     const templateStagesQuery =
-      "SELECT * FROM creator_project_stages WHERE creator_id = $1";
+      "SELECT * FROM creator_project_stages WHERE creator_id = $1 AND is_deleted=false";
     const templateStagesValues = [req.body.creator_id];
     const templateStagesResult = await client.query(
       templateStagesQuery,
       templateStagesValues
     );
     const templateStages = templateStagesResult.rows;
-
+    console.log(templateStages);
     //step 2: store array of items in project_stages database, and set project_id = created project id
     const projectStagesInsertQuery =
       "INSERT INTO project_stages (project_id, index, name, description, time_estimate_unit, time_estimate_start, time_estimate_end) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id";
 
     const projectStagesPromises = templateStages.map(async (templateStage) => {
       const stageValues = [
-        project.id,
+        project.id, // Assign the project_id from the newly created project
         templateStage.index,
         templateStage.name,
         templateStage.description,
@@ -115,6 +164,7 @@ const createProject = async (req: Request, res: Response) => {
         projectStagesInsertQuery,
         stageValues
       );
+      console.log(stageResult);
       return stageResult.rows[0].id;
     });
 
@@ -123,11 +173,13 @@ const createProject = async (req: Request, res: Response) => {
     // Step 3: Set the first stage as current_stage_id
     const currentStageId = projectStageIds[0];
 
-    // Step 4: Create the project with current_stage_id
-    const updateQuery = "UPDATE projects SET current_stage_id = $1 RETURNING *";
+    // Step 4: Set current_stage_id for the created project
+    const updateQuery =
+      "UPDATE projects SET current_stage_id = $1 WHERE id = $2 RETURNING *";
 
     const updatedProjectResult = await client.query(updateQuery, [
       currentStageId,
+      project.id,
     ]);
     const updatedProject = updatedProjectResult.rows[0];
 

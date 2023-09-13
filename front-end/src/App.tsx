@@ -8,7 +8,6 @@ import { data } from "../src/interfaces";
 
 //MUI and theme
 import CssBaseline from "@mui/material/CssBaseline";
-import Container from "@mui/material/Container";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "./theme";
 
@@ -16,7 +15,6 @@ import { theme } from "./theme";
 import LandingPage from "./pages/LandingPage";
 import SignInPage from "./pages/SignIn";
 import Registration from "./pages/Registration";
-import Home from "./pages/Home";
 import Settings from "./pages/Settings";
 import InitialPageSetup from "./pages/InitialPageSetup";
 import CreatorProjects from "./pages/creator-dashboard/CreatorProjects";
@@ -26,16 +24,19 @@ import PatronCommissions from "./pages/patron-dashboard/PatronCommissions";
 import { SidebarProvider } from "./context/SidebarContext";
 import CreatorPage from "./pages/creator-public-pages/CreatorPage";
 import CreateBrief from "./pages/creator-public-pages/CreateBrief";
+import ConfirmBrief from "./pages/creator-public-pages/ConfirmBrief";
 import DashboardLayout from "./pages/creator-dashboard/DashboardLayout";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   const fetchData = useFetch();
   const initAuthId = JSON.parse(localStorage.getItem("authId")!);
   const initAccessToken = JSON.parse(localStorage.getItem("accessToken")!);
-
+  const initEmail = JSON.parse(localStorage.getItem("authEmail")!);
   // states
   const [accessToken, setAccessToken] = useState(initAccessToken);
   const [authId, setAuthId] = useState(initAuthId);
+  const [email, setEmail] = useState(initEmail);
   const [userArray, setUserArray] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
 
@@ -43,6 +44,7 @@ function App() {
 
   // get user and patron info with authid
   const getUserInfo = async () => {
+    if (!authId) return;
     const res: data = await fetchData("/api/users/" + authId);
 
     // Store userInfo to localStorage and set as initial state
@@ -58,12 +60,22 @@ function App() {
     getUserInfo();
   }, [authId]);
 
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("authId");
+    localStorage.removeItem("authEmail");
+    setAccessToken("");
+    setAuthId("");
+  };
+
   return (
     <React.Fragment>
       <ThemeProvider theme={theme}>
         <SidebarProvider>
           <UserContext.Provider
             value={{
+              email,
+              setEmail,
               accessToken,
               setAccessToken,
               currentUser,
@@ -72,32 +84,32 @@ function App() {
               setUserArray,
               authId,
               setAuthId,
-              // getUserInfo,
             }}
           >
             <CssBaseline />
 
-            <Container maxWidth="lg">
-              <Routes>
-                {/* landing page, signin and registration */}
-                <Route path="/" element={<LandingPage></LandingPage>}></Route>
-                <Route
-                  path="/sign-in"
-                  element={<SignInPage></SignInPage>}
-                ></Route>
-                <Route
-                  path="/registration"
-                  element={<Registration></Registration>}
-                ></Route>
-                <Route
-                  path="/registration/page-setup"
-                  element={<InitialPageSetup></InitialPageSetup>}
-                ></Route>
-                {/* shared pages */}
-                <Route
-                  path="/dashboard/*"
-                  element={
-                    <DashboardLayout>
+            <Routes>
+              {/* landing page, signin and registration */}
+              <Route path="/" element={<LandingPage></LandingPage>}></Route>
+              <Route
+                path="/sign-in"
+                element={<SignInPage></SignInPage>}
+              ></Route>
+              <Route
+                path="/registration"
+                element={<Registration></Registration>}
+              ></Route>
+              <Route
+                path="/registration/page-setup"
+                element={<InitialPageSetup></InitialPageSetup>}
+              ></Route>
+              {/* shared pages */}
+
+              <Route
+                path="/dashboard/*"
+                element={
+                  <PrivateRoute>
+                    <DashboardLayout handleLogout={handleLogout}>
                       <Routes>
                         <Route
                           path="/projects"
@@ -117,22 +129,37 @@ function App() {
                         ></Route>
                         <Route
                           path="/settings"
-                          element={<Settings></Settings>}
+                          element={
+                            <Settings getUserInfo={getUserInfo}></Settings>
+                          }
                         ></Route>
                       </Routes>
                     </DashboardLayout>
-                  }
-                ></Route>
-                <Route
-                  path="/creators/:creator_url"
-                  element={<CreatorPage></CreatorPage>}
-                ></Route>
-                <Route
-                  path="/creators/createbrief/:creator_id"
-                  element={<CreateBrief></CreateBrief>}
-                ></Route>
-              </Routes>
-            </Container>
+                  </PrivateRoute>
+                }
+              ></Route>
+
+              <Route
+                path="/creators/:creator_id"
+                element={<CreatorPage></CreatorPage>}
+              ></Route>
+              <Route
+                path="/creators/createbrief/:creator_id"
+                element={
+                  <PrivateRoute>
+                    <CreateBrief></CreateBrief>
+                  </PrivateRoute>
+                }
+              ></Route>
+              <Route
+                path="/creators/confirmBrief/:creator_id"
+                element={
+                  <PrivateRoute>
+                    <ConfirmBrief></ConfirmBrief>
+                  </PrivateRoute>
+                }
+              ></Route>
+            </Routes>
           </UserContext.Provider>
         </SidebarProvider>
       </ThemeProvider>

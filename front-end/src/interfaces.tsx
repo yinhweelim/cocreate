@@ -1,8 +1,8 @@
 export interface UserContextType {
+  email: String;
+  setEmail: React.Dispatch<React.SetStateAction<string>>;
   accessToken: String;
   setAccessToken: React.Dispatch<React.SetStateAction<String>>;
-  // role: String;
-  // setRole: React.Dispatch<React.SetStateAction<String>>;
   authId: String;
   setAuthId: React.Dispatch<React.SetStateAction<String>>;
   currentUser: UserInfoType;
@@ -58,4 +58,23 @@ export interface CreatorData {
   project_description_guideline: string;
   payment_instructions: string;
   is_deleted: boolean;
+}
+
+export interface Brief {
+  id: string;
+  creator_id: string;
+  creator_name: string;
+  patron_id: string;
+  patron_name: string;
+  product_id: string;
+  product_name: string;
+  details: string;
+  budget_currency: string;
+  budget_amount: number;
+  created_at: string;
+  deadline: Date;
+  consultation_slot: Date;
+  delivery_method: string;
+  status: string;
+  image_url: string;
 }

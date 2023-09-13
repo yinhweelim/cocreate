@@ -20,20 +20,25 @@ import {
 } from "@mui/material";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
+import CreatorProjectStagesCard from "../../components/CreatorProjectStagesCard";
 
 const CreatorPage = () => {
   const params = useParams();
+  const creatorId = params.creator_id;
   const fetchData = useFetch();
   const userCtx = useContext(UserContext);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
-  const creatorId = userCtx?.currentUser.creator_id;
+  // const creatorId = userCtx?.currentUser.creator_id;
 
   const [creatorData, setCreatorData] = useState<CreatorData | null>(null);
   const [portfolioItems, setPortfolioItems] = useState([]);
   const [products, setProducts] = useState([]);
+  const [projectStages, setProjectStages] = useState([]);
+  const [testimonials, setTestimonials] = useState([]);
+  const [socialMediaLinks, setSocialMediaLinks] = useState([]);
 
-  //fetch creator data and portfolio projects on first mount
+  //fetch creator data  on first mount
   const getCreatorData = async () => {
     // Set isLoading to true before making the API call
     setIsLoading(true);
@@ -41,6 +46,11 @@ const CreatorPage = () => {
     try {
       const res: data = await fetchData("/api/creators/" + creatorId);
       setCreatorData(res.data.creator);
+      setProducts(res.data.products);
+      setPortfolioItems(res.data.portfolioItems);
+      setProjectStages(res.data.projectStages);
+      setTestimonials(res.data.testimonials);
+      setSocialMediaLinks(res.data.socialLinks);
     } catch (error) {
       console.error(JSON.stringify(error));
     } finally {
@@ -48,36 +58,16 @@ const CreatorPage = () => {
     }
   };
 
-  const getPortfolioProjects = async () => {
-    try {
-      const res: data = await fetchData("/api/creators/portfolio/" + creatorId);
-      setPortfolioItems(res.data.items);
-    } catch (error) {
-      console.error(JSON.stringify(error));
-    }
-  };
-
-  const getProducts = async () => {
-    try {
-      const res: data = await fetchData("/api/creators/products/" + creatorId);
-      setProducts(res.data.products);
-    } catch (error) {
-      alert(JSON.stringify(error));
-    }
-  };
-
   useEffect(() => {
     getCreatorData();
-    getPortfolioProjects();
-    getProducts();
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Typography variant="body1">Loading...</Typography>;
   } else
     return (
       <>
-        <Stack spacing={3}>
+        <Stack spacing={3} alignItems="center">
           <>
             {/* creator bio */}
             <Stack paddingTop={4} display="flex" justifyContent="center">
@@ -118,22 +108,20 @@ const CreatorPage = () => {
             >
               <Stack direction={"row"} spacing={1}>
                 {portfolioItems?.map((data: any, index: number) => (
-                  <>
-                    <Stack>
-                      <Card>
-                        <CardMedia
-                          sx={{
-                            height: 200,
-                            width: 200,
-                            padding: "1em 1em 0 1em",
-                            objectFit: "cover",
-                          }}
-                          image={data.image_url || undefined}
-                          title="Portfolio Image"
-                        />
-                      </Card>
-                    </Stack>
-                  </>
+                  <Stack key={index}>
+                    <Card>
+                      <CardMedia
+                        sx={{
+                          height: 200,
+                          width: 200,
+                          padding: "1em 1em 0 1em",
+                          objectFit: "cover",
+                        }}
+                        image={data.image_url || undefined}
+                        title="Portfolio Image"
+                      />
+                    </Card>
+                  </Stack>
                 ))}
               </Stack>
             </Grid>
@@ -149,6 +137,7 @@ const CreatorPage = () => {
             <Stack
               paddingY={4}
               display="flex"
+              width={"100%"}
               justifyContent="center"
               spacing={2}
               sx={{ backgroundColor: "rgba(0, 0, 0, 0.04)" }}
@@ -180,19 +169,21 @@ const CreatorPage = () => {
             <Stack
               paddingY={4}
               display="flex"
-              justifyContent="center"
+              alignItems="center"
               spacing={2}
+              width="40rem"
             >
               <Typography variant="h6" textAlign="center">
                 Commissions Process
               </Typography>
-              <Stack direction={"column"} spacing={1} justifyContent="center">
-                {["Stage 1", "Stage 2", "Stage 3"].map(
-                  (data: any, index: number) => (
-                    <Typography textAlign="center">{data}</Typography>
-                  )
-                )}
-              </Stack>
+
+              {projectStages?.map((data: any, index: number) => (
+                <CreatorProjectStagesCard
+                  key={index}
+                  {...data}
+                  cardHeight="250"
+                />
+              ))}
             </Stack>
 
             {/* testimonials */}
@@ -204,7 +195,7 @@ const CreatorPage = () => {
                 <CardMedia
                   component="img"
                   sx={{ width: 200 }}
-                  image="/static/images/cards/live-from-space.jpg"
+                  image=""
                   alt="Testimonial product image"
                 />
                 <Box

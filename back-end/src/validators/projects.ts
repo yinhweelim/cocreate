@@ -58,6 +58,7 @@ const validateCreateProjectData = [
   body("agreed_proposal_id", "invalid proposal_id").optional().isUUID(),
   body("current_stage_id", "invalid stage_id").optional().isUUID(),
   body("is_deleted", "should be a boolean").optional().isBoolean(),
+  body("name", "should be a string").optional().isString(),
 ];
 
 const validateUpdateProjectData = [

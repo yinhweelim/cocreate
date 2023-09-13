@@ -45,6 +45,7 @@ const register = async (req: Request, res: Response) => {
     const creatorId = newCreator.rows[0].id;
 
     // Step 3: Create two 'user' objects in the database
+
     // User with role 'creator'
     const createUserCreatorQuery =
       "INSERT INTO users (role, creator_id, auth_id, given_name, last_name) VALUES ($1, $2, $3, $4, $5) RETURNING id";
@@ -67,6 +68,76 @@ const register = async (req: Request, res: Response) => {
       lastName,
     ]);
     const patronUserId = newPatronUser.rows[0].id;
+
+    //Step 4: Seed creator template project stages
+    // Extract project stages from the request body
+    const projectStagesData = [
+      {
+        name: "Brief",
+        description: "Submit your request and preferred consultation slot",
+        time_estimate_unit: "DAYS",
+        time_estimate_start: 1,
+      },
+      {
+        name: "Consultation",
+        description:
+          "Consultation over chat or call to explore options and confirm requirements",
+        time_estimate_unit: "HOURS",
+        time_estimate_start: 1,
+      },
+      {
+        name: "Proposal",
+        description:
+          "I'll send a proposal comprising the draft design, budget and timeline.",
+        time_estimate_unit: "WEEKS",
+        time_estimate_start: 1,
+        time_estimate_end: 2,
+      },
+      {
+        name: "Proposal acceptance or revision period",
+        description:
+          "Pay a deposit to confirm the brief or request revisions (up to 2 times)",
+        time_estimate_unit: "DAYS",
+        time_estimate_start: 2,
+      },
+      {
+        name: "Work starts",
+        description:
+          "After the deposit is paid, I’ll start work on the piece and share periodic updates",
+        time_estimate_unit: "WEEKS",
+        time_estimate_start: 2,
+        time_estimate_end: 4,
+      },
+      {
+        name: "Completion and delivery",
+        description:
+          "The completed work will be delivered and the final payment will be processed.",
+        time_estimate_unit: "WEEKS",
+        time_estimate_start: 2,
+        time_estimate_end: 4,
+      },
+    ];
+
+    for (let i = 0; i < projectStagesData.length; i++) {
+      const stage = projectStagesData[i];
+
+      const insertProjectStageQuery = `
+       INSERT INTO creator_project_stages (index, name, description, time_estimate_unit, time_estimate_start, time_estimate_end, creator_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       RETURNING *;`;
+
+      const values = [
+        i + 1, // Incrementing 1-based index
+        stage.name,
+        stage.description,
+        stage.time_estimate_unit,
+        stage.time_estimate_start,
+        stage.time_estimate_end,
+        creatorId,
+      ];
+
+      const result = await client.query(insertProjectStageQuery, values);
+    }
 
     await client.query("COMMIT"); // Commit the transaction
 

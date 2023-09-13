@@ -1,6 +1,8 @@
 import React, { createContext } from "react";
 
 type UserContextType = {
+  email: String;
+  setEmail: React.Dispatch<any>;
   accessToken: any;
   setAccessToken: React.Dispatch<any>;
   userArray: any;

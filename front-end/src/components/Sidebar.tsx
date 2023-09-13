@@ -30,6 +30,11 @@ interface SimpleDialogProps {
   open: boolean;
   selectedValue: string | null;
   onClose: (value: string | null) => void;
+  handleLogout: () => void | null;
+}
+
+interface SidebarProps {
+  handleLogout: () => void | null;
 }
 
 function SimpleDialog(props: SimpleDialogProps) {
@@ -58,7 +63,7 @@ function SimpleDialog(props: SimpleDialogProps) {
           />
         ))}
         <Divider></Divider>
-        <ListItem disablePadding>
+        <ListItem disablePadding onClick={props.handleLogout}>
           <ListItemButton autoFocus component={RouterLink} to="/">
             <ListItemText primary={"Log out"} />
           </ListItemButton>
@@ -69,7 +74,7 @@ function SimpleDialog(props: SimpleDialogProps) {
 }
 
 //sidebar
-export default function Sidebar() {
+export default function Sidebar(props: SidebarProps) {
   const userCtx = useContext(UserContext);
   const currentUser = userCtx?.currentUser;
 
@@ -78,10 +83,7 @@ export default function Sidebar() {
   //highlight selected item in sidebar
   const { selectedIndex, setSelectedIndex } = useSidebar();
 
-  const handleListItemClick = (
-    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-    index: number
-  ) => {
+  const handleListItemClick = (index: number) => {
     setSelectedIndex(index);
   };
 
@@ -147,7 +149,7 @@ export default function Sidebar() {
                   component={RouterLink}
                   to="/dashboard/projects"
                   selected={selectedIndex === 0}
-                  onClick={(event) => handleListItemClick(event, 0)}
+                  onClick={() => handleListItemClick(0)}
                 >
                   <ListItemIcon>
                     <InboxIcon />
@@ -160,9 +162,7 @@ export default function Sidebar() {
                   component={RouterLink}
                   to="/dashboard/pagesetup"
                   selected={selectedIndex === 1}
-                  onClick={(
-                    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-                  ) => handleListItemClick(event, 1)}
+                  onClick={() => handleListItemClick(1)}
                 >
                   <ListItemIcon>
                     <AutoAwesomeIcon />
@@ -175,7 +175,7 @@ export default function Sidebar() {
                   component={RouterLink}
                   to="/dashboard/analytics"
                   selected={selectedIndex === 2}
-                  onClick={(event) => handleListItemClick(event, 2)}
+                  onClick={() => handleListItemClick(2)}
                 >
                   <ListItemIcon>
                     <InsightsIcon />
@@ -190,7 +190,7 @@ export default function Sidebar() {
                 component={RouterLink}
                 to="/dashboard/commissions"
                 selected={selectedIndex === 3}
-                onClick={(event) => handleListItemClick(event, 3)}
+                onClick={() => handleListItemClick(3)}
               >
                 <ListItemIcon>
                   <InboxIcon />
@@ -205,7 +205,7 @@ export default function Sidebar() {
               component={RouterLink}
               to="/dashboard/settings"
               selected={selectedIndex === 4}
-              onClick={(event) => handleListItemClick(event, 4)}
+              onClick={() => handleListItemClick(4)}
             >
               <ListItemIcon>
                 <SettingsIcon />
@@ -234,6 +234,7 @@ export default function Sidebar() {
           selectedValue={selectedValue}
           open={open}
           onClose={handleClose}
+          handleLogout={props.handleLogout}
         />
       </Drawer>
     </>

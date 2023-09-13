@@ -1,5 +1,21 @@
 import { Request, Response, query } from "express";
 import { pool } from "../db/db";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3"; //AWS s3 client
+import sharp from "sharp";
+import { v4 } from "uuid";
+
+const bucketName = process.env.BUCKET_NAME;
+const region = process.env.BUCKET_REGION;
+const accessKeyId = process.env.ACCESS_KEY;
+const secretAccessKey = process.env.SECRET_ACCESS_KEY;
+
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: accessKeyId || "",
+    secretAccessKey: secretAccessKey || "",
+  },
+  region: region || "",
+});
 
 const getBriefByCreatorId = async (req: Request, res: Response) => {
   try {
@@ -13,8 +29,33 @@ const getBriefByCreatorId = async (req: Request, res: Response) => {
     }
 
     //get briefs with creator_id
-    const getBriefsQuery =
-      "SELECT * FROM project_briefs WHERE creator_id = $1 AND is_deleted = false";
+
+    const getBriefsQuery = `SELECT DISTINCT
+    project_briefs.id AS id,
+    project_briefs.creator_id AS creator_id,
+    creators.display_name AS creator_name,
+    project_briefs.patron_id AS patron_id,
+    users.given_name AS patron_name,
+    project_briefs.product_id AS product_id,
+    creator_products.title AS product_name,
+    project_briefs.product_id,
+    project_briefs.created_at,
+    project_briefs.details,
+    project_briefs.budget_currency,
+    project_briefs.budget_amount,
+    project_briefs.deadline,
+    project_briefs.brief_expiry_date,
+    project_briefs.consultation_slot,
+    project_briefs.delivery_method,
+    project_briefs.status,
+    project_briefs.image_url
+  FROM
+    project_briefs
+    LEFT JOIN creators ON project_briefs.creator_id = creators.id
+    LEFT JOIN users ON project_briefs.patron_id = users.id
+    LEFT JOIN creator_products ON creator_products.id = project_briefs.product_id
+  WHERE project_briefs.creator_id = $1 AND project_briefs.is_deleted = false`;
+
     const results = await pool.query(getBriefsQuery, [req.params.creator_id]);
     const briefs = results.rows;
 
@@ -30,17 +71,41 @@ const getBriefByCreatorId = async (req: Request, res: Response) => {
 
 const getBriefByPatronId = async (req: Request, res: Response) => {
   try {
+    const patronId = req.params.patron_id;
+
     //if patron not found, return error
     const getPatronById = "SELECT * FROM users WHERE id = $1";
-    const result = await pool.query(getPatronById, [req.params.patron_id]);
+    const result = await pool.query(getPatronById, [patronId]);
     if (result.rows.length === 0) {
       return res.status(400).json({ status: "error", msg: "patron not found" });
     }
 
-    //get briefs with patron_id
-    const getBriefsQuery =
-      "SELECT * FROM project_briefs WHERE patron_id = $1 AND is_deleted = false";
-    const results = await pool.query(getBriefsQuery, [req.params.patron_id]);
+    const getBriefsQuery = `SELECT DISTINCT
+    project_briefs.id AS id,
+    project_briefs.creator_id AS creator_id,
+    creators.display_name AS creator_name,
+    project_briefs.patron_id AS patron_id,
+    users.given_name AS patron_name,
+    project_briefs.product_id AS product_id,
+    creator_products.title AS product_name,
+    project_briefs.product_id,
+    project_briefs.created_at,
+    project_briefs.details,
+    project_briefs.budget_currency,
+    project_briefs.budget_amount,
+    project_briefs.deadline,
+    project_briefs.brief_expiry_date,
+    project_briefs.consultation_slot,
+    project_briefs.delivery_method,
+    project_briefs.status,
+    project_briefs.image_url
+  FROM
+    project_briefs
+    LEFT JOIN creators ON project_briefs.creator_id = creators.id
+    LEFT JOIN users ON project_briefs.patron_id = users.id
+    LEFT JOIN creator_products ON creator_products.id = project_briefs.product_id
+  WHERE patron_id = $1 AND project_briefs.is_deleted = false`;
+    const results = await pool.query(getBriefsQuery, [patronId]);
     const briefs = results.rows;
 
     res.status(200).json({ status: "success", briefs });
@@ -53,13 +118,10 @@ const getBriefByPatronId = async (req: Request, res: Response) => {
   }
 };
 
-//TODO: Add image upload
+//accepts a multipart form containing image and body params. creates a brief
 const createBrief = async (req: Request, res: Response) => {
   try {
-    //Create SQL query to create brief
-    const insertQuery =
-      "INSERT INTO project_briefs (creator_id, product_id, patron_id, details,budget_currency,budget_amount,deadline,consultation_slot,delivery_method) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *";
-
+    console.log("received");
     const {
       creator_id,
       product_id,
@@ -67,11 +129,46 @@ const createBrief = async (req: Request, res: Response) => {
       details,
       budget_currency,
       budget_amount,
-      deadline,
-      consultation_slot,
+      // deadline,
+      // consultation_slot,
       delivery_method,
     } = req.body;
+    const imageFile = req.file;
+    const imageId = v4(); //generate uuid for image
+    let imageUrl = null;
+    // Check if imageFile is defined before processing
+    if (imageFile) {
+      //resize image
+      const buffer = await sharp(imageFile.buffer)
+        .resize({
+          fit: sharp.fit.contain,
+          width: 400,
+        })
+        .jpeg({ quality: 80 })
+        .toBuffer();
 
+      //send image to s3
+      const params = {
+        Bucket: bucketName,
+        Key: `${patron_id}-brief-${imageId}.jpeg`, //create unique file name to prevent overrides due to same name
+        Body: buffer,
+        ContentType: imageFile.mimetype,
+        ACL: "public-read", // Make the object publicly accessible
+      };
+
+      const command = new PutObjectCommand(params);
+
+      await s3.send(command);
+
+      //generate imageURL
+      imageUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${params.Key}`;
+    }
+
+    //Create SQL query to create brief
+    const insertQuery =
+      "INSERT INTO project_briefs (creator_id, product_id, patron_id, details,budget_currency,budget_amount,delivery_method,image_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *";
+
+    //construct query values
     const values = [
       creator_id,
       product_id,
@@ -79,9 +176,10 @@ const createBrief = async (req: Request, res: Response) => {
       details,
       budget_currency,
       budget_amount,
-      new Date(deadline),
-      new Date(consultation_slot),
+      // new Date(deadline),
+      // new Date(consultation_slot),
       delivery_method,
+      imageUrl,
     ];
 
     //Create brief
@@ -188,4 +286,80 @@ const updateBrief = async (req: Request, res: Response) => {
   }
 };
 
-export { getBriefByCreatorId, getBriefByPatronId, createBrief, updateBrief };
+const updateBriefImage = async (req: Request, res: Response) => {
+  try {
+    const briefId = req.params.id;
+    const imageFile = req.file;
+    const imageId = v4(); //generate uuid for image
+
+    //check whether user exists before proceeding
+    const checkBriefQuery = "SELECT * FROM project_briefs WHERE id = $1";
+    const result = await pool.query(checkBriefQuery, [briefId]);
+
+    if (result.rows.length === 0) {
+      return res.status(400).json({ status: "error", msg: "brief not found" });
+    }
+
+    // Check if imageFile is defined before processing
+    if (!imageFile) {
+      return res
+        .status(400)
+        .json({ status: "error", msg: "image file not provided" });
+    }
+
+    //resize image
+    const buffer = await sharp(imageFile.buffer)
+      .resize({
+        fit: sharp.fit.contain,
+        width: 400,
+        height: 400,
+      })
+      .jpeg({ quality: 80 })
+      .toBuffer();
+
+    //send image to s3
+    const params = {
+      Bucket: bucketName,
+      Key: `brief-${imageId}.jpeg`, //create unique file name to prevent overrides due to same name
+      Body: buffer,
+      ContentType: imageFile.mimetype,
+      ACL: "public-read", // Make the object publicly accessible
+    };
+
+    const command = new PutObjectCommand(params);
+
+    await s3.send(command);
+
+    //generate URL
+    const imageUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${params.Key}`;
+
+    // Construct the final SQL UPDATE query
+    const updateQuery =
+      "UPDATE project_briefs SET image_url = $1 WHERE id = $2 RETURNING *";
+
+    // Execute the UPDATE query
+    const userResult = await pool.query(updateQuery, [imageUrl, briefId]);
+
+    const updatedUser = userResult.rows[0];
+
+    res.status(200).json({
+      status: "success",
+      msg: "Brief image updated successfully",
+      updatedUser,
+    });
+  } catch (error) {
+    console.error("Error updating brief image:", error);
+    res.status(500).json({
+      status: "error",
+      msg: "An error occurred while updating the brief image",
+    });
+  }
+};
+
+export {
+  getBriefByCreatorId,
+  getBriefByPatronId,
+  createBrief,
+  updateBrief,
+  updateBriefImage,
+};

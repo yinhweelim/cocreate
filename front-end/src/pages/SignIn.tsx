@@ -1,10 +1,9 @@
-import React, { useContext } from "react";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
-import jwtDecode from "jwt-decode";
-
+import React from "react";
+import { Link as RouterLink, useNavigate, useLocation } from "react-router-dom";
 import UserContext from "../context/UserContext";
-import useFetch from "../hooks/useFetch";
 import { data } from "../interfaces";
+import useFetch from "../hooks/useFetch";
+import jwtDecode from "jwt-decode";
 
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -35,11 +34,12 @@ function Copyright(props: any) {
 }
 
 export default function SignIn() {
-  const navigate = useNavigate();
-  const userCtx = useContext(UserContext);
   const fetchData = useFetch();
+  const userCtx = React.useContext(UserContext);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSignin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const email = data.get("email");
@@ -50,6 +50,7 @@ export default function SignIn() {
     });
     if (res.ok) {
       userCtx?.setAccessToken(res.data?.access);
+      userCtx?.setEmail(email);
       localStorage.setItem("accessToken", JSON.stringify(res.data.access));
 
       const decoded: any = jwtDecode(res.data?.access);
@@ -58,7 +59,8 @@ export default function SignIn() {
       localStorage.setItem("authId", JSON.stringify(decoded.id));
       localStorage.setItem("authEmail", JSON.stringify(decoded.email));
 
-      navigate(`/dashboard/projects`);
+      const redirectTo = location.state?.from || "/dashboard/projects";
+      navigate(redirectTo);
     } else {
       alert(JSON.stringify(res.data));
     }
@@ -97,7 +99,7 @@ export default function SignIn() {
           </Typography>
           <Box
             component="form"
-            onSubmit={handleLogin}
+            onSubmit={handleSignin}
             noValidate
             sx={{ mt: 1 }}
           >

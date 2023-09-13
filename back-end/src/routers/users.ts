@@ -34,8 +34,8 @@ router.patch(
 );
 router.patch(
   "/users/avatars/:user_id",
-  validateIdInParam,
-  checkValid,
+  // validateIdInParam,
+  // checkValid,
   upload.single("image"),
   updateUserAvatar
 );

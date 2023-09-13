@@ -1,6 +1,5 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import useFetch from "../../hooks/useFetch";
-import UserContext from "../../context/UserContext";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { data, CreatorData } from "../../interfaces";
 import EditIcon from "@mui/icons-material/Edit";
@@ -27,6 +26,7 @@ import CreatorPortfolioCard from "../../components/CreatorPortfolioCard";
 
 interface CreatorProfileProps {
   isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   creatorId: string;
   handleUpdateCreator: (
     event: React.FormEvent<HTMLFormElement>
@@ -50,11 +50,14 @@ const CreatorProfile = (props: CreatorProfileProps) => {
   //fetch portfolio projects on first mount
   const getPortfolioProjects = async () => {
     try {
+      props.setIsLoading(true);
       const res: data = await fetchData(
         "/api/creators/portfolio/" + props.creatorId
       );
       setPortfolioItems(res.data.items);
+      props.setIsLoading(false);
     } catch (error) {
+      props.setIsLoading(false);
       alert(JSON.stringify(error));
     }
   };
@@ -184,8 +187,6 @@ const CreatorProfile = (props: CreatorProfileProps) => {
 
   //delete portfolio project
   const handleDeletePortfolioProject = async (projectId: string) => {
-    console.log(`Delete project with ID: ${projectId}`);
-
     const res: data = await fetchData(
       "/api/creators/portfolio/" + projectId,
       "DELETE",
@@ -203,8 +204,8 @@ const CreatorProfile = (props: CreatorProfileProps) => {
   };
 
   //load page
-  if (props.isLoading) {
-    return <div>Loading...</div>;
+  if (props.creatorData === null) {
+    return <Typography variant="body1">Loading...</Typography>;
   } else
     return (
       <>
@@ -216,7 +217,7 @@ const CreatorProfile = (props: CreatorProfileProps) => {
                 <Typography variant="h6" component="h4" padding={2}>
                   Profile
                 </Typography>
-                <Typography variant="body1" component="body" padding={2}>
+                <Typography variant="body1" padding={2}>
                   Use this space to introduce yourself, your work, and give
                   potential patrons an idea of what they can expect.
                 </Typography>
@@ -338,7 +339,7 @@ const CreatorProfile = (props: CreatorProfileProps) => {
                 <Typography variant="h6" component="h4" padding={2}>
                   Portfolio projects
                 </Typography>
-                <Typography variant="body1" component="body" padding={2}>
+                <Typography variant="body1" padding={2}>
                   Upload pictures and descriptions of portfolio projects to show
                   people examples of what you can do. Upload up to 3 projects.
                 </Typography>
@@ -378,7 +379,7 @@ const CreatorProfile = (props: CreatorProfileProps) => {
                 <Typography variant="h6" component="h4" padding={2}>
                   Social media links
                 </Typography>
-                <Typography variant="body1" component="body" paddingX={2}>
+                <Typography variant="body1" paddingX={2}>
                   Help people find you wherever you are. Connect your other
                   accounts to show them on your page. We'll never post on your
                   behalf.
@@ -386,7 +387,7 @@ const CreatorProfile = (props: CreatorProfileProps) => {
                 <Box sx={{ mt: 1 }} paddingX={2}>
                   <Card>
                     <CardContent>
-                      <Typography component="body" variant="body1">
+                      <Typography  variant="body1">
                         Social media link 1
                       </Typography>
                     </CardContent>

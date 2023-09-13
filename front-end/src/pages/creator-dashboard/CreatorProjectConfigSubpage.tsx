@@ -1,6 +1,6 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import useFetch from "../../hooks/useFetch";
-import UserContext from "../../context/UserContext";
+
 import { data, CreatorData } from "../../interfaces";
 import { useSnackbar } from "../../context/SnackbarContext";
 import EditIcon from "@mui/icons-material/Edit";
@@ -15,6 +15,7 @@ import {
   Card,
   CardContent,
   CardMedia,
+  Stack,
 } from "@mui/material";
 import {
   Dialog,
@@ -25,9 +26,11 @@ import {
 
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import CreatorProductCard from "../../components/CreatorProductCard";
+import CreatorProjectStagesCard from "../../components/CreatorProjectStagesCard";
 
 interface CreatorProjectConfigProps {
   isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   creatorId: string;
   handleUpdateCreator: (
     event: React.FormEvent<HTMLFormElement>
@@ -38,26 +41,45 @@ interface CreatorProjectConfigProps {
 const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
   const fetchData = useFetch();
   const { showSnackbar } = useSnackbar();
-  const userCtx = useContext(UserContext);
 
   // products state variables
   const [openAddProductDialog, setOpenAddProductDialog] = useState(false); //dialog
   const [products, setProducts] = useState([]);
+  const [projectStages, setProjectStages] = useState([]);
   const [selectedProductImage, setSelectedProductImage] = useState(null);
 
   const getProducts = async () => {
     try {
+      props.setIsLoading(true);
       const res: data = await fetchData(
         "/api/creators/products/" + props.creatorId
       );
       setProducts(res.data.products);
+      props.setIsLoading(false);
     } catch (error) {
       alert(JSON.stringify(error));
+      props.setIsLoading(false);
+    }
+  };
+
+  const getCreatorProjectStages = async () => {
+    try {
+      props.setIsLoading(true);
+      const res: data = await fetchData(
+        "/api/creators/project_stages/" + props.creatorId
+      );
+      setProjectStages(res.data.projectStages);
+      console.log(res.data);
+      props.setIsLoading(false);
+    } catch (error) {
+      alert(JSON.stringify(error));
+      props.setIsLoading(false);
     }
   };
 
   useEffect(() => {
     getProducts();
+    getCreatorProjectStages();
   }, []);
 
   //product option functions
@@ -161,7 +183,7 @@ const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
 
   //load page
   if (props.isLoading) {
-    return <div>Loading...</div>;
+    return <Typography variant="body1">Loading...</Typography>;
   } else
     return (
       <>
@@ -173,7 +195,7 @@ const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
                 <Typography variant="h6" component="h4" padding={2}>
                   Request form settings
                 </Typography>
-                <Typography variant="body1" component="body" padding={2}>
+                <Typography variant="body1" paddingX={2}>
                   Set up your project request form. Patrons will see these
                   guidelines when they submit a request to you.
                 </Typography>
@@ -220,13 +242,79 @@ const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
               </Paper>
             </Grid>
 
+            {/* Products and services */}
+            <Grid item xs={9}>
+              <Paper variant="outlined">
+                <Typography variant="h6" component="h4" padding={2}>
+                  Products and Services
+                </Typography>
+                <Typography variant="body1" paddingX={2}>
+                  Provide up to 3 sample product options that potential patrons
+                  can choose from.
+                </Typography>
+                <Grid
+                  container
+                  flexDirection={"row"}
+                  spacing={1}
+                  paddingLeft={2}
+                >
+                  {products?.map((data: any, index: number) => (
+                    <CreatorProductCard
+                      key={index}
+                      {...data}
+                      onDelete={() => handleDeleteProduct(data.id)}
+                      displayDelete
+                    />
+                  ))}
+                </Grid>
+                <Box sx={{ mt: 1 }} paddingX={2}>
+                  <Button
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                    startIcon={<ModeEditOutlineOutlinedIcon />}
+                    onClick={() => {
+                      setOpenAddProductDialog(true);
+                    }}
+                  >
+                    Add Product
+                  </Button>
+                </Box>
+              </Paper>
+            </Grid>
+
+            {/* Project process */}
+            <Grid item xs={9}>
+              <Paper variant="outlined">
+                <Typography variant="h6" component="h4" padding={2}>
+                  Project process
+                </Typography>
+                <Typography variant="body1" padding={2}>
+                  Set up your project stages to give patrons an idea of what to
+                  expect in the commissions process.
+                </Typography>
+
+                <Stack flexDirection={"column"} spacing={2} padding={2}>
+                  {projectStages?.map((data: any, index: number) => (
+                    <CreatorProjectStagesCard
+                      key={index}
+                      {...data}
+                      cardHeight="250"
+                    />
+                  ))}
+                  <Button variant="contained" disabled>
+                    Configure
+                  </Button>
+                </Stack>
+              </Paper>
+            </Grid>
+
             {/* Project preferences */}
             <Grid item xs={9}>
               <Paper variant="outlined">
                 <Typography variant="h6" component="h4" padding={2}>
                   Project preferences
                 </Typography>
-                <Typography variant="body1" component="body" padding={2}>
+                <Typography variant="body1" paddingX={2}>
                   Set up your project preferences. These will be displayed on
                   your page.
                 </Typography>
@@ -268,59 +356,6 @@ const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
                     Save
                   </Button>
                 </Box>
-              </Paper>
-            </Grid>
-
-            {/* Products and services */}
-            <Grid item xs={9}>
-              <Paper variant="outlined">
-                <Typography variant="h6" component="h4" padding={2}>
-                  Products and Services
-                </Typography>
-                <Typography variant="body1" component="body" padding={2}>
-                  Provide up to 3 sample product options that potential patrons
-                  can choose from.
-                </Typography>
-                <Grid
-                  container
-                  flexDirection={"row"}
-                  spacing={1}
-                  paddingLeft={2}
-                >
-                  {products?.map((data: any, index: number) => (
-                    <CreatorProductCard
-                      key={index}
-                      {...data}
-                      onDelete={() => handleDeleteProduct(data.id)}
-                      displayDelete
-                    />
-                  ))}
-                </Grid>
-                <Box sx={{ mt: 1 }} paddingX={2}>
-                  <Button
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                    startIcon={<ModeEditOutlineOutlinedIcon />}
-                    onClick={() => {
-                      setOpenAddProductDialog(true);
-                    }}
-                  >
-                    Add Product
-                  </Button>
-                </Box>
-              </Paper>
-            </Grid>
-
-            {/* Project process */}
-            <Grid item xs={9}>
-              <Paper variant="outlined">
-                <Typography variant="h6" component="h4" padding={2}>
-                  Project process
-                </Typography>
-                <Typography variant="body1" component="body" padding={2}>
-                  Set up your project stages to give your patrons an idea of
-                  what to expect in process of commissionning work with you.
-                </Typography>
               </Paper>
             </Grid>
           </Grid>
