@@ -4,7 +4,15 @@ import useFetch from "../../hooks/useFetch";
 import { Brief, data } from "../../interfaces";
 
 //components
-import { Grid, Button, Divider, Stack, Chip, Badge } from "@mui/material";
+import {
+  Grid,
+  Button,
+  Divider,
+  Stack,
+  Chip,
+  Badge,
+  Typography,
+} from "@mui/material";
 import SectionHeading from "../../components/SectionHeading";
 import CreatorProjectsSubpage from "./CreatorProjectsSubpage";
 import CreatorRequestsSubpage from "./CreatorRequestsSubpage";
@@ -71,7 +79,6 @@ const CreatorProjects = () => {
           heading={"Projects"}
           actionButton={null}
         ></SectionHeading>
-
         {/* subpages */}
         <Stack direction={"row"} spacing={1}>
           <Button
@@ -89,26 +96,26 @@ const CreatorProjects = () => {
             </Button>
           </Badge>
         </Stack>
-
         <Divider />
-
         {/* page content */}
-        <Grid container padding={1}>
-          {selectedSubpage === "projects" ? (
-            <CreatorProjectsSubpage
-              isLoading={isLoading}
-              projects={projects}
-              setProjects={setProjects}
-            />
-          ) : (
-            <CreatorRequestsSubpage
-              isLoading={isLoading}
-              briefs={briefs}
-              setBriefs={setBriefs}
-              getBriefs={getBriefs}
-            />
-          )}
-        </Grid>
+        {isLoading ? (
+          <Typography variant="body1">Loading...</Typography>
+        ) : (
+          <Grid container padding={1}>
+            {selectedSubpage === "projects" ? (
+              <CreatorProjectsSubpage
+                projects={projects}
+                setProjects={setProjects}
+              />
+            ) : (
+              <CreatorRequestsSubpage
+                briefs={briefs}
+                setBriefs={setBriefs}
+                getBriefs={getBriefs}
+              />
+            )}
+          </Grid>
+        )}
       </Grid>
     </>
   );

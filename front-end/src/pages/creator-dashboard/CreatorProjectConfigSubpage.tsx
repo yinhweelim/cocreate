@@ -69,7 +69,7 @@ const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
         "/api/creators/project_stages/" + props.creatorId
       );
       setProjectStages(res.data.projectStages);
-      console.log(res.data);
+
       props.setIsLoading(false);
     } catch (error) {
       alert(JSON.stringify(error));

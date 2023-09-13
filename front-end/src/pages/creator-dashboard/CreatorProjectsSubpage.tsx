@@ -28,7 +28,6 @@ import CreatorProjectCard from "../../components/CreatorProjectCard";
 interface Project {}
 
 interface SubpageProps {
-  isLoading: boolean;
   projects: any;
   setProjects: React.Dispatch<React.SetStateAction<never[]>>;
 }
@@ -55,67 +54,64 @@ const CreatorProjectsSubpage = (props: SubpageProps) => {
     }
   }, [props.projects]);
 
-  if (props.isLoading) {
-    return <Typography variant="body1">Loading...</Typography>;
-  } else
-    return (
-      <>
-        {/* page content */}
-        <Grid container paddingY={4}>
-          <Grid container flexDirection="column" rowSpacing={2}>
-            <Stack paddingLeft={2} paddingBottom={4}>
-              <Typography variant="overline" paddingY={1} fontSize="1rem">
-                In progress
+  return (
+    <>
+      {/* page content */}
+      <Grid container paddingY={4}>
+        <Grid container flexDirection="column" rowSpacing={2}>
+          <Stack paddingLeft={2} paddingBottom={4}>
+            <Typography variant="overline" paddingY={1} fontSize="1rem">
+              In progress
+            </Typography>
+            {props.projects?.length === 0 ? (
+              <Typography variant="body1">
+                No projects yet. Go out and get some!
               </Typography>
-              {props.projects?.length === 0 ? (
-                <Typography variant="body1">
-                  No projects yet. Go out and get some!
-                </Typography>
-              ) : (
-                <Grid container flexDirection={"row"} spacing={1}>
-                  {pendingProjects?.map((data: any, index: number) => (
-                    <CreatorProjectCard
-                      key={index}
-                      {...data}
-                      cardHeight="250"
-                      onClick={() => {
-                        console.log("clicked");
-                      }}
-                    />
-                  ))}
-                </Grid>
-              )}
-            </Stack>
+            ) : (
+              <Grid container flexDirection={"row"} spacing={1}>
+                {pendingProjects?.map((data: any, index: number) => (
+                  <CreatorProjectCard
+                    key={index}
+                    {...data}
+                    cardHeight="250"
+                    onClick={() => {
+                      console.log("clicked");
+                    }}
+                  />
+                ))}
+              </Grid>
+            )}
+          </Stack>
 
-            <Divider />
-            <Stack paddingLeft={2} paddingTop={2}>
-              <Typography variant="overline" paddingY={1} fontSize="1rem">
-                Completed
+          <Divider />
+          <Stack paddingLeft={2} paddingTop={2}>
+            <Typography variant="overline" paddingY={1} fontSize="1rem">
+              Completed
+            </Typography>
+            {/* display completed projects here */}
+            {props.projects?.length === 0 ? (
+              <Typography variant="body1">
+                No projects yet. Go out and support some creators!
               </Typography>
-              {/* display completed projects here */}
-              {props.projects?.length === 0 ? (
-                <Typography variant="body1">
-                  No projects yet. Go out and support some creators!
-                </Typography>
-              ) : (
-                <Grid container flexDirection={"row"} spacing={1}>
-                  {completedProjects?.map((data: any, index: number) => (
-                    <CreatorProjectCard
-                      key={index}
-                      {...data}
-                      cardHeight="250"
-                      onClick={() => {
-                        console.log("clicked");
-                      }}
-                    />
-                  ))}
-                </Grid>
-              )}
-            </Stack>
-          </Grid>
+            ) : (
+              <Grid container flexDirection={"row"} spacing={1}>
+                {completedProjects?.map((data: any, index: number) => (
+                  <CreatorProjectCard
+                    key={index}
+                    {...data}
+                    cardHeight="250"
+                    onClick={() => {
+                      console.log("clicked");
+                    }}
+                  />
+                ))}
+              </Grid>
+            )}
+          </Stack>
         </Grid>
-      </>
-    );
+      </Grid>
+    </>
+  );
 };
 
 export default CreatorProjectsSubpage;
