@@ -7,7 +7,7 @@ const themeOptions: ThemeOptions = {
       main: "#307A70",
     },
     secondary: {
-      main: "#e64a19",
+      main: "#A28D85",
     },
   },
   typography: {

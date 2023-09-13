@@ -59,7 +59,7 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
                 View and manage incoming requests. Accept a request to initiate
                 a new project!
               </Typography>
-              {props.briefs.length == 0 ? (
+              {props.briefs?.length == 0 ? (
                 <Typography variant="body1">
                   No briefs yet. Go out and get some!
                 </Typography>

@@ -6,7 +6,7 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 
-const CreatorBriefCard = (props: {
+interface CardProps {
   onClick: React.MouseEventHandler<HTMLButtonElement> | undefined;
   onDelete: () => void;
   details?: string;
@@ -24,7 +24,21 @@ const CreatorBriefCard = (props: {
   status?: string;
   product_name?: string;
   creator_name?: string;
-}) => {
+  patron_name?: string;
+}
+
+const CreatorBriefCard = (props: CardProps) => {
+  //format chip
+  let chip = null; // Initialize chip as null by default
+
+  if (props.status === "PENDING_RESPONSE") {
+    chip = <Chip variant="outlined" color="primary" label="PENDING RESPONSE" />;
+  } else if (props.status === "ACCEPTED") {
+    chip = <Chip variant="outlined" color="success" label="ACCEPTED" />;
+  } else {
+    chip = <Chip variant="outlined" color="secondary" label="CANCELLED" />;
+  }
+
   return (
     <Grid item xs={4}>
       <Card
@@ -48,7 +62,8 @@ const CreatorBriefCard = (props: {
             Budget {props.budget_currency} {props.budget_amount}
           </Typography>
 
-          <Chip variant="outlined" label={props.status} />
+          {/* <Chip variant="contained" color="primary" label={props.status} /> */}
+          {chip}
         </CardContent>
 
         <CardActions
