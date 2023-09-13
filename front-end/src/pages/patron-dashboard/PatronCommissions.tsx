@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect } from "react";
-import Sidebar from "../../components/Sidebar";
 import {
   Box,
   Grid,
@@ -19,7 +18,8 @@ import useFetch from "../../hooks/useFetch";
 import { data } from "../../interfaces";
 import ProjectBriefCard from "../../components/ProjectBriefCard";
 import AddAPhoto from "@mui/icons-material/AddAPhoto";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { useSnackbar } from "../../context/SnackbarContext";
+
 import {
   Dialog,
   DialogActions,
@@ -28,6 +28,7 @@ import {
 } from "@mui/material";
 
 const PatronCommissions = () => {
+  const { showSnackbar } = useSnackbar();
   const fetchData = useFetch();
   const userCtx = useContext(UserContext);
   const navigate = useNavigate();
@@ -108,13 +109,13 @@ const PatronCommissions = () => {
     if (res.ok) {
       console.log("successful");
       setOpenUpdateBrief(false);
-      // showSnackbar("Brief updated successfully", "success");
+      showSnackbar("Brief updated successfully", "success");
       getBriefs();
     } else {
       console.log("failed");
       console.log(res.data);
       setOpenUpdateBrief(false);
-      // showSnackbar("Brief update failed", "warning");
+      showSnackbar("Brief update failed", "warning");
     }
   };
 
