@@ -82,10 +82,49 @@ const PatronCommissions = () => {
     getBriefs();
   }, []);
 
-  //brief image previes
-  const handleSelectBriefImage = (event: any) => {
+  //update brief image
+  const updateBriefImage = async (event: any) => {
     const imageFile = event.target.files[0];
     setSelectedBriefImage(imageFile);
+
+    const formData = new FormData();
+    formData.append("image", imageFile);
+    const res = await fetch(
+      import.meta.env.VITE_SERVER +
+        "/api/projects/briefs/images/" +
+        selectedBrief?.id,
+      {
+        method: "PATCH",
+        headers: {},
+        body: formData,
+      }
+    );
+    const data: any = await res.json();
+
+    let returnValue = {};
+    if (res.ok) {
+      if (data.status === "error") {
+        returnValue = { ok: false, data: data.msg };
+        showSnackbar("Image update failed", "warning");
+      } else {
+        returnValue = { ok: true, data };
+        showSnackbar("Image updated successfully", "success");
+        getBriefs();
+      }
+    } else {
+      if (data?.errors && Array.isArray(data.errors)) {
+        const messages = data.errors.map((item: any) => item.msg);
+        returnValue = { ok: false, data: messages };
+        console.error(returnValue);
+      } else if (data?.status === "error") {
+        returnValue = { ok: false, data: data.message || data.msg };
+        console.error(returnValue);
+      } else {
+        console.log(data);
+        returnValue = { ok: false, data: "An error has occurred" };
+        console.error(returnValue);
+      }
+    }
   };
 
   //update brief ref image
@@ -274,7 +313,7 @@ const PatronCommissions = () => {
                     style={{ display: "none" }}
                     id="brief-image-upload-button"
                     type="file"
-                    onChange={handleSelectBriefImage}
+                    onChange={updateBriefImage}
                   />
                   <label htmlFor="brief-image-upload-button">
                     <Button

@@ -286,4 +286,80 @@ const updateBrief = async (req: Request, res: Response) => {
   }
 };
 
-export { getBriefByCreatorId, getBriefByPatronId, createBrief, updateBrief };
+const updateBriefImage = async (req: Request, res: Response) => {
+  try {
+    const briefId = req.params.id;
+    const imageFile = req.file;
+    const imageId = v4(); //generate uuid for image
+
+    //check whether user exists before proceeding
+    const checkBriefQuery = "SELECT * FROM project_briefs WHERE id = $1";
+    const result = await pool.query(checkBriefQuery, [briefId]);
+
+    if (result.rows.length === 0) {
+      return res.status(400).json({ status: "error", msg: "brief not found" });
+    }
+
+    // Check if imageFile is defined before processing
+    if (!imageFile) {
+      return res
+        .status(400)
+        .json({ status: "error", msg: "image file not provided" });
+    }
+
+    //resize image
+    const buffer = await sharp(imageFile.buffer)
+      .resize({
+        fit: sharp.fit.contain,
+        width: 400,
+        height: 400,
+      })
+      .jpeg({ quality: 80 })
+      .toBuffer();
+
+    //send image to s3
+    const params = {
+      Bucket: bucketName,
+      Key: `brief-${imageId}.jpeg`, //create unique file name to prevent overrides due to same name
+      Body: buffer,
+      ContentType: imageFile.mimetype,
+      ACL: "public-read", // Make the object publicly accessible
+    };
+
+    const command = new PutObjectCommand(params);
+
+    await s3.send(command);
+
+    //generate URL
+    const imageUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${params.Key}`;
+
+    // Construct the final SQL UPDATE query
+    const updateQuery =
+      "UPDATE project_briefs SET image_url = $1 WHERE id = $2 RETURNING *";
+
+    // Execute the UPDATE query
+    const userResult = await pool.query(updateQuery, [imageUrl, briefId]);
+
+    const updatedUser = userResult.rows[0];
+
+    res.status(200).json({
+      status: "success",
+      msg: "Brief image updated successfully",
+      updatedUser,
+    });
+  } catch (error) {
+    console.error("Error updating brief image:", error);
+    res.status(500).json({
+      status: "error",
+      msg: "An error occurred while updating the brief image",
+    });
+  }
+};
+
+export {
+  getBriefByCreatorId,
+  getBriefByPatronId,
+  createBrief,
+  updateBrief,
+  updateBriefImage,
+};
