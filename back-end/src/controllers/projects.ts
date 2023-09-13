@@ -101,6 +101,42 @@ const getProjectByPatronId = async (req: Request, res: Response) => {
   }
 };
 
+const getProjectById = async (req: Request, res: Response) => {
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    const projectId = req.params.id;
+
+    //1. get project. if project not found, return error
+    const getQuery = "SELECT * FROM projects WHERE id = $1";
+    const result = await pool.query(getQuery, [projectId]);
+    const project = result.rows[0];
+
+    if (result.rows.length === 0) {
+      return res
+        .status(400)
+        .json({ status: "error", msg: "creator not found" });
+    }
+
+    await client.query("COMMIT"); // Commit the transaction
+
+    res.status(200).json({
+      status: "success",
+      project,
+    });
+  } catch (error) {
+    await client.query("ROLLBACK"); // Roll back the transaction in case of an error
+
+    console.error("Error getting project:", error);
+    res.status(500).json({
+      status: "error",
+      msg: "An error occurred while getting the project",
+    });
+  } finally {
+    client.release();
+  }
+};
+
 const createProject = async (req: Request, res: Response) => {
   const client = await pool.connect();
   try {
@@ -301,4 +337,5 @@ export {
   getProjectByPatronId,
   createProject,
   updateProject,
+  getProjectById,
 };

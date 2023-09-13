@@ -9,6 +9,7 @@ import {
 import {
   getProjectByCreatorId,
   getProjectByPatronId,
+  getProjectById,
   createProject,
   updateProject,
 } from "../controllers/projects";
@@ -78,6 +79,7 @@ router.patch(
 );
 
 //projects
+router.get("/projects/:id", validateIdInParam, checkValid, getProjectById);
 router.get(
   "/projects/creators/:creator_id",
   validateCreatorIdInParam,
