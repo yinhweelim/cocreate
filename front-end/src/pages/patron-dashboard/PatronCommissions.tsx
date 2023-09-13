@@ -42,9 +42,11 @@ const PatronCommissions = () => {
     patron_id: string;
     patron_name: string;
     product_id: string;
+    product_name: string;
     details: string;
     budget_currency: string;
-    budget_amount: string;
+    budget_amount: number;
+    created_at: string;
     deadline: Date;
     consultation_slot: Date;
     delivery_method: string;
@@ -85,65 +87,35 @@ const PatronCommissions = () => {
     setSelectedBriefImage(imageFile);
   };
 
+  //update brief ref image
+
   //update brief
   const handleUpdateBrief = async (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("update brief" + selectedBrief);
+    console.log("update brief" + selectedBrief?.id);
     event.preventDefault();
-
-    //construct request body
     const submittedData = new FormData(event.currentTarget);
+    const details = submittedData.get("details");
+    const budget_amount = parseInt(submittedData.get("budget_amount"), 10);
 
-    const requestBody = {
-      title: submittedData.get("title"),
-      caption: submittedData.get("description"),
-    };
-
-    //append image and body to formData
-    const formData = new FormData();
-    if (selectedBriefImage) {
-      formData.append("image", selectedBriefImage);
-    }
-    formData.append("title", requestBody.title as string);
-    formData.append("caption", requestBody.caption as string);
-    console.log(formData);
-
-    const res = await fetch(
-      import.meta.env.VITE_SERVER + "/api/projects/briefs/" + selectedBrief?.id,
+    const res: data = await fetchData(
+      "/api/projects/briefs/" + selectedBrief?.id,
+      "PATCH",
       {
-        method: "PATCH",
-        headers: {},
-        body: formData,
+        details,
+        budget_amount,
       }
     );
-    const data: any = await res.json();
-
-    let returnValue = {};
     if (res.ok) {
-      if (data.status === "error") {
-        returnValue = { ok: false, data: data.msg };
-        setSelectedBriefImage(null); //reset original
-        // showSnackbar("Brief update failed", "warning");
-        setOpenUpdateBrief(false);
-      } else {
-        returnValue = { ok: true, data };
-        setSelectedBriefImage(null); //reset original
-        // showSnackbar("Portfolio item updated successfully", "success");
-        setOpenUpdateBrief(false);
-        getBriefs();
-      }
+      console.log("successful");
+      setOpenUpdateBrief(false);
+      // showSnackbar("Brief updated successfully", "success");
+      getBriefs();
     } else {
-      if (data?.errors && Array.isArray(data.errors)) {
-        const messages = data.errors.map((item: any) => item.msg);
-        returnValue = { ok: false, data: messages };
-      } else if (data?.status === "error") {
-        returnValue = { ok: false, data: data.message || data.msg };
-      } else {
-        console.log(data);
-        returnValue = { ok: false, data: "An error has occurred" };
-      }
+      console.log("failed");
+      console.log(res.data);
+      setOpenUpdateBrief(false);
+      // showSnackbar("Brief update failed", "warning");
     }
-
-    return returnValue;
   };
 
   //cancel brief
@@ -321,8 +293,8 @@ const PatronCommissions = () => {
                 fullWidth
                 id="budget"
                 label="Budget"
-                name="budget"
-                type="text"
+                name="budget_amount"
+                type="number"
                 placeholder="Update your budget"
                 defaultValue={selectedBrief?.budget_amount}
               />
