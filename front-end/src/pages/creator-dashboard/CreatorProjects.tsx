@@ -1,10 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
 import UserContext from "../../context/UserContext";
 import useFetch from "../../hooks/useFetch";
-import { data } from "../../interfaces";
+import { Brief, data } from "../../interfaces";
 
 //components
-import { Grid, Button, Divider, Stack } from "@mui/material";
+import { Grid, Button, Divider, Stack, Chip, Badge } from "@mui/material";
 import SectionHeading from "../../components/SectionHeading";
 import CreatorProjectsSubpage from "./CreatorProjectsSubpage";
 import CreatorRequestsSubpage from "./CreatorRequestsSubpage";
@@ -45,14 +45,11 @@ const CreatorProjects = () => {
 
   //get projects
   const getProjects = async () => {
-    setIsLoading(true);
     try {
       const res: data = await fetchData("/api/projects/creators/" + creatorId);
       setProjects(res.data.projects);
     } catch (error) {
       alert(JSON.stringify(error));
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -60,6 +57,11 @@ const CreatorProjects = () => {
     getBriefs();
     getProjects();
   }, []);
+
+  const pendingRequests = briefs?.filter(
+    (brief: Brief) => brief.status === "PENDING_RESPONSE"
+  );
+  const pendingRequestCount = pendingRequests?.length;
 
   return (
     <>
@@ -78,12 +80,14 @@ const CreatorProjects = () => {
           >
             Projects
           </Button>
-          <Button
-            variant="text"
-            onClick={() => handleSubpageChange("requests")}
-          >
-            Requests
-          </Button>
+          <Badge badgeContent={pendingRequestCount} color="primary">
+            <Button
+              variant="text"
+              onClick={() => handleSubpageChange("requests")}
+            >
+              Requests
+            </Button>
+          </Badge>
         </Stack>
 
         <Divider />
