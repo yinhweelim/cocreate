@@ -27,6 +27,7 @@ import CreateBrief from "./pages/creator-public-pages/CreateBrief";
 import ConfirmBrief from "./pages/creator-public-pages/ConfirmBrief";
 import DashboardLayout from "./pages/creator-dashboard/DashboardLayout";
 import PrivateRoute from "./components/PrivateRoute";
+import ProjectTracker from "./pages/creator-public-pages/ProjectTracker";
 
 function App() {
   const fetchData = useFetch();
@@ -133,6 +134,10 @@ function App() {
                             <Settings getUserInfo={getUserInfo}></Settings>
                           }
                         ></Route>
+                        <Route
+                          path="/projects/:project_id"
+                          element={<ProjectTracker></ProjectTracker>}
+                        ></Route>
                       </Routes>
                     </DashboardLayout>
                   </PrivateRoute>
@@ -156,6 +161,14 @@ function App() {
                 element={
                   <PrivateRoute>
                     <ConfirmBrief></ConfirmBrief>
+                  </PrivateRoute>
+                }
+              ></Route>
+              <Route
+                path="/projects/:project_id"
+                element={
+                  <PrivateRoute>
+                    <ProjectTracker></ProjectTracker>
                   </PrivateRoute>
                 }
               ></Route>

@@ -24,6 +24,7 @@ import SectionHeading from "../../components/SectionHeading";
 import { useSnackbar } from "../../context/SnackbarContext";
 import CreatorProductCard from "../../components/CreatorProductCard";
 import CreatorProjectCard from "../../components/CreatorProjectCard";
+import { useNavigate } from "react-router-dom";
 
 interface Project {}
 
@@ -38,7 +39,7 @@ const CreatorProjectsSubpage = (props: SubpageProps) => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null); // selected project
   const [completedProjects, setCompletedProjects] = useState([]);
   const [pendingProjects, setPendingProjects] = useState([]);
-
+  const navigate = useNavigate();
   useEffect(() => {
     if (props.projects) {
       // Filter and set completed projects when props.projects change
@@ -75,7 +76,7 @@ const CreatorProjectsSubpage = (props: SubpageProps) => {
                     {...data}
                     cardHeight="250"
                     onClick={() => {
-                      console.log("clicked");
+                      navigate("/dashboard/projects/" + data.id);
                     }}
                   />
                 ))}
@@ -101,7 +102,7 @@ const CreatorProjectsSubpage = (props: SubpageProps) => {
                     {...data}
                     cardHeight="250"
                     onClick={() => {
-                      console.log("clicked");
+                      navigate("/dashboard/projects/" + data.id);
                     }}
                   />
                 ))}
