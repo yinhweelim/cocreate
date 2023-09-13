@@ -78,3 +78,17 @@ export interface Brief {
   status: string;
   image_url: string;
 }
+
+export interface Project {
+  id: string;
+  created_at: string;
+  patron_id: string;
+  creator_id: string;
+  brief_id: string;
+  agreed_proposal_id: string | null;
+  agreed_date: string | null;
+  current_stage_id: string;
+  is_deleted: boolean;
+  name: string;
+  is_completed: boolean;
+}

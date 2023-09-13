@@ -1,45 +1,21 @@
-import React, { useState, useContext, useEffect } from "react";
-import UserContext from "../../context/UserContext";
-import useFetch from "../../hooks/useFetch";
-import { data } from "../../interfaces";
-import { AddAPhoto } from "@mui/icons-material";
-import {
-  Typography,
-  Grid,
-  Divider,
-  Stack,
-  Dialog,
-  DialogTitle,
-  Box,
-  DialogContent,
-  Card,
-  CardMedia,
-  CardContent,
-  Button,
-  TextField,
-  DialogActions,
-} from "@mui/material";
-import ProjectBriefCard from "../../components/PatronBriefCard";
-import SectionHeading from "../../components/SectionHeading";
-import { useSnackbar } from "../../context/SnackbarContext";
-import CreatorProductCard from "../../components/CreatorProductCard";
+import React, { useState, useEffect } from "react";
+import { Project } from "../../interfaces";
+import { Typography, Grid, Divider, Stack } from "@mui/material";
 import CreatorProjectCard from "../../components/CreatorProjectCard";
 import { useNavigate } from "react-router-dom";
 
-interface Project {}
-
 interface SubpageProps {
-  projects: any;
-  setProjects: React.Dispatch<React.SetStateAction<never[]>>;
+  projects: Project[];
+  setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
 }
+
 const CreatorProjectsSubpage = (props: SubpageProps) => {
-  const { showSnackbar } = useSnackbar();
-  const fetchData = useFetch();
-  const userCtx = useContext(UserContext);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null); // selected project
-  const [completedProjects, setCompletedProjects] = useState([]);
-  const [pendingProjects, setPendingProjects] = useState([]);
+  const [completedProjects, setCompletedProjects] = useState<Project[] | null>(
+    []
+  );
+  const [pendingProjects, setPendingProjects] = useState<Project[] | null>([]);
   const navigate = useNavigate();
+
   useEffect(() => {
     if (props.projects) {
       // Filter and set completed projects when props.projects change

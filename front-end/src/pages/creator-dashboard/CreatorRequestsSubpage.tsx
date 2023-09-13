@@ -1,8 +1,6 @@
-import React, { useState, useContext, useEffect } from "react";
-import UserContext from "../../context/UserContext";
+import React, { useState, useEffect } from "react";
 import useFetch from "../../hooks/useFetch";
 import { data, Brief } from "../../interfaces";
-import { AddAPhoto } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import {
   Typography,
@@ -15,7 +13,6 @@ import {
   DialogContent,
   Card,
   CardMedia,
-  CardContent,
   Button,
   TextField,
   DialogActions,
@@ -25,11 +22,13 @@ import CreatorBriefCard from "../../components/CreatorBriefCard";
 import { useSnackbar } from "../../context/SnackbarContext";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+
 interface SubpageProps {
   briefs: Brief[];
-  setBriefs: React.Dispatch<React.SetStateAction<never[]>>;
+  setBriefs: React.Dispatch<React.SetStateAction<Brief[]>>;
   getBriefs: () => Promise<void>;
 }
+
 const CreatorRequestsSubpage = (props: SubpageProps) => {
   const navigate = useNavigate();
   const fetchData = useFetch();
@@ -37,8 +36,7 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
   const [openBrief, setOpenBrief] = useState(false); //dialog to manage brief
   const [openAddProjectDialog, setOpenAddProjectDialog] = useState(false); //dialog to manage project
   const [selectedBrief, setSelectedBrief] = useState<Brief | null>(null); // selected brief for update
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [pendingBriefs, setPendingBriefs] = useState<Brief[] | null>([]); // selected brief for update
+  const [pendingBriefs, setPendingBriefs] = useState<Brief[] | null>([]);
 
   useEffect(() => {
     if (props.briefs) {

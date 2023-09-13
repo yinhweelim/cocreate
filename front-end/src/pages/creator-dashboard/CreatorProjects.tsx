@@ -1,18 +1,10 @@
-import React, { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import UserContext from "../../context/UserContext";
 import useFetch from "../../hooks/useFetch";
-import { Brief, data } from "../../interfaces";
+import { Brief, data, Project } from "../../interfaces";
 
 //components
-import {
-  Grid,
-  Button,
-  Divider,
-  Stack,
-  Chip,
-  Badge,
-  Typography,
-} from "@mui/material";
+import { Grid, Button, Divider, Stack, Badge, Typography } from "@mui/material";
 import SectionHeading from "../../components/SectionHeading";
 import CreatorProjectsSubpage from "./CreatorProjectsSubpage";
 import CreatorRequestsSubpage from "./CreatorRequestsSubpage";
@@ -25,8 +17,8 @@ const CreatorProjects = () => {
 
   //project variables
   const creatorId: string = userCtx?.currentUser.creator_id;
-  const [projects, setProjects] = useState([]);
-  const [briefs, setBriefs] = useState([]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [briefs, setBriefs] = useState<Brief[]>([]);
 
   //subpage handling
   const [selectedSubpage, setSelectedSubpage] = useState<String>("projects");
