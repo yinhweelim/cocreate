@@ -187,8 +187,6 @@ const CreatorProfile = (props: CreatorProfileProps) => {
 
   //delete portfolio project
   const handleDeletePortfolioProject = async (projectId: string) => {
-    console.log(`Delete project with ID: ${projectId}`);
-
     const res: data = await fetchData(
       "/api/creators/portfolio/" + projectId,
       "DELETE",
@@ -206,7 +204,7 @@ const CreatorProfile = (props: CreatorProfileProps) => {
   };
 
   //load page
-  if (props.isLoading) {
+  if (props.creatorData === null) {
     return <Typography variant="body1">Loading...</Typography>;
   } else
     return (

@@ -5,7 +5,6 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import DeleteIcon from "@mui/icons-material/Delete";
 
 const ProjectBriefCard = (props: {
   onClick: React.MouseEventHandler<HTMLLIElement> | undefined;
@@ -56,7 +55,7 @@ const ProjectBriefCard = (props: {
             justifyContent: "flex",
           }}
         >
-          <Button variant="text" size="small">
+          <Button variant="outlined" size="small" onClick={props.onClick}>
             Manage
           </Button>
         </CardActions>
