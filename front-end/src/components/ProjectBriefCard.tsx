@@ -7,7 +7,7 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 
 const ProjectBriefCard = (props: {
-  onClick: React.MouseEventHandler<HTMLLIElement> | undefined;
+  onClick: React.MouseEventHandler<HTMLButtonElement> | undefined;
   onDelete: () => void;
   details?: string;
   budget_currency?: string;

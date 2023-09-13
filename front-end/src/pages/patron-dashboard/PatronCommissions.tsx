@@ -108,8 +108,9 @@ const PatronCommissions = () => {
         showSnackbar("Image update failed", "warning");
       } else {
         returnValue = { ok: true, data };
-        showSnackbar("Image updated successfully", "success");
         getBriefs();
+        showSnackbar("Image updated successfully", "success");
+        setOpenUpdateBrief(false);
       }
     } else {
       if (data?.errors && Array.isArray(data.errors)) {
@@ -124,6 +125,7 @@ const PatronCommissions = () => {
         returnValue = { ok: false, data: "An error has occurred" };
         console.error(returnValue);
       }
+      setOpenUpdateBrief(false);
     }
   };
 
@@ -146,12 +148,10 @@ const PatronCommissions = () => {
       }
     );
     if (res.ok) {
-      console.log("successful");
       setOpenUpdateBrief(false);
       showSnackbar("Brief updated successfully", "success");
       getBriefs();
     } else {
-      console.log("failed");
       console.log(res.data);
       setOpenUpdateBrief(false);
       showSnackbar("Brief update failed", "warning");
@@ -170,12 +170,13 @@ const PatronCommissions = () => {
     );
 
     if (res.ok) {
-      // showSnackbar("Brief cancelled", "success");
-      console.log("brief cancelled");
+      showSnackbar("Brief cancelled", "success");
       getBriefs();
+      setOpenUpdateBrief(false);
     } else {
       console.log(JSON.stringify(res.data));
-      // showSnackbar("Failed to cancel brief", "warning");
+      showSnackbar("Failed to cancel brief", "warning");
+      setOpenUpdateBrief(false);
     }
   };
 
