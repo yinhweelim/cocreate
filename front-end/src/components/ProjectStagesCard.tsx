@@ -7,7 +7,7 @@ import TimelineConnector from "@mui/lab/TimelineConnector";
 import TimelineContent from "@mui/lab/TimelineContent";
 import TimelineDot from "@mui/lab/TimelineDot";
 import TimelineOppositeContent from "@mui/lab/TimelineOppositeContent";
-
+import { format } from "date-fns";
 interface ProjectStages {
   index?: number;
   name?: String;
@@ -26,7 +26,8 @@ const ProjectStagesCard = (props: ProjectStages) => {
       <TimelineItem>
         <TimelineOppositeContent color="text.secondary">
           {/* conditionally show completed time if is_completed prop = true */}
-          {props.is_completed && props.completed_time}
+          {props.is_completed &&
+            format(new Date(props.completed_time), "yyyy-MM-dd HH:mm")}
         </TimelineOppositeContent>
         <TimelineSeparator>
           {/* Conditionally set the color based on isCurrentStage prop */}

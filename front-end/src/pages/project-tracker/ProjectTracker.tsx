@@ -15,7 +15,7 @@ import { data, Project, CreatorData, Brief } from "../../interfaces";
 import ProjectDetailsSubpage from "./ProjectDetailsSubpage";
 import ProjectOverviewSubpage from "./ProjectOverviewSubpage";
 import ProjectUpdatesSubpage from "./ProjectUpdatesSubpage";
-
+import { format } from "date-fns";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import UserContext from "../../context/UserContext";
 
@@ -109,7 +109,8 @@ const ProjectTracker = () => {
               <Typography variant="body1" textAlign="left">
                 {projectData?.current_stage}
                 <br />
-                Started: {projectData?.created_at}
+                Started:{" "}
+                {format(new Date(projectData?.created_at), "yyyy-MM-dd HH:mm")}
                 <br />
                 {proposalData?.estimated_delivery_date}
               </Typography>

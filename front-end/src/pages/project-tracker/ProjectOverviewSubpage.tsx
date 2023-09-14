@@ -15,6 +15,7 @@ import CreatorPageProjectStages from "../../components/CreatorPageProjectStages"
 import ProjectStagesCard from "../../components/ProjectStagesCard";
 import Timeline from "@mui/lab/Timeline";
 import { timelineOppositeContentClasses } from "@mui/lab/TimelineOppositeContent";
+import { format } from "date-fns";
 
 interface ProjectOverviewProps {
   isLoggedIn: boolean;
@@ -103,7 +104,12 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
                 }
                 label={data.name}
               />
-              {data.is_completed && <div>Completed: {data.completed_time}</div>}
+              {data.is_completed && (
+                <div>
+                  Completed:{" "}
+                  {format(new Date(data.completed_time), "yyyy-MM-dd HH:mm")}
+                </div>
+              )}
             </div>
           ))}
 
