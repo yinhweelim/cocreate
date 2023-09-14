@@ -29,7 +29,6 @@ const CreatorPage = () => {
   const userCtx = useContext(UserContext);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
-  // const creatorId = userCtx?.currentUser.creator_id;
 
   const [creatorData, setCreatorData] = useState<CreatorData | null>(null);
   const [portfolioItems, setPortfolioItems] = useState([]);
@@ -92,9 +91,9 @@ const CreatorPage = () => {
                 >
                   Send brief
                 </Button>
-                <Button variant="outlined" size="small">
+                {/* <Button variant="outlined" size="small">
                   Contact
-                </Button>
+                </Button> */}
               </Stack>
             </Stack>
 
@@ -128,8 +127,8 @@ const CreatorPage = () => {
 
             {/* about */}
             <Grid container paddingY={4} display="flex" justifyContent="center">
-              <Grid item xs={8}>
-                <Typography variant="body1">{creatorData?.about}</Typography>
+              <Grid item xs={6}>
+                <Typography variant="body1" textAlign="center">{creatorData?.about}</Typography>
               </Grid>
             </Grid>
 
@@ -194,8 +193,8 @@ const CreatorPage = () => {
               <Card sx={{ width: 500, minHeight: 150, display: "flex" }}>
                 <CardMedia
                   component="img"
-                  sx={{ width: 200 }}
-                  image=""
+                  sx={{ width: 200, height: 200 }}
+                  image={testimonials[0].image_url}
                   alt="Testimonial product image"
                 />
                 <Box
@@ -208,14 +207,14 @@ const CreatorPage = () => {
                 >
                   <CardContent sx={{ flex: "1 0 auto" }}>
                     <Typography component="div" variant="body1">
-                      Testimonial
+                      {testimonials[0].testimonial}
                     </Typography>
                     <Typography
                       variant="subtitle1"
                       color="text.secondary"
                       component="div"
                     >
-                      Client name
+                      {testimonials[0].patron_tagline}
                     </Typography>
                   </CardContent>
                 </Box>

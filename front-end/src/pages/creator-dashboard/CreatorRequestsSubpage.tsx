@@ -71,7 +71,7 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
     );
 
     if (res.ok) {
-      props.getBriefs();
+      // props.getBriefs();
       setOpenBrief(false);
       setOpenAddProjectDialog(true);
       showSnackbar("Brief accepted", "success");
@@ -163,6 +163,17 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
     }
   };
 
+  // const handleSortNewRequestsClick = (sortField: "budget" | "createdAt") => {
+  //   if (sortField === newRequestsSortBy) {
+  //     // Toggle the sort order if the same field is clicked again
+  //     setNewRequestsSortOrder(newRequestsSortOrder === "asc" ? "desc" : "asc");
+  //   } else {
+  //     // Set the new sorting field
+  //     setNewRequestsSortBy(sortField);
+  //     setNewRequestsSortOrder("asc");
+  //   }
+  // };
+
   const handleSortNewRequestsClick = (sortField: "budget" | "createdAt") => {
     if (sortField === newRequestsSortBy) {
       // Toggle the sort order if the same field is clicked again
@@ -219,18 +230,34 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
               ""
             )}
             <Grid container flexDirection={"row"} spacing={1}>
-              {/* only briefs that have status = PENDING_RESPONSE should be displayed here */}
-              {pendingBriefs?.map((data: any, index: number) => (
-                <CreatorBriefCard
-                  key={index}
-                  {...data}
-                  cardHeight="250"
-                  onClick={() => {
-                    setSelectedBrief(data);
-                    setOpenBrief(true);
-                  }}
-                />
-              ))}
+              {/* Filter and sort pending briefs */}
+              {pendingBriefs
+                .filter((brief) => brief.status === "PENDING_RESPONSE")
+                .sort((a, b) => {
+                  if (newRequestsSortBy === "budget") {
+                    return newRequestsSortOrder === "asc"
+                      ? a.budget_amount - b.budget_amount
+                      : b.budget_amount - a.budget_amount;
+                  } else if (newRequestsSortBy === "createdAt") {
+                    const dateA = new Date(a.created_at).getTime();
+                    const dateB = new Date(b.created_at).getTime();
+                    return newRequestsSortOrder === "asc"
+                      ? dateA - dateB
+                      : dateB - dateA;
+                  }
+                  return 0;
+                })
+                .map((data: any, index: number) => (
+                  <CreatorBriefCard
+                    key={index}
+                    {...data}
+                    cardHeight="250"
+                    onClick={() => {
+                      setSelectedBrief(data);
+                      setOpenBrief(true);
+                    }}
+                  />
+                ))}
             </Grid>
           </Stack>
           <Divider />

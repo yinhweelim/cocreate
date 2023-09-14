@@ -10,7 +10,7 @@ import CreatorProjectsSubpage from "./CreatorProjectsSubpage";
 import CreatorRequestsSubpage from "./CreatorRequestsSubpage";
 
 const CreatorProjects = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchData = useFetch();
   const userCtx = useContext(UserContext);
@@ -24,26 +24,6 @@ const CreatorProjects = () => {
   const [selectedSubpage, setSelectedSubpage] = useState<String>("projects");
   const handleSubpageChange = (subpage: String) => {
     setSelectedSubpage(subpage);
-  };
-
-  //get briefs
-  const getBriefs = async () => {
-    // Set isLoading to true before making the API call
-    setIsLoading(true);
-
-    try {
-      const res: data = await fetchData(
-        "/api/projects/briefs/creators/" + creatorId,
-        undefined,
-        undefined,
-        userCtx?.accessToken
-      );
-      setBriefs(res.data.briefs);
-    } catch (error) {
-      alert(JSON.stringify(error));
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   //get projects
@@ -60,6 +40,20 @@ const CreatorProjects = () => {
       alert(JSON.stringify(error));
     } finally {
       setIsLoading(false);
+    }
+  };
+  //get briefs
+  const getBriefs = async () => {
+    try {
+      const res: data = await fetchData(
+        "/api/projects/briefs/creators/" + creatorId,
+        undefined,
+        undefined,
+        userCtx?.accessToken
+      );
+      setBriefs(res.data.briefs);
+    } catch (error) {
+      alert(JSON.stringify(error));
     }
   };
 
