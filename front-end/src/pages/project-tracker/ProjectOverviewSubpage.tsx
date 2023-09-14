@@ -9,22 +9,30 @@ import {
   DialogTitle,
   FormControlLabel,
   Divider,
+  Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import CreatorPageProjectStages from "../../components/CreatorPageProjectStages";
 import ProjectStagesCard from "../../components/ProjectStagesCard";
 import Timeline from "@mui/lab/Timeline";
 import { timelineOppositeContentClasses } from "@mui/lab/TimelineOppositeContent";
 import { format } from "date-fns";
+import UserContext from "../../context/UserContext";
+import { data } from "../../interfaces";
+import useFetch from "../../hooks/useFetch";
 
 interface ProjectOverviewProps {
   isLoggedIn: boolean;
-  currentStageId: string;
   stages: any[];
+  projectId: string;
 }
 const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
+  const userCtx = useContext(UserContext);
+  const fetchData = useFetch();
+
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedStages, setSelectedStages] = useState<string[]>([]);
+  const [markProjectComplete, setMarkProjectComplete] = useState(false);
 
   const toggleStageSelection = (stageId: string) => {
     setSelectedStages((prevSelectedStages) => {
@@ -36,9 +44,41 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
     });
   };
 
-  const updateProgress = () => {
+  const updateProgress = async () => {
     // Call your updateProgress function with the selected stages
     console.log("Updating progress for stages:", selectedStages);
+
+    const updatedStages = [];
+
+    //update all selected stages
+    for (const stage of props.stages) {
+      if (selectedStages.includes(stage.id)) {
+        // Check if the stage ID is in the selectedStages array
+        stage.is_completed = true;
+        stage.completed_time = new Date().toISOString();
+      }
+      updatedStages.push(stage);
+    }
+    console.log(updatedStages);
+
+    // Make a PATCH request to update the project stages
+    try {
+      const res: data = await fetchData(
+        "/api/projects/stages/" + props.projectId,
+        "PATCH",
+        updatedStages,
+        userCtx?.accessToken
+      );
+      console.log("Response:" + res);
+
+      if (res.ok) {
+        console.log("Project progress updated successfully.");
+        setSelectedStages([]);
+      }
+    } catch (error) {
+      console.error("Error updating project progress:", error);
+    }
+
     // Close the dialog
     setOpenDialog(false);
   };
@@ -61,11 +101,7 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
           >
             {props.stages?.map((data: any, index: number) => (
               // TODO: update styling. highlight current stage
-              <ProjectStagesCard
-                key={index}
-                isCurrentStage={data.id === props.currentStageId}
-                {...data}
-              />
+              <ProjectStagesCard key={index} {...data} />
             ))}
           </Timeline>
         </Box>
@@ -90,6 +126,7 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Update Progress</DialogTitle>
         <DialogContent>
+          {JSON.stringify(props.stages)}
           {props.stages.map((data: any) => (
             <div key={data.id}>
               <FormControlLabel
@@ -105,10 +142,10 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
                 label={data.name}
               />
               {data.is_completed && (
-                <div>
+                <Typography variant="subtitle2" paddingLeft={4} color="primary">
                   Completed:{" "}
                   {format(new Date(data.completed_time), "yyyy-MM-dd HH:mm")}
-                </div>
+                </Typography>
               )}
             </div>
           ))}
@@ -128,7 +165,7 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
                 }
               />
             }
-            label="Mark project complete"
+            label="Mark entire project complete"
           />
         </DialogContent>
         <DialogActions>

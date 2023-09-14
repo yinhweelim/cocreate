@@ -147,9 +147,9 @@ const ProjectTracker = () => {
               {selectedSubpage === "overview" ? (
                 <ProjectOverviewSubpage
                   stages={stages}
-                  currentStageId={projectData?.current_stage_id!}
                   isLoggedIn={isLoggedIn}
                   currentUser={currentUser}
+                  projectId={projectId}
                 />
               ) : selectedSubpage === "details" ? (
                 <ProjectDetailsSubpage
