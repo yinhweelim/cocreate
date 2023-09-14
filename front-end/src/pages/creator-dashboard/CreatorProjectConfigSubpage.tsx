@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import useFetch from "../../hooks/useFetch";
 
 import { data, CreatorData } from "../../interfaces";
@@ -27,6 +27,7 @@ import {
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import CreatorProductCard from "../../components/CreatorProductCard";
 import CreatorProjectStagesCard from "../../components/CreatorProjectStagesCard";
+import UserContext from "../../context/UserContext";
 
 interface CreatorProjectConfigProps {
   creatorId: string;
@@ -37,6 +38,7 @@ interface CreatorProjectConfigProps {
 }
 
 const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
+  const userCtx = useContext(UserContext);
   const fetchData = useFetch();
   const { showSnackbar } = useSnackbar();
 
@@ -106,12 +108,13 @@ const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
     formData.append("currency", requestBody.currency as string);
     formData.append("starting_price", requestBody.starting_price as string);
 
-    console.log(formData);
     const res = await fetch(
       import.meta.env.VITE_SERVER + "/api/creators/products/" + props.creatorId,
       {
         method: "PUT",
-        headers: {},
+        headers: {
+          Authorization: "Bearer " + userCtx?.accessToken,
+        },
         body: formData,
       }
     );

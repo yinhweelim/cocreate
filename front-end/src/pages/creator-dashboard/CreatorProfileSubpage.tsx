@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import useFetch from "../../hooks/useFetch";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { data, CreatorData } from "../../interfaces";
@@ -23,6 +23,7 @@ import {
   CardMedia,
 } from "@mui/material";
 import CreatorPortfolioCard from "../../components/CreatorPortfolioCard";
+import UserContext from "../../context/UserContext";
 
 interface CreatorProfileProps {
   creatorId: string;
@@ -36,7 +37,7 @@ interface CreatorProfileProps {
 const CreatorProfile = (props: CreatorProfileProps) => {
   const fetchData = useFetch();
   const { showSnackbar } = useSnackbar();
-
+  const userCtx = useContext(UserContext);
   //logo state variable
   const [selectedLogo, setSelectedLogo] = useState(null);
 
@@ -72,7 +73,9 @@ const CreatorProfile = (props: CreatorProfileProps) => {
       import.meta.env.VITE_SERVER + "/api/creators/logos/" + props.creatorId,
       {
         method: "PATCH",
-        headers: {},
+        headers: {
+          Authorization: "Bearer " + userCtx?.accessToken,
+        },
         body: formData,
       }
     );
@@ -140,7 +143,9 @@ const CreatorProfile = (props: CreatorProfileProps) => {
         props.creatorId,
       {
         method: "PUT",
-        headers: {},
+        headers: {
+          Authorization: "Bearer " + userCtx?.accessToken,
+        },
         body: formData,
       }
     );

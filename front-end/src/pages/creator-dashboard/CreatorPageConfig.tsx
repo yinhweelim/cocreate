@@ -112,7 +112,8 @@ const CreatorPageConfig = () => {
     const res: data = await fetchData(
       "/api/creators/" + creatorId,
       "PATCH",
-      requestBody
+      requestBody,
+      userCtx?.accessToken
     );
     if (res.ok) {
       showSnackbar("Project settings updated successfully", "success");
