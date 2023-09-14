@@ -30,7 +30,7 @@ const getProjectByCreatorId = async (req: Request, res: Response) => {
         FROM
           project_stages AS ps
         WHERE
-          ps.project_id = projects.id) AS total_stage_count, projects.*
+          ps.project_id = projects.id AND is_deleted = false) AS total_stage_count, projects.*
       FROM
         projects
       LEFT JOIN creators ON projects.creator_id = creators.id
@@ -79,7 +79,7 @@ const getProjectByPatronId = async (req: Request, res: Response) => {
       FROM
         project_stages AS ps
       WHERE
-        ps.project_id = projects.id) AS total_stage_count, projects.*
+      ps.project_id = projects.id AND is_deleted = false) AS total_stage_count, projects.*
     FROM
       projects
     LEFT JOIN creators ON projects.creator_id = creators.id

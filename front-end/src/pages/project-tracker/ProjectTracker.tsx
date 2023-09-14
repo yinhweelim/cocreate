@@ -2,7 +2,6 @@ import { useState, useEffect, useContext } from "react";
 import {
   Container,
   Stack,
-  Box,
   Typography,
   IconButton,
   Grid,
@@ -11,7 +10,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import useFetch from "../../hooks/useFetch";
-import { data, Project, CreatorData, Brief } from "../../interfaces";
+import { data, Project, Brief } from "../../interfaces";
 import ProjectDetailsSubpage from "./ProjectDetailsSubpage";
 import ProjectOverviewSubpage from "./ProjectOverviewSubpage";
 import ProjectUpdatesSubpage from "./ProjectUpdatesSubpage";
@@ -37,8 +36,6 @@ const ProjectTracker = () => {
   const [productData, setProductData] = useState(null);
   const [stages, setStages] = useState([]);
   const [proposalData, setProposalData] = useState([]);
-  const [creatorData, setCreatorData] = useState<CreatorData | null>({});
-  const [creatorId, setCreatorId] = useState<string>("");
 
   //subpage handling
   const [selectedSubpage, setSelectedSubpage] = useState<string>("overview");
@@ -55,7 +52,7 @@ const ProjectTracker = () => {
     try {
       const res: data = await fetchData("/api/projects/" + projectId);
       setProjectData(res.data.project);
-      setCreatorId(res.data.project.creator_id);
+      // setCreatorId(res.data.project.creator_id);
       setBriefData(res.data.brief);
       setProductData(res.data.product);
       setStages(res.data.stages);
@@ -164,24 +161,6 @@ const ProjectTracker = () => {
               )}
             </>
           )}
-
-          {/* Snackbar */}
-          {/* 
-        <Stack spacing={2} sx={{ width: "100%" }}>
-          <Snackbar
-            open={openSnackbar}
-            autoHideDuration={2000}
-            onClose={handleClose}
-          >
-            <Alert
-              onClose={handleClose}
-              severity={snackbarSeverity}
-              sx={{ width: "100%" }}
-            >
-              {snackbarMessage}
-            </Alert>
-          </Snackbar>
-        </Stack> */}
         </Container>
       </>
     );

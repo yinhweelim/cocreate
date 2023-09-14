@@ -11,20 +11,22 @@ import {
   Divider,
   Typography,
 } from "@mui/material";
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import ProjectStagesCard from "../../components/ProjectStagesCard";
 import Timeline from "@mui/lab/Timeline";
 import { timelineOppositeContentClasses } from "@mui/lab/TimelineOppositeContent";
 import { format } from "date-fns";
 import UserContext from "../../context/UserContext";
-import { data } from "../../interfaces";
+import { data, UserInfoType } from "../../interfaces";
 import useFetch from "../../hooks/useFetch";
 import { useSnackbar } from "../../context/SnackbarContext";
+import ShareIcon from "@mui/icons-material/Share";
 
 interface ProjectOverviewProps {
   isLoggedIn: boolean;
   stages: any[];
   projectId: string;
+  currentUser: UserInfoType;
   getProjectData: () => Promise<void>;
 }
 const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
@@ -46,7 +48,7 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
   };
 
   const updateProject = async (updatedStages: any) => {
-    const currentStage = updatedStages.reduce((current, stage) => {
+    const currentStage = updatedStages.reduce((current: any, stage: any) => {
       if (stage.is_completed && (!current || stage.index > current.index)) {
         return stage;
       }
@@ -107,7 +109,7 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
     setOpenDialog(false);
   };
 
-  const shareTracker = () => {
+  const copyURL = () => {
     console.log("Copy public URL");
   };
 
@@ -124,7 +126,6 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
             }}
           >
             {props.stages?.map((data: any, index: number) => (
-              // TODO: update styling. highlight current stage
               <ProjectStagesCard key={index} {...data} />
             ))}
           </Timeline>
@@ -139,7 +140,11 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
               </Button>
             )}
 
-            <Button variant="outlined" onClick={shareTracker}>
+            <Button
+              variant="outlined"
+              onClick={copyURL}
+              startIcon={<ShareIcon />}
+            >
               Share
             </Button>
           </Stack>

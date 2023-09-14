@@ -32,11 +32,13 @@ const ProjectStagesCard = (props: ProjectStages) => {
         <TimelineSeparator>
           {/* Conditionally set the color based on isCurrentStage prop */}
           <TimelineDot color={props.is_completed ? "primary" : "grey"} />
-          <TimelineConnector
-            sx={{
-              bgcolor: props.is_completed ? "primary.main" : "grey", // Customize the color
-            }}
-          />
+          {props.index === 6 ? null : (
+            <TimelineConnector
+              sx={{
+                bgcolor: props.is_completed ? "primary.main" : "grey",
+              }}
+            />
+          )}
         </TimelineSeparator>
         <TimelineContent>
           <Typography variant="body1" color="primary">

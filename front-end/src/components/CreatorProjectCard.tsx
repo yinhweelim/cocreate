@@ -9,6 +9,7 @@ import {
   Grid,
   IconButton,
   styled,
+  tooltipClasses,
 } from "@mui/material";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -42,6 +43,10 @@ interface CardProps {
 
 const CreatorProjectCard = (props: CardProps) => {
   const userCtx = useContext(UserContext);
+
+  const progressValue =
+    (props?.current_stage_index! / props?.total_stage_count!) * 100;
+
   const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
     height: 5,
     borderRadius: 5,
@@ -54,9 +59,6 @@ const CreatorProjectCard = (props: CardProps) => {
       backgroundColor: theme.palette.mode === "light" ? "#1a90ff" : "#308fe8",
     },
   }));
-
-  const progressValue =
-    (props?.current_stage_index! / props?.total_stage_count!) * 100;
 
   return (
     <Grid item xs={4}>

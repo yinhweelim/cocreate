@@ -10,7 +10,6 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
-import InsightsIcon from "@mui/icons-material/Insights";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { Divider } from "@mui/material";
