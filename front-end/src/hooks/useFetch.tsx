@@ -20,7 +20,7 @@ const useFetch = () => {
     });
 
     const data: data = await res.json();
-    console.log(data);
+
     let returnValue: returnValue;
     if (res.ok) {
       if (data.status === "error") {

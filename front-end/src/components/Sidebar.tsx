@@ -170,7 +170,7 @@ export default function Sidebar(props: SidebarProps) {
                   <ListItemText primary={"My page"} />
                 </ListItemButton>
               </ListItem>
-              <ListItem key={"analytics"} disablePadding>
+              {/* <ListItem key={"analytics"} disablePadding>
                 <ListItemButton
                   component={RouterLink}
                   to="/dashboard/analytics"
@@ -182,7 +182,7 @@ export default function Sidebar(props: SidebarProps) {
                   </ListItemIcon>
                   <ListItemText primary={"Analytics"} />
                 </ListItemButton>
-              </ListItem>
+              </ListItem> */}
             </>
           ) : (
             <ListItem key={"commissions"} disablePadding>
