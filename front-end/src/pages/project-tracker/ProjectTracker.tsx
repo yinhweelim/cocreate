@@ -7,6 +7,7 @@ import {
   Grid,
   Button,
   Divider,
+  Box,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import useFetch from "../../hooks/useFetch";
@@ -36,6 +37,8 @@ const ProjectTracker = () => {
   const [productData, setProductData] = useState(null);
   const [stages, setStages] = useState([]);
   const [proposalData, setProposalData] = useState([]);
+  const [creatorId, setCreatorId] = useState("");
+  const [creatorLogo, setcreatorLogo] = useState("");
 
   //subpage handling
   const [selectedSubpage, setSelectedSubpage] = useState<string>("overview");
@@ -52,7 +55,8 @@ const ProjectTracker = () => {
     try {
       const res: data = await fetchData("/api/projects/" + projectId);
       setProjectData(res.data.project);
-      // setCreatorId(res.data.project.creator_id);
+      setCreatorId(res.data.project.creator_id);
+      setcreatorLogo(res.data.project.creator_logo);
       setBriefData(res.data.brief);
       setProductData(res.data.product);
       setStages(res.data.stages);
@@ -69,7 +73,11 @@ const ProjectTracker = () => {
   }, [projectId]);
 
   if (isLoading) {
-    return <Typography variant="body1">Loading...</Typography>;
+    return (
+      <Typography variant="body1" textAlign="center">
+        Loading...
+      </Typography>
+    );
   } else
     return (
       <>
@@ -82,26 +90,33 @@ const ProjectTracker = () => {
               display="flex"
               justifyContent="centre"
             >
+              {creatorLogo && (
+                <Box alignSelf="center">
+                  <a href={`${window.location.origin}/creators/${creatorId}`}>
+                    <img src={creatorLogo} alt="creator logo" />
+                  </a>
+                </Box>
+              )}
+
               <Stack direction="row" spacing={4} justifyContent="space-between">
                 <Typography variant="h5" textAlign="left" paddingTop={2}>
                   {projectData?.name} for {projectData?.patron_name} by{" "}
                   {projectData?.creator_name}
                 </Typography>
                 {/* icon should be hidden if in public page */}
-
-                {isLoggedIn ? (
-                  <IconButton
-                    color="default"
-                    size="small"
-                    onClick={() => {
-                      navigate(-1);
-                    }}
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                ) : (
+                {/* {isLoggedIn ? ( */}
+                <IconButton
+                  color="default"
+                  size="small"
+                  onClick={() => {
+                    navigate(-1);
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+                {/* ) : (
                   ""
-                )}
+                )} */}
               </Stack>
               <Typography variant="body1" textAlign="left">
                 {projectData?.current_stage}

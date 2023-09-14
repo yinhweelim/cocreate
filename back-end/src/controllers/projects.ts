@@ -17,6 +17,7 @@ const getProjectByCreatorId = async (req: Request, res: Response) => {
     //1. get projects with creator_id
     const getProjectsQuery = `SELECT DISTINCT
       creators.display_name AS creator_name,
+      creators.logo_image_url AS creator_logo,
       users.given_name AS patron_name,
       creator_products.image_url AS product_image_url,
       project_briefs.deadline AS requested_deadline,
@@ -111,6 +112,7 @@ const getProjectById = async (req: Request, res: Response) => {
     //1. get project. if project not found, return error
     const getQuery = `SELECT DISTINCT
     creators.display_name AS creator_name,
+    creators.logo_image_url AS creator_logo,
     users.given_name AS patron_name,
     creator_products.image_url AS product_image_url,
     project_briefs.deadline AS requested_deadline,
