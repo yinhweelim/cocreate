@@ -54,16 +54,16 @@ const ProjectTracker = () => {
 
     try {
       const res: data = await fetchData("/api/projects/" + projectId);
-      console.log(res);
       setProjectData(res.data.project);
       setCreatorId(res.data.project.creator_id);
       setBriefData(res.data.brief);
       setProductData(res.data.product);
       setStages(res.data.stages);
       setProposalData(res.data.proposals);
-      console.log(briefData);
     } catch (error) {
       console.error(JSON.stringify(error));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -73,8 +73,6 @@ const ProjectTracker = () => {
       setCreatorData(res.data.creator);
     } catch (error) {
       console.error(JSON.stringify(error));
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -82,11 +80,7 @@ const ProjectTracker = () => {
     getProjectData();
   }, [projectId]);
 
-  useEffect(() => {
-    getCreatorData();
-  }, [creatorId]);
-
-  if (!projectData || !creatorData) {
+  if (isLoading) {
     return <Typography variant="body1">Loading...</Typography>;
   } else
     return (
@@ -100,12 +94,10 @@ const ProjectTracker = () => {
               display="flex"
               justifyContent="centre"
             >
-              <Box alignSelf="center">
-                <img src={creatorData?.logo_image_url} alt="creator logo" />
-              </Box>
               <Stack direction="row" spacing={4} justifyContent="space-between">
                 <Typography variant="h5" textAlign="left" paddingTop={2}>
-                  {projectData?.name} for {projectData?.patron_name}
+                  {projectData?.name} for {projectData?.patron_name} by{" "}
+                  {projectData?.creator_name}
                 </Typography>
                 {/* icon should be hidden if in public page */}
 
@@ -170,6 +162,7 @@ const ProjectTracker = () => {
               ) : selectedSubpage === "details" ? (
                 <ProjectDetailsSubpage
                   briefData={briefData}
+                  productName={productData?.title}
                   isLoggedIn={isLoggedIn}
                   currentUser={currentUser}
                 />

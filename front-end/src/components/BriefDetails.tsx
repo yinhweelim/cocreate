@@ -15,7 +15,10 @@ const BriefDetails = (props: { brief: Brief | null }) => {
           <Typography variant="overline">Option</Typography>
           <br />
           <Typography variant="body1">
-            {props.brief?.product_name} <br />
+            {props.brief?.product_name
+              ? props.brief?.product_name
+              : props.productName}
+            <br />
           </Typography>
         </Grid>
         <Grid item xs={6}>
