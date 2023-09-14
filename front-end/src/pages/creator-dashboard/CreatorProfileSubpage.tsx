@@ -191,7 +191,7 @@ const CreatorProfile = (props: CreatorProfileProps) => {
       "/api/creators/portfolio/" + projectId,
       "DELETE",
       undefined,
-      undefined
+      userCtx?.accessToken
     );
 
     if (res.ok) {

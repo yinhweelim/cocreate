@@ -123,7 +123,9 @@ const CreateBrief = () => {
       import.meta.env.VITE_SERVER + "/api/projects/briefs/",
       {
         method: "PUT",
-        headers: {},
+        headers: {
+          Authorization: "Bearer " + userCtx?.accessToken,
+        },
         body: formData,
       }
     );
@@ -133,11 +135,11 @@ const CreateBrief = () => {
     if (res.ok) {
       if (data.status === "error") {
         returnValue = { ok: false, data: data.msg };
-        showSnackbar("Failed to add product", "warning");
+        showSnackbar("Failed to add brief", "warning");
       } else {
         userCtx?.setCurrentUser(patronUser);
         returnValue = { ok: true, data };
-        showSnackbar("Product added successfully", "success");
+        showSnackbar("Brief added successfully", "success");
         navigate("/dashboard/commissions");
       }
     } else {

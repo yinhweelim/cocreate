@@ -52,20 +52,29 @@ const PatronCommissions = () => {
 
     try {
       const res: data = await fetchData(
-        "/api/projects/briefs/patrons/" + patronId
+        "/api/projects/briefs/patrons/" + patronId,
+        undefined,
+        undefined,
+        userCtx?.accessToken
       );
       setBriefs(res.data.briefs);
     } catch (error) {
       alert(JSON.stringify(error));
+    } finally {
+      setIsLoading(false);
     }
   };
 
   //get projects
   const getProjects = async () => {
     try {
-      const res: data = await fetchData("/api/projects/patrons/" + patronId);
+      const res: data = await fetchData(
+        "/api/projects/patrons/" + patronId,
+        undefined,
+        undefined,
+        userCtx?.accessToken
+      );
       setProjects(res.data.projects);
-      
     } catch (error) {
       alert(JSON.stringify(error));
     } finally {
@@ -117,7 +126,6 @@ const PatronCommissions = () => {
         returnValue = { ok: false, data: data.message || data.msg };
         console.error(returnValue);
       } else {
-        
         returnValue = { ok: false, data: "An error has occurred" };
         console.error(returnValue);
       }
@@ -138,7 +146,8 @@ const PatronCommissions = () => {
       {
         details,
         budget_amount,
-      }
+      },
+      userCtx?.accessToken
     );
     if (res.ok) {
       setOpenUpdateBrief(false);
@@ -157,7 +166,7 @@ const PatronCommissions = () => {
       "/api/projects/briefs/" + selectedBrief?.id,
       "PATCH",
       { status: "CANCELLED" },
-      undefined
+      userCtx?.accessToken
     );
 
     if (res.ok) {

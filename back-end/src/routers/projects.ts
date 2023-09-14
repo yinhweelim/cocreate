@@ -49,24 +49,21 @@ const router = express.Router();
 router.get(
   "/projects/briefs/creators/:creator_id",
   validateCreatorIdInParam,
+  auth,
   checkValid,
   getBriefByCreatorId
 );
 router.get(
   "/projects/briefs/patrons/:patron_id",
   validatePatronIdInParam,
+  auth,
   checkValid,
   getBriefByPatronId
 );
-router.put(
-  "/projects/briefs",
-  // validateCreateBriefData,
-  // checkValid,
-  upload.single("image"),
-  createBrief
-);
+router.put("/projects/briefs", auth, upload.single("image"), createBrief);
 router.patch(
   "/projects/briefs/:id",
+  auth,
   validateUpdateBriefData,
   validateIdInParam,
   checkValid,
@@ -74,6 +71,7 @@ router.patch(
 );
 router.patch(
   "/projects/briefs/images/:id",
+  auth,
   upload.single("image"),
   updateBriefImage
 );

@@ -33,7 +33,10 @@ const CreatorProjects = () => {
 
     try {
       const res: data = await fetchData(
-        "/api/projects/briefs/creators/" + creatorId
+        "/api/projects/briefs/creators/" + creatorId,
+        undefined,
+        undefined,
+        userCtx?.accessToken
       );
       setBriefs(res.data.briefs);
     } catch (error) {
@@ -46,7 +49,12 @@ const CreatorProjects = () => {
   //get projects
   const getProjects = async () => {
     try {
-      const res: data = await fetchData("/api/projects/creators/" + creatorId);
+      const res: data = await fetchData(
+        "/api/projects/creators/" + creatorId,
+        undefined,
+        undefined,
+        userCtx?.accessToken
+      );
       setProjects(res.data.projects);
     } catch (error) {
       alert(JSON.stringify(error));

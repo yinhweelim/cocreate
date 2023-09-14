@@ -163,7 +163,7 @@ const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
       "/api/creators/products/" + productId,
       "DELETE",
       undefined,
-      undefined
+      userCtx?.accessToken
     );
 
     if (res.ok) {

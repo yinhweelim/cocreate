@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import useFetch from "../../hooks/useFetch";
 import { data, Brief } from "../../interfaces";
 import { useNavigate } from "react-router-dom";
@@ -22,6 +22,7 @@ import CreatorBriefCard from "../../components/CreatorBriefCard";
 import { useSnackbar } from "../../context/SnackbarContext";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import UserContext from "../../context/UserContext";
 
 interface SubpageProps {
   briefs: Brief[];
@@ -32,6 +33,7 @@ interface SubpageProps {
 const CreatorRequestsSubpage = (props: SubpageProps) => {
   const navigate = useNavigate();
   const fetchData = useFetch();
+  const userCtx = useContext(UserContext);
   const { showSnackbar } = useSnackbar();
   const [openBrief, setOpenBrief] = useState(false); //dialog to manage brief
   const [openAddProjectDialog, setOpenAddProjectDialog] = useState(false); //dialog to manage project
@@ -64,7 +66,7 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
       "/api/projects/briefs/" + selectedBrief?.id,
       "PATCH",
       { status: "ACCEPTED" },
-      undefined
+      userCtx?.accessToken
     );
 
     if (res.ok) {
