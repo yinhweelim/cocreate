@@ -12,7 +12,6 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useContext, useState } from "react";
-import CreatorPageProjectStages from "../../components/CreatorPageProjectStages";
 import ProjectStagesCard from "../../components/ProjectStagesCard";
 import Timeline from "@mui/lab/Timeline";
 import { timelineOppositeContentClasses } from "@mui/lab/TimelineOppositeContent";
@@ -35,7 +34,6 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedStages, setSelectedStages] = useState<string[]>([]);
-  const [markProjectComplete, setMarkProjectComplete] = useState(false);
 
   const toggleStageSelection = (stageId: string) => {
     setSelectedStages((prevSelectedStages) => {
@@ -47,8 +45,8 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
     });
   };
 
-  const updateProject = async () => {
-    const currentStage = props.stages.reduce((current, stage) => {
+  const updateProject = async (updatedStages: any) => {
+    const currentStage = updatedStages.reduce((current, stage) => {
       if (stage.is_completed && (!current || stage.index > current.index)) {
         return stage;
       }
@@ -57,7 +55,6 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
 
     // Extract the current stage's ID
     const current_stage_id = currentStage.id;
-    console.log(current_stage_id);
 
     const res: data = await fetchData(
       "/api/projects/" + props.projectId,
@@ -76,9 +73,6 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
   };
 
   const updateProgress = async () => {
-    // Call your updateProgress function with the selected stages
-    console.log("Updating progress for stages:", selectedStages);
-
     const updatedStages = [];
 
     //update all selected stages
@@ -90,27 +84,23 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
       }
       updatedStages.push(stage);
     }
-    console.log(updatedStages);
 
-    //update current_stage_id in project
+    // Update current_stage_id in project
     updateProject(updatedStages);
 
-    // Make a PATCH request to update the project stages
-    try {
-      const res: data = await fetchData(
-        "/api/projects/stages/" + props.projectId,
-        "PATCH",
-        updatedStages,
-        userCtx?.accessToken
-      );
-      console.log("Response:" + res);
+    // Update the completed status and time in each stage
+    const res: data = await fetchData(
+      "/api/projects/stages/" + props.projectId,
+      "PUT",
+      updatedStages,
+      userCtx?.accessToken
+    );
 
-      if (res.ok) {
-        console.log("Project progress updated successfully.");
-        setSelectedStages([]);
-      }
-    } catch (error) {
-      console.error("Error updating project progress:", error);
+    if (res.ok) {
+      showSnackbar("Project updated successfully", "success");
+      props.getProjectData();
+    } else {
+      showSnackbar("Project update failed", "warning");
     }
 
     // Close the dialog
