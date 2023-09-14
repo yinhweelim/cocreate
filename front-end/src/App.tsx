@@ -66,6 +66,8 @@ function App() {
     localStorage.removeItem("authEmail");
     setAccessToken("");
     setAuthId("");
+    setCurrentUser({});
+    setUserArray([]);
   };
 
   return (

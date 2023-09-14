@@ -29,11 +29,16 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
         {props.isLoggedIn ? (
           <>
             <Stack direction="row" spacing={2}>
-              <Button variant="contained" onClick={updateStage}>
-                Update stage
-              </Button>
+              {props.currentUser.role === "CREATOR" ? (
+                <Button variant="contained" onClick={updateStage}>
+                  Update stage
+                </Button>
+              ) : (
+                ""
+              )}
+
               <Button variant="outlined" onClick={shareTracker}>
-                Share with patron
+                Share
               </Button>
             </Stack>
           </>

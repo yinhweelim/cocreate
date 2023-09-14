@@ -70,7 +70,6 @@ const Settings = (props: SettingsProps) => {
         returnValue = { ok: false, data: data.message || data.msg };
         console.error(returnValue);
       } else {
-        console.log(data);
         returnValue = { ok: false, data: "An error has occurred" };
         console.error(returnValue);
       }

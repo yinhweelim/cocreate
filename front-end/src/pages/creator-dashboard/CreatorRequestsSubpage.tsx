@@ -176,18 +176,11 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
   return (
     <>
       {/* page content */}
-      <Button
-        onClick={() => {
-          setOpenAddProjectDialog(true);
-        }}
-      >
-        open
-      </Button>
       <Grid container paddingY={4}>
         <Grid container flexDirection="column" rowSpacing={2}>
           <Stack paddingLeft={2} paddingBottom={4}>
             <Typography variant="overline" paddingTop={1} fontSize="1rem">
-              New requests
+              New briefs
             </Typography>
             <Stack direction="row" spacing={2} paddingBottom={2}>
               <Chip
@@ -242,7 +235,7 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
           <Divider />
           <Stack paddingLeft={2} paddingBottom={4}>
             <Typography variant="overline" paddingTop={1} fontSize="1rem">
-              All requests
+              All briefs
             </Typography>
 
             <Stack direction="row" spacing={2} paddingBottom={2}>
@@ -271,7 +264,13 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
                 label="Created Date"
               ></Chip>
             </Stack>
-
+            {props.briefs?.length == 0 ? (
+              <Typography variant="body1">
+                No new briefs yet. Go out and get some!
+              </Typography>
+            ) : (
+              ""
+            )}
             {/* all briefs should be displayed here */}
             <Grid container flexDirection={"row"} spacing={1}>
               {sortedAllRequests?.map((data: any, index: number) => (

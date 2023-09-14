@@ -41,8 +41,6 @@ const CreatorProjects = () => {
       setBriefs(res.data.briefs);
     } catch (error) {
       alert(JSON.stringify(error));
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -58,6 +56,8 @@ const CreatorProjects = () => {
       setProjects(res.data.projects);
     } catch (error) {
       alert(JSON.stringify(error));
+    } finally {
+      setIsLoading(false);
     }
   };
 

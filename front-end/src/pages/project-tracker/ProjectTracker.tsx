@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   Container,
   Stack,
@@ -17,15 +17,17 @@ import ProjectOverviewSubpage from "./ProjectOverviewSubpage";
 import ProjectUpdatesSubpage from "./ProjectUpdatesSubpage";
 
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import UserContext from "../../context/UserContext";
 
 const ProjectTracker = () => {
   const location = useLocation();
   const currentPath = location.pathname;
   const isLoggedIn = currentPath.startsWith("/dashboard"); //check whether page is accessed via dashboard or public for conditional rendering
-
   const params = useParams();
   const fetchData = useFetch();
   const [isLoading, setIsLoading] = useState(true);
+  const userCtx = useContext(UserContext);
+  const currentUser = userCtx?.currentUser;
 
   //project variables
   const projectId = params.project_id;
@@ -132,7 +134,7 @@ const ProjectTracker = () => {
               </Typography>
             </Stack>
           </Grid>
-          {/* subpages */}
+          {/* subpage navigation */}
           <Stack direction={"row"} spacing={1} paddingTop={2}>
             <Button
               variant="text"
@@ -146,12 +148,12 @@ const ProjectTracker = () => {
             >
               Details
             </Button>
-            <Button
+            {/* <Button
               variant="text"
               onClick={() => handleSubpageChange("updates")}
             >
               Updates
-            </Button>
+            </Button> */}
           </Stack>
           <Divider />
           {/* page content */}
@@ -165,9 +167,13 @@ const ProjectTracker = () => {
                   stages={stages}
                   currentStageId={projectData?.current_stage_id}
                   isLoggedIn={isLoggedIn}
+                  currentUser={currentUser}
                 />
               ) : selectedSubpage === "details" ? (
-                <ProjectDetailsSubpage isLoggedIn={isLoggedIn} />
+                <ProjectDetailsSubpage
+                  isLoggedIn={isLoggedIn}
+                  currentUser={currentUser}
+                />
               ) : (
                 <ProjectUpdatesSubpage />
               )}
