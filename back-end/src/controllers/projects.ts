@@ -167,7 +167,7 @@ const getProjectById = async (req: Request, res: Response) => {
 
     // 5. get project stages
     const getStagesQuery =
-      "SELECT * FROM project_stages WHERE project_id = $1 AND is_deleted = false";
+      "SELECT * FROM project_stages WHERE project_id = $1 AND is_deleted = false ORDER by index asc";
     const getStagesResults = await pool.query(getStagesQuery, [projectId]);
     const stages = getStagesResults.rows;
 
