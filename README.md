@@ -1,7 +1,24 @@
 ![logo](https://github.com/yinhweelim/cocreate/assets/47060493/27297890-159d-4bf4-a77f-098c8d1c7678)
 
-# cocreate
+# Cocreate
 A platform which enables artists and creators to showcase their work, connect with collectors and grow their custom commissions business.
+
+---
+
+## Table of Contents
+
+- [Languages and Technologies Used](#languages-and-technologies-used)
+  - [Front-end](#front-end)
+  - [Back-end](#back-end)
+  - [Others](#others)
+- [Feature Highlights](#feature-highlights)
+- [Setup](#setup)
+  - [Backend](#backend)
+  - [Front-end](#front-end)
+- [Database Design](#database-design)
+- [APIs](#apis)
+- [Future Development](#future-development)
+- [References](#references)
 
 ---
 ## Languages and Technologies Used
@@ -25,20 +42,19 @@ A platform which enables artists and creators to showcase their work, connect wi
 ## Feature Highlights
 
 ### Access creator and patron features with a single log-in
-Seamlessly switch between creator and patron dashboards with our account toggle feature.
+Users can seamlessly switch between creator and patron dashboards with our account toggle feature.
 
 ### Portfolio builder
-Craft stunning portfolios with ease, showcasing your work through images and descriptions.
+Creators can craft stunning portfolios with ease, showcase portfolio projects and share their commissions process.
 
-### Commission page builder
-Effectively accept commissions requests with a customizable form. Create product options to simplify the process. 
+### Commission form builder
+Creators can build their own commission request form and offer product options to simplify the process. 
 
 ### Project management 
-Efficiently manage projects on the creator dashboard
-- filter requests based on budget and deadlines.
+Creators can view and manage projects on the creator dashboard and filter requests based on budget and deadlines to prioritise work.
 
 ### Project tracking 
-Effectively communicate expectations and updates with patrons via a shareable project tracking link 
+Creators can effectively communicate expectations and updates with patrons via a shareable project tracking link.
 
 ---
 ## Setup
@@ -97,10 +113,6 @@ Run the app:
 ```
 npm start
 ```
----
-## Wireframes 
-
-UI Wireframes on [Figma]([https://www.figma.com/file/s99zepn0OQnpONiTH3P8Ef/Neighbourly?type=design&node-id=54295%3A401&mode=design&t=glvxB0l58AMcp6qo-1](https://www.figma.com/file/F1GvomFS5N0jvI48rnJvyw/Cocreate-wireframes?type=design&node-id=6036%3A164056&mode=design&t=itxI2nONb9XQb4c5-1)) for: 
 
 --- 
 ## Database design
