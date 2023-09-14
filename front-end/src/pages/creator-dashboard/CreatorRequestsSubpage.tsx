@@ -70,10 +70,10 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
     );
 
     if (res.ok) {
-      showSnackbar("Brief accepted", "success");
       props.getBriefs();
       setOpenBrief(false);
       setOpenAddProjectDialog(true);
+      showSnackbar("Brief accepted", "success");
     } else {
       console.log(JSON.stringify(res.data));
       showSnackbar("Failed to accept brief", "warning");
@@ -82,12 +82,11 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
   };
 
   const handleDeclineBrief = async () => {
-    console.log("decline brief");
     const res: data = await fetchData(
       "/api/projects/briefs/" + selectedBrief?.id,
       "PATCH",
       { status: "DECLINED" },
-      undefined
+      userCtx?.accessToken
     );
 
     if (res.ok) {
@@ -112,12 +111,17 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
     const data = new FormData(event.currentTarget);
     const name = data.get("name");
 
-    const res: data = await fetchData("/api/projects", "PUT", {
-      name,
-      brief_id: selectedBrief?.id,
-      creator_id: selectedBrief?.creator_id,
-      patron_id: selectedBrief?.patron_id,
-    });
+    const res: data = await fetchData(
+      "/api/projects",
+      "PUT",
+      {
+        name,
+        brief_id: selectedBrief?.id,
+        creator_id: selectedBrief?.creator_id,
+        patron_id: selectedBrief?.patron_id,
+      },
+      userCtx?.accessToken
+    );
     if (res.ok) {
       showSnackbar("Project added successfully", "success");
       setOpenAddProjectDialog(false);
@@ -172,6 +176,13 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
   return (
     <>
       {/* page content */}
+      <Button
+        onClick={() => {
+          setOpenAddProjectDialog(true);
+        }}
+      >
+        open
+      </Button>
       <Grid container paddingY={4}>
         <Grid container flexDirection="column" rowSpacing={2}>
           <Stack paddingLeft={2} paddingBottom={4}>
