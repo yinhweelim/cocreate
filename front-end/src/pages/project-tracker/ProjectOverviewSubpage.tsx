@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogTitle,
   FormControlLabel,
+  Divider,
 } from "@mui/material";
 import React, { useState } from "react";
 import CreatorPageProjectStages from "../../components/CreatorPageProjectStages";
@@ -88,7 +89,6 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Update Progress</DialogTitle>
         <DialogContent>
-          {JSON.stringify(props.stages)}
           {props.stages.map((data: any) => (
             <div key={data.id}>
               <FormControlLabel
@@ -106,6 +106,24 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
               {data.is_completed && <div>Completed: {data.completed_time}</div>}
             </div>
           ))}
+
+          <Divider></Divider>
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={selectedStages.length === props.stages.length}
+                onChange={() =>
+                  setSelectedStages(
+                    selectedStages.length === props.stages.length
+                      ? []
+                      : props.stages.map((data: any) => data.id)
+                  )
+                }
+              />
+            }
+            label="Mark project complete"
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
