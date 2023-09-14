@@ -37,7 +37,7 @@ const ProjectTracker = () => {
   const [productData, setProductData] = useState(null);
   const [stages, setStages] = useState([]);
   const [proposalData, setProposalData] = useState([]);
-  const [creatorData, setCreatorData] = useState<CreatorData | null>(null);
+  const [creatorData, setCreatorData] = useState<CreatorData | null>({});
 
   //subpage handling
   const [selectedSubpage, setSelectedSubpage] = useState<string>("overview");
@@ -54,17 +54,19 @@ const ProjectTracker = () => {
     try {
       const res: data = await fetchData("/api/projects/" + projectId);
       setProjectData(res.data.project);
+      getCreatorData();
       setBriefData(res.data.brief);
       setProductData(res.data.product);
       setStages(res.data.stages);
       setProposalData(res.data.proposals);
     } catch (error) {
       console.error(JSON.stringify(error));
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const getCreatorData = async () => {
-    // Set isLoading to true before making the API call
     try {
       const res: data = await fetchData(
         "/api/creators/" + projectData?.creator_id
@@ -81,14 +83,14 @@ const ProjectTracker = () => {
     getProjectData();
   }, []);
 
-  useEffect(() => {
-    // Fetch creator data when projectData is set
-    if (projectData) {
-      getCreatorData();
-    }
-  }, [projectData]);
+  // useEffect(() => {
+  //   // Fetch creator data when projectData is set
+  //   if (projectData) {
+  //     getCreatorData();
+  //   }
+  // }, [projectData]);
 
-  if (isLoading) {
+  if (isLoading || !creatorData) {
     return <Typography variant="body1">Loading...</Typography>;
   } else
     return (

@@ -64,7 +64,7 @@ const CreatorProjects = () => {
   useEffect(() => {
     getBriefs();
     getProjects();
-  }, []);
+  }, [creatorId]);
 
   const pendingRequests = briefs?.filter(
     (brief: Brief) => brief.status === "PENDING_RESPONSE"
