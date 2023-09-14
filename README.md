@@ -3,7 +3,6 @@
 # Cocreate
 A platform which enables artists and creators to showcase their work, connect with collectors and grow their custom commissions business.
 
----
 
 ## Table of Contents
 
@@ -20,7 +19,7 @@ A platform which enables artists and creators to showcase their work, connect wi
 - [Future Development](#future-development)
 - [References](#references)
 
----
+
 ## Languages and Technologies Used
 
 ### Front-end
@@ -38,7 +37,7 @@ A platform which enables artists and creators to showcase their work, connect wi
 - Project management: Jira
 - UI Wireframing and prototyping: Figma
 
---- 
+
 ## Feature Highlights
 
 ### Access creator and patron features with a single log-in
@@ -72,7 +71,7 @@ Creators can effectively communicate expectations and updates with patrons via a
 https://github.com/yinhweelim/cocreate/assets/47060493/ff15ef1e-3d6b-4637-ac31-276000f5cc5a
 
 
----
+
 ## Setup
 
 ###  Backend
@@ -130,21 +129,35 @@ Run the app:
 npm start
 ```
 
---- 
+
 ## Database design
-- Data Entity relationship diagram 
+Entity relationship diagram (subject to changes): 
+![drawSQL-cocreate-export-2023-09-14](https://github.com/yinhweelim/cocreate/assets/47060493/1b3ad004-b584-49e9-8c0c-1ba123aa42b5)
 
----
-
-## APIs
-
----
 
 ## Future development
 - More UI customization
 - Customizable project stages 
 - Creator analytics
 
----
 ## References
+- **Typescript**
+    - React + Drag and drop: [YouTube Tutorial](https://www.youtube.com/watch?v=FJDVKeh7RJI)
+    - Express: [YouTube Tutorial](https://www.youtube.com/watch?v=qy8PxD3alWw)
+    - Connecting Express to Postgres: [Tutorial](https://www.atatus.com/blog/building-crud-rest-api-with-node-js-express-js-and-postgresql/#using-node.js-to-connect-to-a-postgres-database)
 
+- **Hosting**
+    - ElephantSQL: [Website](https://www.elephantsql.com/)
+
+- **PostgreSQL**
+    - Begin Transaction: [Tutorial](https://www.tutorialspoint.com/postgresql/postgresql_transactions.htm#:~:text=The%20BEGIN%20TRANSACTION%20Command,or%20if%20an%20error%20occurs)
+
+- **MUI (Material-UI)**
+    - MUI Grid Center Align and Vertical Align: [Tutorial](https://smartdevpreneur.com/the-complete-guide-to-material-ui-grid-align-items/#:~:text=Material%2DUI%20Grid%20Center%20Align%20and%20Vertical%20Align,-%3CGrid%20container%20direction&text=However%2C%20if%20you%20wanted%20to,flex%2Dend%3A%20vertically%20aligns%20bottom)
+
+- **Adding Protected Routes**
+    - React Protected Routes with React Router Tutorial: [Tutorial](https://www.positronx.io/react-protected-routes-with-react-router-tutorial/)
+
+- **Storing Images and Using Amazon S3**
+    - Storing Images Tutorial: [YouTube Tutorial](https://www.youtube.com/watch?v=eQAIojcArRY)
+    - GitHub Repository for Amazon S3 Get, Put, and Delete: [GitHub Repository](https://github.com/meech-ward/s3-get-put-and-delete/tree/master)
