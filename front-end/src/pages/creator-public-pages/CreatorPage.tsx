@@ -20,7 +20,7 @@ import {
 } from "@mui/material";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
-import CreatorProjectStagesCard from "../../components/CreatorProjectStagesCard";
+import CreatorPageProjectStages from "../../components/CreatorPageProjectStages";
 
 const CreatorPage = () => {
   const params = useParams();
@@ -178,7 +178,7 @@ const CreatorPage = () => {
               </Typography>
 
               {projectStages?.map((data: any, index: number) => (
-                <CreatorProjectStagesCard
+                <CreatorPageProjectStages
                   key={index}
                   {...data}
                   cardHeight="250"

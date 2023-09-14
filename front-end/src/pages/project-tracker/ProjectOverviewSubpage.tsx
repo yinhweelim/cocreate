@@ -1,7 +1,9 @@
 import { Stack, Box, Button } from "@mui/material";
 import React from "react";
-import CreatorProjectStagesCard from "../../components/CreatorProjectStagesCard";
-
+import CreatorPageProjectStages from "../../components/CreatorPageProjectStages";
+import ProjectStagesCard from "../../components/ProjectStagesCard";
+import Timeline from "@mui/lab/Timeline";
+import { timelineOppositeContentClasses } from "@mui/lab/TimelineOppositeContent";
 interface ProjectOverviewProps {
   isLoggedIn: boolean;
 }
@@ -19,11 +21,20 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
       <Stack direction="column" spacing={3}>
         {/* stages */}
         <Box paddingTop={2}>
-          {props.stages?.map((data: any, index: number) => (
-            // TODO: update styling. highlight current stage
-            <CreatorProjectStagesCard key={index} {...data} cardHeight="250" />
-          ))}
+          <Timeline
+            sx={{
+              [`& .${timelineOppositeContentClasses.root}`]: {
+                flex: 0.2,
+              },
+            }}
+          >
+            {props.stages?.map((data: any, index: number) => (
+              // TODO: update styling. highlight current stage
+              <ProjectStagesCard key={index} {...data} />
+            ))}
+          </Timeline>
         </Box>
+        
 
         {/* Conditionally render based on page status */}
         {props.isLoggedIn ? (
@@ -31,7 +42,7 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
             <Stack direction="row" spacing={2}>
               {props.currentUser.role === "CREATOR" ? (
                 <Button variant="contained" onClick={updateStage}>
-                  Update stage
+                  Update
                 </Button>
               ) : (
                 ""

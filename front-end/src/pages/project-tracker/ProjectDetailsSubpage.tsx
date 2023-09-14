@@ -1,6 +1,6 @@
 import { Stack, Box, Button, Typography, Paper, Grid } from "@mui/material";
 import React from "react";
-import CreatorProjectStagesCard from "../../components/CreatorProjectStagesCard";
+import CreatorProjectStagesCard from "../../components/CreatorPageProjectStages";
 
 const ProjectDetailsSubpage = (props: any) => {
   return (

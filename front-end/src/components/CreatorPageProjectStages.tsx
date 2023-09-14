@@ -10,7 +10,7 @@ interface ProjectStages {
   time_estimate_end?: number;
 }
 
-const CreatorProjectStagesCard = (props: ProjectStages) => {
+const CreatorPageProjectStages = (props: ProjectStages) => {
   return (
     <>
       <Paper sx={{ width: "100%" }}>
@@ -38,4 +38,4 @@ const CreatorProjectStagesCard = (props: ProjectStages) => {
   );
 };
 
-export default CreatorProjectStagesCard;
+export default CreatorPageProjectStages;

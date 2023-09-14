@@ -26,7 +26,7 @@ import {
 
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import CreatorProductCard from "../../components/CreatorProductCard";
-import CreatorProjectStagesCard from "../../components/CreatorProjectStagesCard";
+import CreatorProjectStagesCard from "../../components/CreatorPageProjectStages";
 import UserContext from "../../context/UserContext";
 
 interface CreatorProjectConfigProps {

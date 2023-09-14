@@ -38,6 +38,7 @@ const ProjectTracker = () => {
   const [stages, setStages] = useState([]);
   const [proposalData, setProposalData] = useState([]);
   const [creatorData, setCreatorData] = useState<CreatorData | null>({});
+  const [creatorId, setCreatorId] = useState<string>("");
 
   //subpage handling
   const [selectedSubpage, setSelectedSubpage] = useState<string>("overview");
@@ -54,23 +55,20 @@ const ProjectTracker = () => {
     try {
       const res: data = await fetchData("/api/projects/" + projectId);
       setProjectData(res.data.project);
-      getCreatorData();
+      setCreatorId(res.data.project.creator_id);
+
       setBriefData(res.data.brief);
       setProductData(res.data.product);
       setStages(res.data.stages);
       setProposalData(res.data.proposals);
     } catch (error) {
       console.error(JSON.stringify(error));
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const getCreatorData = async () => {
     try {
-      const res: data = await fetchData(
-        "/api/creators/" + projectData?.creator_id
-      );
+      const res: data = await fetchData("/api/creators/" + creatorId);
       setCreatorData(res.data.creator);
     } catch (error) {
       console.error(JSON.stringify(error));
@@ -81,16 +79,13 @@ const ProjectTracker = () => {
 
   useEffect(() => {
     getProjectData();
-  }, []);
+  }, [projectId]);
 
-  // useEffect(() => {
-  //   // Fetch creator data when projectData is set
-  //   if (projectData) {
-  //     getCreatorData();
-  //   }
-  // }, [projectData]);
+  useEffect(() => {
+    getCreatorData();
+  }, [creatorId]);
 
-  if (isLoading || !creatorData) {
+  if (!projectData || !creatorData) {
     return <Typography variant="body1">Loading...</Typography>;
   } else
     return (
