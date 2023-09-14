@@ -88,7 +88,7 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Update Progress</DialogTitle>
         <DialogContent>
-          {/* {JSON.stringify(props.stages)} */}
+          {JSON.stringify(props.stages)}
           {props.stages.map((data: any) => (
             <div key={data.id}>
               <FormControlLabel
