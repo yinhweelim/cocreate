@@ -20,15 +20,18 @@ import { format } from "date-fns";
 import UserContext from "../../context/UserContext";
 import { data } from "../../interfaces";
 import useFetch from "../../hooks/useFetch";
+import { useSnackbar } from "../../context/SnackbarContext";
 
 interface ProjectOverviewProps {
   isLoggedIn: boolean;
   stages: any[];
   projectId: string;
+  getProjectData: () => Promise<void>;
 }
 const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
   const userCtx = useContext(UserContext);
   const fetchData = useFetch();
+  const { showSnackbar } = useSnackbar();
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedStages, setSelectedStages] = useState<string[]>([]);
@@ -42,6 +45,34 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
         return [...prevSelectedStages, stageId];
       }
     });
+  };
+
+  const updateProject = async () => {
+    const currentStage = props.stages.reduce((current, stage) => {
+      if (stage.is_completed && (!current || stage.index > current.index)) {
+        return stage;
+      }
+      return current;
+    }, null);
+
+    // Extract the current stage's ID
+    const current_stage_id = currentStage.id;
+    console.log(current_stage_id);
+
+    const res: data = await fetchData(
+      "/api/projects/" + props.projectId,
+      "PATCH",
+      {
+        current_stage_id,
+      },
+      userCtx?.accessToken
+    );
+    if (res.ok) {
+      showSnackbar("Project updated successfully", "success");
+      props.getProjectData();
+    } else {
+      showSnackbar("Project update failed", "warning");
+    }
   };
 
   const updateProgress = async () => {
@@ -60,6 +91,9 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
       updatedStages.push(stage);
     }
     console.log(updatedStages);
+
+    //update current_stage_id in project
+    updateProject(updatedStages);
 
     // Make a PATCH request to update the project stages
     try {

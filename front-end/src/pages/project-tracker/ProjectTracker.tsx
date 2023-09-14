@@ -150,6 +150,7 @@ const ProjectTracker = () => {
                   isLoggedIn={isLoggedIn}
                   currentUser={currentUser}
                   projectId={projectId}
+                  getProjectData={getProjectData}
                 />
               ) : selectedSubpage === "details" ? (
                 <ProjectDetailsSubpage
