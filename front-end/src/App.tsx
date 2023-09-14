@@ -196,11 +196,7 @@ function App() {
 
                 <Route
                   path="/projects/:project_id"
-                  element={
-                    <PrivateRoute>
-                      <ProjectTracker></ProjectTracker>
-                    </PrivateRoute>
-                  }
+                  element={<ProjectTracker></ProjectTracker>}
                 ></Route>
               </Routes>
 
