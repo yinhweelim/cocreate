@@ -1,7 +1,8 @@
-import { Typography, Grid, Card, CardMedia, Box } from "@mui/material";
 import React from "react";
+import { Brief } from "../interfaces";
+import { Typography, Grid, Card, CardMedia, Box } from "@mui/material";
 
-const BriefDetails = (props: Brief) => {
+const BriefDetails = (props: { brief: Brief | null }) => {
   return (
     <>
       <Typography variant="subtitle1">
@@ -51,17 +52,25 @@ const BriefDetails = (props: Brief) => {
       <Typography variant="body1">
         {props.brief?.details} <br />
       </Typography>
-      <Typography variant="overline" paddingTop={2}>
-        Reference images
-      </Typography>
-      <Card sx={{ maxWidth: "300px" }}>
-        <CardMedia
-          component="img"
-          alt="portfolioimage"
-          src={props.brief?.image_url}
-          sx={{ maxWidth: "300px" }}
-        />
-      </Card>
+
+      {props.brief?.image_url ? (
+        <>
+          {" "}
+          <Typography variant="overline" paddingTop={2}>
+            Reference images
+          </Typography>
+          <Card sx={{ maxWidth: "300px" }}>
+            <CardMedia
+              component="img"
+              alt="reference image"
+              src={props.brief?.image_url}
+              sx={{ maxWidth: "300px" }}
+            />
+          </Card>
+        </>
+      ) : (
+        ""
+      )}
       <Box paddingY={1}>
         <Typography variant="overline" paddingTop={2}>
           Deadline

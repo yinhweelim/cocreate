@@ -54,13 +54,14 @@ const ProjectTracker = () => {
 
     try {
       const res: data = await fetchData("/api/projects/" + projectId);
+      console.log(res);
       setProjectData(res.data.project);
       setCreatorId(res.data.project.creator_id);
-
       setBriefData(res.data.brief);
       setProductData(res.data.product);
       setStages(res.data.stages);
       setProposalData(res.data.proposals);
+      console.log(briefData);
     } catch (error) {
       console.error(JSON.stringify(error));
     }
@@ -168,6 +169,7 @@ const ProjectTracker = () => {
                 />
               ) : selectedSubpage === "details" ? (
                 <ProjectDetailsSubpage
+                  briefData={briefData}
                   isLoggedIn={isLoggedIn}
                   currentUser={currentUser}
                 />

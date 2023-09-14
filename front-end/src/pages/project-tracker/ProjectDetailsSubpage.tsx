@@ -1,6 +1,7 @@
 import { Stack, Box, Button, Typography, Paper, Grid } from "@mui/material";
 import React from "react";
 import CreatorProjectStagesCard from "../../components/CreatorPageProjectStages";
+import BriefDetails from "../../components/BriefDetails";
 
 const ProjectDetailsSubpage = (props: any) => {
   return (
@@ -8,7 +9,7 @@ const ProjectDetailsSubpage = (props: any) => {
       <Grid container paddingTop={2} direction="column">
         <Stack direction="column" spacing={3}>
           {/* proposal */}
-
+          {/* 
           <Paper variant="outlined">
             <Box padding={2}>
               <Typography variant="h6">proposal</Typography>
@@ -31,25 +32,14 @@ const ProjectDetailsSubpage = (props: any) => {
               <Typography variant="overline">DESIGN</Typography>
               <Box>IMAGE</Box>
             </Box>
-          </Paper>
+          </Paper> */}
 
           {/* initial brief */}
           <Paper variant="outlined">
             <Box padding={2}>
-              <Typography variant="h6">Brief from PATRON</Typography>
-              <Typography variant="body1">Submitted PATRON on TIME</Typography>
-              <br />
-              <Typography variant="overline">Option</Typography>
-              <Typography variant="body1">XXXX</Typography>
-              <br />
-              <Typography variant="overline">Price</Typography>
-              <Typography variant="subtitle1">Project: XXX</Typography>
-              <Typography variant="subtitle1">Add-ons: XXX</Typography>
-              <Typography variant="subtitle1">Delivery: XXX</Typography>
-              <Typography variant="body1">Total: XXX</Typography>
-              <br />
-              <Typography variant="overline">DESIGN</Typography>
-              <Box>IMAGE</Box>
+              <Typography variant="h6">The brief</Typography>
+              {/* JSON.stringify(props.briefData) */}
+              <BriefDetails brief={props.briefData}></BriefDetails>
             </Box>
           </Paper>
         </Stack>
