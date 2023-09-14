@@ -23,6 +23,7 @@ import { useSnackbar } from "../../context/SnackbarContext";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import UserContext from "../../context/UserContext";
+import BriefDetails from "../../components/BriefDetails";
 
 interface SubpageProps {
   briefs: Brief[];
@@ -296,80 +297,7 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
         </DialogTitle>
 
         <DialogContent>
-          <Typography variant="subtitle1">
-            {" "}
-            Received {selectedBrief?.created_at}
-          </Typography>
-          <Grid container direction="row" justifyContent="space-between">
-            <Grid item xs={6}>
-              {" "}
-              <Typography variant="overline">Option</Typography>
-              <br />
-              <Typography variant="body1">
-                {selectedBrief?.product_name} <br />
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              {" "}
-              <Typography variant="overline">Their budget</Typography>
-              <br />
-              <Typography variant="body1">
-                {selectedBrief?.budget_currency}
-                {selectedBrief?.budget_amount} <br />
-              </Typography>
-            </Grid>
-
-            <Grid item xs={6}>
-              {" "}
-              <Typography variant="overline">Status</Typography>
-              <br />
-              <Typography variant="body1">
-                {selectedBrief?.status} <br />
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              {" "}
-              <Typography variant="overline" paddingTop={2}>
-                Delivery method
-              </Typography>
-              <Typography variant="body1">
-                {selectedBrief?.delivery_method} <br />
-              </Typography>
-            </Grid>
-          </Grid>
-          <Typography variant="overline" paddingTop={2}>
-            Brief details
-          </Typography>
-          <Typography variant="body1">
-            {selectedBrief?.details} <br />
-          </Typography>
-          <Typography variant="overline" paddingTop={2}>
-            Reference images
-          </Typography>
-          <Card sx={{ maxWidth: "300px" }}>
-            <CardMedia
-              component="img"
-              alt="portfolioimage"
-              src={selectedBrief?.image_url}
-              sx={{ maxWidth: "300px" }}
-            />
-          </Card>
-          <Box paddingY={1}>
-            <Typography variant="overline" paddingTop={2}>
-              Deadline
-            </Typography>
-            <Typography variant="body1">
-              {selectedBrief?.deadline} <br />
-            </Typography>
-          </Box>
-          <Box paddingY={1}>
-            <Typography variant="overline" paddingTop={2}>
-              Consultation Slot
-            </Typography>
-            <Typography variant="body1">
-              {selectedBrief?.consultation_slot} <br />
-            </Typography>
-          </Box>
+          <BriefDetails brief={selectedBrief}></BriefDetails>
 
           {selectedBrief?.status === "PENDING_RESPONSE" ? (
             <>
