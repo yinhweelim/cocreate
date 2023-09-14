@@ -51,7 +51,8 @@ https://github.com/yinhweelim/cocreate/assets/47060493/635f9089-cbec-49a6-9dd1-5
 ### Portfolio builder
 Creators can craft stunning portfolios with ease, showcase portfolio projects and share their commissions process.
 
-https://github.com/yinhweelim/cocreate/assets/47060493/967aa9ec-62ab-4fce-9c00-ad35735d6438
+https://github.com/yinhweelim/cocreate/assets/47060493/beeddd5a-47f5-4387-a1c9-7a46a4ef0c9f
+
 <img width="1470" alt="Screenshot 2023-09-15 at 12 42 17 AM" src="https://github.com/yinhweelim/cocreate/assets/47060493/2d374c91-d413-493e-b468-dbabe1385d4f">
 <img width="1470" alt="Screenshot 2023-09-15 at 12 40 57 AM" src="https://github.com/yinhweelim/cocreate/assets/47060493/4893f231-5df3-47e1-be9d-723026dc196f">
 
@@ -63,13 +64,10 @@ Creators can build their own commission request form and offer product options t
 
 ### Project management 
 Creators can view and manage projects on the creator dashboard and filter requests based on budget and deadlines to prioritise work.
-<img width="1470" alt="Screenshot 2023-09-15 at 12 40 42 AM" src="https://github.com/yinhweelim/cocreate/assets/47060493/5106798a-ba62-463a-a9f1-0213f9a27495">
-
 <img width="1470" alt="Screenshot 2023-09-15 at 12 40 42 AM" src="https://github.com/yinhweelim/cocreate/assets/47060493/ab42b551-bd6e-4f05-8e05-577966f32e49">
 
-### Project tracking 
+### Shareable project tracking link 
 Creators can effectively communicate expectations and updates with patrons via a shareable project tracking link.
-
 
 https://github.com/yinhweelim/cocreate/assets/47060493/ff15ef1e-3d6b-4637-ac31-276000f5cc5a
 
