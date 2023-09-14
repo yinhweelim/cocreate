@@ -67,15 +67,6 @@ const ProjectTracker = () => {
     }
   };
 
-  const getCreatorData = async () => {
-    try {
-      const res: data = await fetchData("/api/creators/" + creatorId);
-      setCreatorData(res.data.creator);
-    } catch (error) {
-      console.error(JSON.stringify(error));
-    }
-  };
-
   useEffect(() => {
     getProjectData();
   }, [projectId]);
@@ -155,7 +146,7 @@ const ProjectTracker = () => {
               {selectedSubpage === "overview" ? (
                 <ProjectOverviewSubpage
                   stages={stages}
-                  currentStageId={projectData?.current_stage_id}
+                  currentStageId={projectData?.current_stage_id!}
                   isLoggedIn={isLoggedIn}
                   currentUser={currentUser}
                 />

@@ -6,6 +6,7 @@ import Timeline from "@mui/lab/Timeline";
 import { timelineOppositeContentClasses } from "@mui/lab/TimelineOppositeContent";
 interface ProjectOverviewProps {
   isLoggedIn: boolean;
+  currentStageId: string;
 }
 const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
   const updateStage = () => {
@@ -30,11 +31,14 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
           >
             {props.stages?.map((data: any, index: number) => (
               // TODO: update styling. highlight current stage
-              <ProjectStagesCard key={index} {...data} />
+              <ProjectStagesCard
+                key={index}
+                isCurrentStage={data.id === props.currentStageId}
+                {...data}
+              />
             ))}
           </Timeline>
         </Box>
-        
 
         {/* Conditionally render based on page status */}
         {props.isLoggedIn ? (

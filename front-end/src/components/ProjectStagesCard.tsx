@@ -15,6 +15,9 @@ interface ProjectStages {
   time_estimate_unit?: String;
   time_estimate_start?: number;
   time_estimate_end?: number;
+  isCurrentStage?: boolean;
+  isCompleted?: boolean;
+  completedTime?: string;
 }
 
 const ProjectStagesCard = (props: ProjectStages) => {
@@ -22,11 +25,17 @@ const ProjectStagesCard = (props: ProjectStages) => {
     <>
       <TimelineItem>
         <TimelineOppositeContent color="text.secondary">
-          completed {props.completedTime}
+          {/* conditionally show completed time if is_completed prop = true */}
+          {props.isCompleted && props.completedTime}
         </TimelineOppositeContent>
         <TimelineSeparator>
-          <TimelineDot color="primary" />
-          <TimelineConnector sx={{ bgcolor: "primary.main" }} />
+          {/* Conditionally set the color based on isCurrentStage prop */}
+          <TimelineDot color={props.isCurrentStage ? "primary" : "grey"} />
+          <TimelineConnector
+            sx={{
+              bgcolor: props.isCurrentStage ? "primary.main" : "grey", // Customize the color
+            }}
+          />
         </TimelineSeparator>
         <TimelineContent>
           <Typography variant="body1" color="primary">
