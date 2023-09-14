@@ -90,9 +90,16 @@ router.get(
   checkValid,
   getProjectByPatronId
 );
-router.put("/projects", validateCreateProjectData, checkValid, createProject);
+router.put(
+  "/projects",
+  auth,
+  validateCreateProjectData,
+  checkValid,
+  createProject
+);
 router.patch(
   "/projects/:id",
+  auth,
   validateIdInParam,
   validateUpdateProjectData,
   checkValid,
@@ -108,6 +115,7 @@ router.get(
 );
 router.put(
   "/projects/stages/:project_id",
+  auth,
   validateProjectIdInParam,
   validateSetProjectStagesData,
   checkValid,
@@ -123,12 +131,14 @@ router.get(
 );
 router.put(
   "/projects/proposals",
+  auth,
   validateCreateProposalData,
   checkValid,
   createProjectProposal
 );
 router.patch(
   "/projects/proposals/:id",
+  auth,
   validateIdInParam,
   validateUpdateProposalData,
   checkValid,
