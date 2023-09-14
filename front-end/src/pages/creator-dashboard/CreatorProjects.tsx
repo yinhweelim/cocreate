@@ -41,6 +41,8 @@ const CreatorProjects = () => {
       setBriefs(res.data.briefs);
     } catch (error) {
       alert(JSON.stringify(error));
+    } finally {
+      setIsLoading(false);
     }
   };
 

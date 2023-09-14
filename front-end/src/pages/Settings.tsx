@@ -27,8 +27,7 @@ const Settings = (props: SettingsProps) => {
   const userCtx = useContext(UserContext);
   const userData = userCtx?.currentUser;
   const userId = userData.user_id;
-  const authId = userCtx?.authId;
-  console.log(userCtx?.accessToken);
+
   // user avatar
   const [selectedAvatar, setSelectedAvatar] = useState(null);
 

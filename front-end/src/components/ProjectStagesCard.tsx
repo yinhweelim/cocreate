@@ -1,6 +1,4 @@
-import React from "react";
-import { Paper, IconButton, Stack, Typography } from "@mui/material";
-import DragHandleIcon from "@mui/icons-material/DragHandle";
+import { Typography } from "@mui/material";
 import TimelineItem from "@mui/lab/TimelineItem";
 import TimelineSeparator from "@mui/lab/TimelineSeparator";
 import TimelineConnector from "@mui/lab/TimelineConnector";

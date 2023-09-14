@@ -8,7 +8,8 @@ import { data } from "../src/interfaces";
 
 //MUI and theme
 import CssBaseline from "@mui/material/CssBaseline";
-import { ThemeProvider } from "@mui/material";
+import { Snackbar, Stack, ThemeProvider } from "@mui/material";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { theme } from "./theme";
 
 //pages
@@ -27,6 +28,7 @@ import CreateBrief from "./pages/creator-public-pages/CreateBrief";
 import DashboardLayout from "./pages/creator-dashboard/DashboardLayout";
 import PrivateRoute from "./components/PrivateRoute";
 import ProjectTracker from "./pages/project-tracker/ProjectTracker";
+import { SnackbarContext } from "./context/SnackbarContext";
 
 function App() {
   const fetchData = useFetch();
@@ -39,6 +41,42 @@ function App() {
   const [email, setEmail] = useState(initEmail);
   const [userArray, setUserArray] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
+
+  //snackbar state variables
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<
+    "success" | "warning"
+  >("success");
+
+  //snackbar functions
+  const showSnackbar = (message: string, severity: "success" | "warning") => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setOpenSnackbar(true);
+  };
+
+  const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+    props,
+    ref
+  ) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenSnackbar(false);
+  };
+
+  const snackbarFunctions = {
+    showSnackbar,
+  };
 
   //endpoints
 
@@ -73,99 +111,117 @@ function App() {
   return (
     <React.Fragment>
       <ThemeProvider theme={theme}>
-        <SidebarProvider>
-          <UserContext.Provider
-            value={{
-              email,
-              setEmail,
-              accessToken,
-              setAccessToken,
-              currentUser,
-              setCurrentUser,
-              userArray,
-              setUserArray,
-              authId,
-              setAuthId,
-            }}
-          >
-            <CssBaseline />
+        <SnackbarContext.Provider value={snackbarFunctions}>
+          <SidebarProvider>
+            <UserContext.Provider
+              value={{
+                email,
+                setEmail,
+                accessToken,
+                setAccessToken,
+                currentUser,
+                setCurrentUser,
+                userArray,
+                setUserArray,
+                authId,
+                setAuthId,
+              }}
+            >
+              <CssBaseline />
 
-            <Routes>
-              {/* landing page, signin and registration */}
-              <Route path="/" element={<LandingPage></LandingPage>}></Route>
-              <Route
-                path="/sign-in"
-                element={<SignInPage></SignInPage>}
-              ></Route>
-              <Route
-                path="/registration"
-                element={<Registration></Registration>}
-              ></Route>
+              <Routes>
+                {/* landing page, signin and registration */}
+                <Route path="/" element={<LandingPage></LandingPage>}></Route>
+                <Route
+                  path="/sign-in"
+                  element={<SignInPage></SignInPage>}
+                ></Route>
+                <Route
+                  path="/registration"
+                  element={<Registration></Registration>}
+                ></Route>
 
-              {/* shared pages */}
+                {/* shared pages */}
 
-              <Route
-                path="/dashboard/*"
-                element={
-                  <PrivateRoute>
-                    <DashboardLayout handleLogout={handleLogout}>
-                      <Routes>
-                        <Route
-                          path="/projects"
-                          element={<CreatorProjects />}
-                        ></Route>
-                        <Route
-                          path="/pagesetup"
-                          element={<CreatorPageConfig />}
-                        ></Route>
-                        <Route
-                          path="/analytics"
-                          element={<CreatorAnalytics />}
-                        ></Route>
-                        <Route
-                          path="/commissions"
-                          element={<PatronCommissions />}
-                        ></Route>
-                        <Route
-                          path="/settings"
-                          element={
-                            <Settings getUserInfo={getUserInfo}></Settings>
-                          }
-                        ></Route>
-                        <Route
-                          path="/projects/:project_id"
-                          element={<ProjectTracker></ProjectTracker>}
-                        ></Route>
-                      </Routes>
-                    </DashboardLayout>
-                  </PrivateRoute>
-                }
-              ></Route>
+                <Route
+                  path="/dashboard/*"
+                  element={
+                    <PrivateRoute>
+                      <DashboardLayout handleLogout={handleLogout}>
+                        <Routes>
+                          <Route
+                            path="/projects"
+                            element={<CreatorProjects />}
+                          ></Route>
+                          <Route
+                            path="/pagesetup"
+                            element={<CreatorPageConfig />}
+                          ></Route>
+                          <Route
+                            path="/analytics"
+                            element={<CreatorAnalytics />}
+                          ></Route>
+                          <Route
+                            path="/commissions"
+                            element={<PatronCommissions />}
+                          ></Route>
+                          <Route
+                            path="/settings"
+                            element={
+                              <Settings getUserInfo={getUserInfo}></Settings>
+                            }
+                          ></Route>
+                          <Route
+                            path="/projects/:project_id"
+                            element={<ProjectTracker></ProjectTracker>}
+                          ></Route>
+                        </Routes>
+                      </DashboardLayout>
+                    </PrivateRoute>
+                  }
+                ></Route>
 
-              <Route
-                path="/creators/:creator_id"
-                element={<CreatorPage></CreatorPage>}
-              ></Route>
-              <Route
-                path="/creators/createbrief/:creator_id"
-                element={
-                  <PrivateRoute>
-                    <CreateBrief></CreateBrief>
-                  </PrivateRoute>
-                }
-              ></Route>
+                <Route
+                  path="/creators/:creator_id"
+                  element={<CreatorPage></CreatorPage>}
+                ></Route>
+                <Route
+                  path="/creators/createbrief/:creator_id"
+                  element={
+                    <PrivateRoute>
+                      <CreateBrief></CreateBrief>
+                    </PrivateRoute>
+                  }
+                ></Route>
 
-              <Route
-                path="/projects/:project_id"
-                element={
-                  <PrivateRoute>
-                    <ProjectTracker></ProjectTracker>
-                  </PrivateRoute>
-                }
-              ></Route>
-            </Routes>
-          </UserContext.Provider>
-        </SidebarProvider>
+                <Route
+                  path="/projects/:project_id"
+                  element={
+                    <PrivateRoute>
+                      <ProjectTracker></ProjectTracker>
+                    </PrivateRoute>
+                  }
+                ></Route>
+              </Routes>
+
+              <Stack spacing={2} sx={{ width: "100%" }}>
+                <Snackbar
+                  open={openSnackbar}
+                  autoHideDuration={2000}
+                  onClose={handleClose}
+                >
+                  <Alert
+                    onClose={handleClose}
+                    severity={snackbarSeverity}
+                    sx={{ width: "100%" }}
+                  >
+                    {snackbarMessage}
+                  </Alert>
+                </Snackbar>
+              </Stack>
+            </UserContext.Provider>
+          </SidebarProvider>
+        </SnackbarContext.Provider>
       </ThemeProvider>
     </React.Fragment>
   );

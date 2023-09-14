@@ -115,7 +115,10 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
   };
 
   const copyURL = () => {
-    console.log("Copy public URL");
+    navigator.clipboard.writeText(
+      `${window.location.origin}/projects/${props.projectId}`
+    );
+    showSnackbar("Tracking link copied to clipboard", "success");
   };
 
   return (
