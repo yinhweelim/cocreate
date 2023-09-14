@@ -10,12 +10,12 @@ import {
   Divider,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
-import SectionSubpages from "../../components/SectionSubpages";
 import CloseIcon from "@mui/icons-material/Close";
 import useFetch from "../../hooks/useFetch";
 import { data, Project, CreatorData, Brief } from "../../interfaces";
 import ProjectDetailsSubpage from "./ProjectDetailsSubpage";
 import ProjectOverviewSubpage from "./ProjectOverviewSubpage";
+import ProjectUpdatesSubpage from "./ProjectUpdatesSubpage";
 
 const ProjectTracker = () => {
   const params = useParams();
@@ -33,9 +33,9 @@ const ProjectTracker = () => {
   const [creatorData, setCreatorData] = useState<CreatorData | null>(null);
 
   //subpage handling
-  const [selectedSubpage, setSelectedSubpage] = useState<String>("overview");
+  const [selectedSubpage, setSelectedSubpage] = useState<string>("overview");
 
-  const handleSubpageChange = (subpage: String) => {
+  const handleSubpageChange = (subpage: string) => {
     setSelectedSubpage(subpage);
   };
 
@@ -136,9 +136,8 @@ const ProjectTracker = () => {
               Details
             </Button>
             <Button
-              disabled
               variant="text"
-              onClick={() => handleSubpageChange("details")}
+              onClick={() => handleSubpageChange("updates")}
             >
               Updates
             </Button>
@@ -150,14 +149,15 @@ const ProjectTracker = () => {
             <Typography variant="body1">Loading...</Typography>
           ) : (
             <>
-              {" "}
               {selectedSubpage === "overview" ? (
                 <ProjectOverviewSubpage
                   stages={stages}
                   currentStageId={projectData?.current_stage_id}
                 />
-              ) : (
+              ) : selectedSubpage === "details" ? (
                 <ProjectDetailsSubpage />
+              ) : (
+                <ProjectUpdatesSubpage />
               )}
             </>
           )}

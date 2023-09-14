@@ -28,6 +28,7 @@ const Settings = (props: SettingsProps) => {
   const userData = userCtx?.currentUser;
   const userId = userData.user_id;
   const authId = userCtx?.authId;
+  console.log(userCtx?.accessToken);
   // user avatar
   const [selectedAvatar, setSelectedAvatar] = useState(null);
 
@@ -41,10 +42,13 @@ const Settings = (props: SettingsProps) => {
       import.meta.env.VITE_SERVER + "/api/users/avatars/" + userId,
       {
         method: "PATCH",
-        headers: {},
+        headers: {
+          Authorization: "Bearer " + userCtx?.accessToken,
+        },
         body: formData,
       }
     );
+
     const data: any = await res.json();
 
     let returnValue = {};
@@ -82,11 +86,16 @@ const Settings = (props: SettingsProps) => {
     const last_name = data.get("last_name");
     const country_of_residence = data.get("country");
 
-    const res: data = await fetchData("/api/users/" + userId, "PATCH", {
-      given_name,
-      last_name,
-      country_of_residence,
-    });
+    const res: data = await fetchData(
+      "/api/users/" + userId,
+      "PATCH",
+      {
+        given_name,
+        last_name,
+        country_of_residence,
+      },
+      userCtx?.accessToken
+    );
     if (res.ok) {
       showSnackbar("User updated successfully", "success");
       props.getUserInfo();

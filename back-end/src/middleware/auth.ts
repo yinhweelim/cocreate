@@ -6,7 +6,7 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
   if (!("authorization" in req.headers)) {
     return res
       .status(401)
-      .json({ status: "error", msg: "No auth authorization token found" });
+      .json({ status: "error", msg: "No authorization token found" });
   }
   const token = req.headers["authorization"]?.replace("Bearer ", "");
   if (token) {

@@ -50,7 +50,13 @@ const upload = multer({ storage: storage }); //string should be name of input
 const router = express.Router();
 
 //creators
-router.get("/creators/:id", validateIdInParam, checkValid, getCreatorById);
+router.get(
+  "/creators/:id",
+
+  validateIdInParam,
+  checkValid,
+  getCreatorById
+);
 router.patch(
   "/creators/:id",
   validateIdInParam,
