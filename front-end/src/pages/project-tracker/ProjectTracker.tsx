@@ -9,7 +9,6 @@ import {
   Button,
   Divider,
 } from "@mui/material";
-import { useNavigate, useParams } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import useFetch from "../../hooks/useFetch";
 import { data, Project, CreatorData, Brief } from "../../interfaces";
@@ -17,7 +16,13 @@ import ProjectDetailsSubpage from "./ProjectDetailsSubpage";
 import ProjectOverviewSubpage from "./ProjectOverviewSubpage";
 import ProjectUpdatesSubpage from "./ProjectUpdatesSubpage";
 
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+
 const ProjectTracker = () => {
+  const location = useLocation();
+  const currentPath = location.pathname;
+  const isLoggedIn = currentPath.startsWith("/dashboard"); //check whether page is accessed via dashboard or public for conditional rendering
+
   const params = useParams();
   const fetchData = useFetch();
   const [isLoading, setIsLoading] = useState(true);
@@ -102,15 +107,21 @@ const ProjectTracker = () => {
                 <Typography variant="h5" textAlign="left" paddingTop={2}>
                   {projectData?.name} for {projectData?.patron_name}
                 </Typography>
-                <IconButton
-                  color="default"
-                  size="small"
-                  onClick={() => {
-                    navigate(-1);
-                  }}
-                >
-                  <CloseIcon />
-                </IconButton>
+                {/* icon should be hidden if in public page */}
+
+                {isLoggedIn ? (
+                  <IconButton
+                    color="default"
+                    size="small"
+                    onClick={() => {
+                      navigate(-1);
+                    }}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                ) : (
+                  ""
+                )}
               </Stack>
               <Typography variant="body1" textAlign="left">
                 {projectData?.current_stage}
@@ -153,9 +164,10 @@ const ProjectTracker = () => {
                 <ProjectOverviewSubpage
                   stages={stages}
                   currentStageId={projectData?.current_stage_id}
+                  isLoggedIn={isLoggedIn}
                 />
               ) : selectedSubpage === "details" ? (
-                <ProjectDetailsSubpage />
+                <ProjectDetailsSubpage isLoggedIn={isLoggedIn} />
               ) : (
                 <ProjectUpdatesSubpage />
               )}

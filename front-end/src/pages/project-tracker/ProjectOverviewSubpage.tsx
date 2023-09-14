@@ -2,8 +2,10 @@ import { Stack, Box, Button } from "@mui/material";
 import React from "react";
 import CreatorProjectStagesCard from "../../components/CreatorProjectStagesCard";
 
-const ProjectOverviewSubpage = (props: any) => {
-  //   TODO: flesh out functions
+interface ProjectOverviewProps {
+  isLoggedIn: boolean;
+}
+const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
   const updateStage = () => {
     console.log("update stage");
   };
@@ -23,14 +25,21 @@ const ProjectOverviewSubpage = (props: any) => {
           ))}
         </Box>
 
-        <Stack direction="row" spacing={2}>
-          <Button variant="contained" onClick={updateStage}>
-            Update stage
-          </Button>
-          <Button variant="outlined" onClick={shareTracker}>
-            Share with patron
-          </Button>
-        </Stack>
+        {/* Conditionally render based on page status */}
+        {props.isLoggedIn ? (
+          <>
+            <Stack direction="row" spacing={2}>
+              <Button variant="contained" onClick={updateStage}>
+                Update stage
+              </Button>
+              <Button variant="outlined" onClick={shareTracker}>
+                Share with patron
+              </Button>
+            </Stack>
+          </>
+        ) : (
+          ""
+        )}
       </Stack>
     </>
   );
