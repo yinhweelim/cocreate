@@ -16,7 +16,7 @@ import LandingPage from "./pages/LandingPage";
 import SignInPage from "./pages/SignIn";
 import Registration from "./pages/Registration";
 import Settings from "./pages/Settings";
-import InitialPageSetup from "./pages/InitialPageSetup";
+
 import CreatorProjects from "./pages/creator-dashboard/CreatorProjects";
 import CreatorPageConfig from "./pages/creator-dashboard/CreatorPageConfig";
 import CreatorAnalytics from "./pages/creator-dashboard/CreatorAnalytics";
@@ -24,7 +24,6 @@ import PatronCommissions from "./pages/patron-dashboard/PatronCommissions";
 import { SidebarProvider } from "./context/SidebarContext";
 import CreatorPage from "./pages/creator-public-pages/CreatorPage";
 import CreateBrief from "./pages/creator-public-pages/CreateBrief";
-import ConfirmBrief from "./pages/creator-public-pages/ConfirmBrief";
 import DashboardLayout from "./pages/creator-dashboard/DashboardLayout";
 import PrivateRoute from "./components/PrivateRoute";
 import ProjectTracker from "./pages/project-tracker/ProjectTracker";
@@ -100,10 +99,7 @@ function App() {
                 path="/registration"
                 element={<Registration></Registration>}
               ></Route>
-              <Route
-                path="/registration/page-setup"
-                element={<InitialPageSetup></InitialPageSetup>}
-              ></Route>
+
               {/* shared pages */}
 
               <Route
@@ -156,14 +152,7 @@ function App() {
                   </PrivateRoute>
                 }
               ></Route>
-              <Route
-                path="/creators/confirmBrief/:creator_id"
-                element={
-                  <PrivateRoute>
-                    <ConfirmBrief></ConfirmBrief>
-                  </PrivateRoute>
-                }
-              ></Route>
+
               <Route
                 path="/projects/:project_id"
                 element={
