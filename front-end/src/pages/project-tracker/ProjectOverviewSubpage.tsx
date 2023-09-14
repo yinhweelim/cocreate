@@ -55,15 +55,20 @@ const ProjectOverviewSubpage = (props: ProjectOverviewProps) => {
       return current;
     }, null);
 
-    // Extract the current stage's ID
+    // Extract the current stage's ID and add to request body
     const current_stage_id = currentStage.id;
+
+    // Check if the current stage is the final stage
+    const is_completed = currentStage.index === props.stages.length;
+    const requestBody = {
+      current_stage_id,
+      is_completed,
+    };
 
     const res: data = await fetchData(
       "/api/projects/" + props.projectId,
       "PATCH",
-      {
-        current_stage_id,
-      },
+      requestBody,
       userCtx?.accessToken
     );
     if (res.ok) {
