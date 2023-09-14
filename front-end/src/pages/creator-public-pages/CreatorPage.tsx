@@ -128,7 +128,9 @@ const CreatorPage = () => {
             {/* about */}
             <Grid container paddingY={4} display="flex" justifyContent="center">
               <Grid item xs={6}>
-                <Typography variant="body1" textAlign="center">{creatorData?.about}</Typography>
+                <Typography variant="body1" textAlign="center">
+                  {creatorData?.about}
+                </Typography>
               </Grid>
             </Grid>
 
@@ -186,40 +188,49 @@ const CreatorPage = () => {
             </Stack>
 
             {/* testimonials */}
-            <Stack paddingY={4} display="flex" alignItems="center" spacing={2}>
-              <Typography variant="h6">
-                Testimonials for {creatorData?.display_name}
-              </Typography>
-              <Card sx={{ width: 500, minHeight: 150, display: "flex" }}>
-                <CardMedia
-                  component="img"
-                  sx={{ width: 200, height: 200 }}
-                  image={testimonials[0].image_url}
-                  alt="Testimonial product image"
-                />
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    backgroundColor: "rgba(0, 0, 0, 0.04)",
-                    width: "100%",
-                  }}
-                >
-                  <CardContent sx={{ flex: "1 0 auto" }}>
-                    <Typography component="div" variant="body1">
-                      {testimonials[0].testimonial}
-                    </Typography>
-                    <Typography
-                      variant="subtitle1"
-                      color="text.secondary"
-                      component="div"
-                    >
-                      {testimonials[0].patron_tagline}
-                    </Typography>
-                  </CardContent>
-                </Box>
-              </Card>
-            </Stack>
+            {testimonials?.length > 0 ? (
+              <Stack
+                paddingY={4}
+                display="flex"
+                alignItems="center"
+                spacing={2}
+              >
+                <Typography variant="h6">
+                  Testimonials for {creatorData?.display_name}
+                </Typography>
+                <Card sx={{ width: 500, minHeight: 150, display: "flex" }}>
+                  <CardMedia
+                    component="img"
+                    sx={{ width: 200, height: 200 }}
+                    image={testimonials[0].image_url}
+                    alt="Testimonial product image"
+                  />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      backgroundColor: "rgba(0, 0, 0, 0.04)",
+                      width: "100%",
+                    }}
+                  >
+                    <CardContent sx={{ flex: "1 0 auto" }}>
+                      <Typography component="div" variant="body1">
+                        {testimonials[0].testimonial}
+                      </Typography>
+                      <Typography
+                        variant="subtitle1"
+                        color="text.secondary"
+                        component="div"
+                      >
+                        {testimonials[0].patron_tagline}
+                      </Typography>
+                    </CardContent>
+                  </Box>
+                </Card>
+              </Stack>
+            ) : (
+              ""
+            )}
           </>
         </Stack>
 
