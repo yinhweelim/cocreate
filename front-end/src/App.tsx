@@ -141,8 +141,7 @@ function App() {
                   element={<Registration></Registration>}
                 ></Route>
 
-                {/* shared pages */}
-
+                {/* dashboard */}
                 <Route
                   path="/dashboard/*"
                   element={
@@ -181,6 +180,7 @@ function App() {
                   }
                 ></Route>
 
+                {/* public pages */}
                 <Route
                   path="/creators/:creator_id"
                   element={<CreatorPage></CreatorPage>}
@@ -193,7 +193,6 @@ function App() {
                     </PrivateRoute>
                   }
                 ></Route>
-
                 <Route
                   path="/projects/:project_id"
                   element={<ProjectTracker></ProjectTracker>}

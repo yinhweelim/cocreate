@@ -74,7 +74,7 @@ const BriefDetails = (props: { brief: Brief | null }) => {
       ) : (
         ""
       )}
-      <Box paddingY={1}>
+      {/* <Box paddingY={1}>
         <Typography variant="overline" paddingTop={2}>
           Deadline
         </Typography>
@@ -89,7 +89,7 @@ const BriefDetails = (props: { brief: Brief | null }) => {
         <Typography variant="body1">
           {props.brief?.consultation_slot} <br />
         </Typography>
-      </Box>
+      </Box> */}
     </>
   );
 };
