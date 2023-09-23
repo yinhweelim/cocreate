@@ -8,9 +8,9 @@ import TimelineOppositeContent from "@mui/lab/TimelineOppositeContent";
 import { format } from "date-fns";
 interface ProjectStages {
   index?: number;
-  name?: String;
-  description?: String;
-  time_estimate_unit?: String;
+  name?: string;
+  description?: string;
+  time_estimate_unit?: string;
   time_estimate_start?: number;
   time_estimate_end?: number;
   isCurrentStage?: boolean;
@@ -25,6 +25,7 @@ const ProjectStagesCard = (props: ProjectStages) => {
         <TimelineOppositeContent color="text.secondary">
           {/* conditionally show completed time if is_completed prop = true */}
           {props.is_completed &&
+            props.completed_time &&
             format(new Date(props.completed_time), "yyyy-MM-dd HH:mm")}
         </TimelineOppositeContent>
         <TimelineSeparator>

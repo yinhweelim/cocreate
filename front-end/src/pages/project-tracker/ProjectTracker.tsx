@@ -34,9 +34,9 @@ const ProjectTracker = () => {
   const navigate = useNavigate();
   const [projectData, setProjectData] = useState<Project | null>(null);
   const [briefData, setBriefData] = useState<Brief | null>(null);
-  const [productData, setProductData] = useState(null);
+  const [productData, setProductData] = useState<any>(null);
   const [stages, setStages] = useState([]);
-  const [proposalData, setProposalData] = useState([]);
+  const [proposalData, setProposalData] = useState<any[]>([]);
   const [creatorId, setCreatorId] = useState("");
   const [creatorLogo, setcreatorLogo] = useState("");
 
@@ -122,9 +122,10 @@ const ProjectTracker = () => {
                 {projectData?.current_stage}
                 <br />
                 Started:{" "}
-                {format(new Date(projectData?.created_at), "yyyy-MM-dd HH:mm")}
+                {projectData &&
+                  format(new Date(projectData?.created_at), "yyyy-MM-dd HH:mm")}
                 <br />
-                {proposalData?.estimated_delivery_date}
+                {proposalData[0]?.estimated_delivery_date}
               </Typography>
             </Stack>
           </Grid>
@@ -156,7 +157,7 @@ const ProjectTracker = () => {
             <Typography variant="body1">Loading...</Typography>
           ) : (
             <>
-              {selectedSubpage === "overview" ? (
+              {selectedSubpage === "overview" && projectId ? (
                 <ProjectOverviewSubpage
                   stages={stages}
                   isLoggedIn={isLoggedIn}

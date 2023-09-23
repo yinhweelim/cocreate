@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect } from "react";
 import useFetch from "../../hooks/useFetch";
 import { Link as RouterLink, useParams, useNavigate } from "react-router-dom";
-import UserContext from "../../context/UserContext";
 import { CreatorData, data } from "../../interfaces";
 import CreatorProductCard from "../../components/CreatorProductCard";
 
@@ -26,7 +25,6 @@ const CreatorPage = () => {
   const params = useParams();
   const creatorId = params.creator_id;
   const fetchData = useFetch();
-  const userCtx = useContext(UserContext);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -34,8 +32,8 @@ const CreatorPage = () => {
   const [portfolioItems, setPortfolioItems] = useState([]);
   const [products, setProducts] = useState([]);
   const [projectStages, setProjectStages] = useState([]);
-  const [testimonials, setTestimonials] = useState([]);
-  const [socialMediaLinks, setSocialMediaLinks] = useState([]);
+  const [testimonials, setTestimonials] = useState<any[]>([]);
+  const [_socialMediaLinks, setSocialMediaLinks] = useState([]);
 
   //fetch creator data  on first mount
   const getCreatorData = async () => {

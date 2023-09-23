@@ -11,8 +11,6 @@ import {
   DialogTitle,
   Box,
   DialogContent,
-  Card,
-  CardMedia,
   Button,
   TextField,
   DialogActions,
@@ -231,7 +229,7 @@ const CreatorRequestsSubpage = (props: SubpageProps) => {
             )}
             <Grid container flexDirection={"row"} spacing={1}>
               {/* Filter and sort pending briefs */}
-              {pendingBriefs
+              {pendingBriefs && pendingBriefs
                 .filter((brief) => brief.status === "PENDING_RESPONSE")
                 .sort((a, b) => {
                   if (newRequestsSortBy === "budget") {

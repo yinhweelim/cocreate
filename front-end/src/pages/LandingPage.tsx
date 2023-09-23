@@ -1,27 +1,16 @@
-import React from "react";
 import {
   Box,
   Typography,
   Stack,
   Button,
   Grid,
-  Paper,
   Card,
   CardMedia,
 } from "@mui/material";
 import { Toolbar } from "@mui/material";
 import { Link } from "react-router-dom";
-import { styled } from "@mui/material/styles";
 
 const LandingPage = () => {
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "##D9D9D9",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    height: "200px",
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  }));
 
   return (
     <div>
