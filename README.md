@@ -3,9 +3,9 @@
 # Cocreate
 A platform which enables artists and creators to showcase their work, connect with collectors and grow their custom commissions business.
 
-
 ## Table of Contents
 
+- [Explore the app](#explore)
 - [Languages and Technologies Used](#languages-and-technologies-used)
   - [Front-end](#front-end)
   - [Back-end](#back-end)
@@ -19,6 +19,19 @@ A platform which enables artists and creators to showcase their work, connect wi
 - [Future Development](#future-development)
 - [References](#references)
 
+## Explore
+[Explore the demo site](https://cocreate-demo.netlify.app/)
+
+Play around with these demo accounts: 
+```
+The Jeweller - bespoke fine jeweller
+User email: hwee@test.com
+Password: test1234
+
+The Cat whisperer - cat portrait artist
+User email: arron@test.com
+Password: test1234
+```
 
 ## Languages and Technologies Used
 
