@@ -5,6 +5,7 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
+import { format } from "date-fns";
 
 const ProjectBriefCard = (props: {
   onClick: React.MouseEventHandler<HTMLButtonElement> | undefined;
@@ -24,6 +25,7 @@ const ProjectBriefCard = (props: {
   status?: string;
   product_name?: string;
   creator_name?: string;
+  created_at?: Date;
 }) => {
   let chip = null;
   if (props.status === "PENDING_RESPONSE") {
@@ -40,6 +42,7 @@ const ProjectBriefCard = (props: {
       <Card
         sx={{
           height: 400,
+          maxWidth: 280,
           display: "flex",
           flexDirection: "column",
         }}
@@ -53,8 +56,12 @@ const ProjectBriefCard = (props: {
           <Typography variant="body1" sx={{ fontWeight: "400" }}>
             {props.product_name}
           </Typography>
-          <Typography variant="body2" paddingBottom={1}>
-            by {props.creator_name}
+          <Typography variant="body1">by {props.creator_name}</Typography>
+          <Typography variant="subtitle1">
+            Started {props.created_at}
+          </Typography>
+          <Typography variant="subtitle1" paddingBottom={1}>
+            {props.budget_currency} {props.budget_amount}
           </Typography>
           {chip}
         </CardContent>

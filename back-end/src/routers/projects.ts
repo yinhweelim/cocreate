@@ -9,6 +9,7 @@ import {
 import {
   getProjectByCreatorId,
   getProjectByPatronId,
+  getProjectById,
   createProject,
   updateProject,
 } from "../controllers/projects";
@@ -48,24 +49,21 @@ const router = express.Router();
 router.get(
   "/projects/briefs/creators/:creator_id",
   validateCreatorIdInParam,
+  auth,
   checkValid,
   getBriefByCreatorId
 );
 router.get(
   "/projects/briefs/patrons/:patron_id",
   validatePatronIdInParam,
+  auth,
   checkValid,
   getBriefByPatronId
 );
-router.put(
-  "/projects/briefs",
-  // validateCreateBriefData,
-  // checkValid,
-  upload.single("image"),
-  createBrief
-);
+router.put("/projects/briefs", auth, upload.single("image"), createBrief);
 router.patch(
   "/projects/briefs/:id",
+  auth,
   validateUpdateBriefData,
   validateIdInParam,
   checkValid,
@@ -73,11 +71,13 @@ router.patch(
 );
 router.patch(
   "/projects/briefs/images/:id",
+  auth,
   upload.single("image"),
   updateBriefImage
 );
 
 //projects
+router.get("/projects/:id", validateIdInParam, checkValid, getProjectById);
 router.get(
   "/projects/creators/:creator_id",
   validateCreatorIdInParam,
@@ -90,9 +90,16 @@ router.get(
   checkValid,
   getProjectByPatronId
 );
-router.put("/projects", validateCreateProjectData, checkValid, createProject);
+router.put(
+  "/projects",
+  auth,
+  validateCreateProjectData,
+  checkValid,
+  createProject
+);
 router.patch(
   "/projects/:id",
+  auth,
   validateIdInParam,
   validateUpdateProjectData,
   checkValid,
@@ -108,6 +115,7 @@ router.get(
 );
 router.put(
   "/projects/stages/:project_id",
+  auth,
   validateProjectIdInParam,
   validateSetProjectStagesData,
   checkValid,
@@ -123,12 +131,14 @@ router.get(
 );
 router.put(
   "/projects/proposals",
+  auth,
   validateCreateProposalData,
   checkValid,
   createProjectProposal
 );
 router.patch(
   "/projects/proposals/:id",
+  auth,
   validateIdInParam,
   validateUpdateProposalData,
   checkValid,

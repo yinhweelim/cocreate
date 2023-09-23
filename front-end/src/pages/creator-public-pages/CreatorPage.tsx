@@ -20,7 +20,7 @@ import {
 } from "@mui/material";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
-import CreatorProjectStagesCard from "../../components/CreatorProjectStagesCard";
+import CreatorPageProjectStages from "../../components/CreatorPageProjectStages";
 
 const CreatorPage = () => {
   const params = useParams();
@@ -29,7 +29,6 @@ const CreatorPage = () => {
   const userCtx = useContext(UserContext);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
-  // const creatorId = userCtx?.currentUser.creator_id;
 
   const [creatorData, setCreatorData] = useState<CreatorData | null>(null);
   const [portfolioItems, setPortfolioItems] = useState([]);
@@ -92,9 +91,9 @@ const CreatorPage = () => {
                 >
                   Send brief
                 </Button>
-                <Button variant="outlined" size="small">
+                {/* <Button variant="outlined" size="small">
                   Contact
-                </Button>
+                </Button> */}
               </Stack>
             </Stack>
 
@@ -128,8 +127,10 @@ const CreatorPage = () => {
 
             {/* about */}
             <Grid container paddingY={4} display="flex" justifyContent="center">
-              <Grid item xs={8}>
-                <Typography variant="body1">{creatorData?.about}</Typography>
+              <Grid item xs={6}>
+                <Typography variant="body1" textAlign="center">
+                  {creatorData?.about}
+                </Typography>
               </Grid>
             </Grid>
 
@@ -178,7 +179,7 @@ const CreatorPage = () => {
               </Typography>
 
               {projectStages?.map((data: any, index: number) => (
-                <CreatorProjectStagesCard
+                <CreatorPageProjectStages
                   key={index}
                   {...data}
                   cardHeight="250"
@@ -187,40 +188,49 @@ const CreatorPage = () => {
             </Stack>
 
             {/* testimonials */}
-            <Stack paddingY={4} display="flex" alignItems="center" spacing={2}>
-              <Typography variant="h6">
-                Testimonials for {creatorData?.display_name}
-              </Typography>
-              <Card sx={{ width: 500, minHeight: 150, display: "flex" }}>
-                <CardMedia
-                  component="img"
-                  sx={{ width: 200 }}
-                  image=""
-                  alt="Testimonial product image"
-                />
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    backgroundColor: "rgba(0, 0, 0, 0.04)",
-                    width: "100%",
-                  }}
-                >
-                  <CardContent sx={{ flex: "1 0 auto" }}>
-                    <Typography component="div" variant="body1">
-                      Testimonial
-                    </Typography>
-                    <Typography
-                      variant="subtitle1"
-                      color="text.secondary"
-                      component="div"
-                    >
-                      Client name
-                    </Typography>
-                  </CardContent>
-                </Box>
-              </Card>
-            </Stack>
+            {testimonials?.length > 0 ? (
+              <Stack
+                paddingY={4}
+                display="flex"
+                alignItems="center"
+                spacing={2}
+              >
+                <Typography variant="h6">
+                  Testimonials for {creatorData?.display_name}
+                </Typography>
+                <Card sx={{ width: 500, minHeight: 150, display: "flex" }}>
+                  <CardMedia
+                    component="img"
+                    sx={{ width: 200, height: 200 }}
+                    image={testimonials[0].image_url}
+                    alt="Testimonial product image"
+                  />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      backgroundColor: "rgba(0, 0, 0, 0.04)",
+                      width: "100%",
+                    }}
+                  >
+                    <CardContent sx={{ flex: "1 0 auto" }}>
+                      <Typography component="div" variant="body1">
+                        {testimonials[0].testimonial}
+                      </Typography>
+                      <Typography
+                        variant="subtitle1"
+                        color="text.secondary"
+                        component="div"
+                      >
+                        {testimonials[0].patron_tagline}
+                      </Typography>
+                    </CardContent>
+                  </Box>
+                </Card>
+              </Stack>
+            ) : (
+              ""
+            )}
           </>
         </Stack>
 

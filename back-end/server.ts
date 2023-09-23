@@ -1,10 +1,15 @@
 require("dotenv").config();
 
+// import http from "http";
+// import { ServerSocket } from "./src/socket/socket";
 import express, { Express, Request, Response } from "express";
 import cors from "cors";
-const helmet = require("helmet"); //
-const rateLimit = require("express-rate-limit");
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import bodyParser from "body-parser";
+
+const app: Express = express();
+const port = process.env.PORT || 5001;
 
 //allows api to be called 100 times within 15min interval
 const limit = rateLimit({
@@ -14,8 +19,14 @@ const limit = rateLimit({
   legacyHeaders: false,
 });
 
-const app: Express = express();
-const port = process.env.PORT || 5001;
+// // Socket Server handling
+// const httpServer = http.createServer(app);
+
+// // Listen
+// httpServer.listen(1337, () => console.info(`Server is running`));
+
+// // Start the socket
+// new ServerSocket(httpServer);
 
 app.use(bodyParser.json());
 app.use(
@@ -34,6 +45,7 @@ import auth from "./src/routers/auth";
 import users from "./src/routers/users";
 import creators from "./src/routers/creators";
 import projects from "./src/routers/projects";
+import { ServerSideEncryption } from "@aws-sdk/client-s3";
 
 app.use("/api", auth);
 app.use("/api", users);

@@ -1,6 +1,7 @@
 import { Request, Response, query } from "express";
 import { pool } from "../db/db";
 import uuidValidate from "uuid-validate";
+import { get } from "http";
 
 const getProjectByCreatorId = async (req: Request, res: Response) => {
   try {
@@ -16,6 +17,7 @@ const getProjectByCreatorId = async (req: Request, res: Response) => {
     //1. get projects with creator_id
     const getProjectsQuery = `SELECT DISTINCT
       creators.display_name AS creator_name,
+      creators.logo_image_url AS creator_logo,
       users.given_name AS patron_name,
       creator_products.image_url AS product_image_url,
       project_briefs.deadline AS requested_deadline,
@@ -29,7 +31,7 @@ const getProjectByCreatorId = async (req: Request, res: Response) => {
         FROM
           project_stages AS ps
         WHERE
-          ps.project_id = projects.id) AS total_stage_count, projects.*
+          ps.project_id = projects.id AND is_deleted = false) AS total_stage_count, projects.*
       FROM
         projects
       LEFT JOIN creators ON projects.creator_id = creators.id
@@ -78,7 +80,7 @@ const getProjectByPatronId = async (req: Request, res: Response) => {
       FROM
         project_stages AS ps
       WHERE
-        ps.project_id = projects.id) AS total_stage_count, projects.*
+      ps.project_id = projects.id AND is_deleted = false) AS total_stage_count, projects.*
     FROM
       projects
     LEFT JOIN creators ON projects.creator_id = creators.id
@@ -98,6 +100,99 @@ const getProjectByPatronId = async (req: Request, res: Response) => {
       status: "error",
       msg: "An error occurred while getting the projects",
     });
+  }
+};
+
+const getProjectById = async (req: Request, res: Response) => {
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    const projectId = req.params.id;
+
+    //1. get project. if project not found, return error
+    const getQuery = `SELECT DISTINCT
+    creators.display_name AS creator_name,
+    creators.logo_image_url AS creator_logo,
+    users.given_name AS patron_name,
+    creator_products.image_url AS product_image_url,
+    project_briefs.deadline AS requested_deadline,
+    project_briefs.budget_currency AS budget_currency,
+    project_briefs.budget_amount AS budget_amount,
+    project_stages.name AS current_stage,
+    project_stages.index AS current_stage_index,
+    (
+      SELECT
+        COUNT(*)
+      FROM
+        project_stages AS ps
+      WHERE
+        ps.project_id = projects.id) AS total_stage_count, projects.*
+    FROM
+      projects
+    LEFT JOIN creators ON projects.creator_id = creators.id
+    LEFT JOIN users ON projects.patron_id = users.id
+    LEFT JOIN project_briefs ON project_briefs.id = projects.brief_id
+    LEFT JOIN creator_products ON project_briefs.product_id = creator_products.id
+    LEFT JOIN project_stages ON project_stages.id = projects.current_stage_id
+  WHERE
+    projects.id = $1`;
+    const result = await pool.query(getQuery, [projectId]);
+    const project = result.rows[0];
+    const briefId = result.rows[0].brief_id;
+
+    if (result.rows.length === 0) {
+      return res
+        .status(400)
+        .json({ status: "error", msg: "project not found" });
+    }
+
+    // 2. get initial brief
+    const getBriefQuery =
+      "SELECT * FROM project_briefs WHERE id = $1 AND is_deleted = false";
+    const getBriefResults = await pool.query(getBriefQuery, [briefId]);
+    const brief = getBriefResults.rows[0];
+    const productId = getBriefResults.rows[0].product_id;
+
+    // 3. get product option
+    const getProductQuery =
+      "SELECT * FROM creator_products WHERE id = $1 AND is_deleted = false";
+    const getProductResults = await pool.query(getProductQuery, [productId]);
+    const product = getProductResults.rows[0];
+
+    // 4. get proposals
+    const getProposalsQuery =
+      "SELECT * FROM project_proposals WHERE project_id = $1 AND is_deleted = false";
+    const getProposalsResults = await pool.query(getProposalsQuery, [
+      projectId,
+    ]);
+    const proposals = getProposalsResults.rows;
+
+    // 5. get project stages
+    const getStagesQuery =
+      "SELECT * FROM project_stages WHERE project_id = $1 AND is_deleted = false ORDER by index asc";
+    const getStagesResults = await pool.query(getStagesQuery, [projectId]);
+    const stages = getStagesResults.rows;
+
+    await client.query("COMMIT"); // Commit the transaction
+
+    res.status(200).json({
+      status: "success",
+      project,
+      brief,
+      product,
+      proposals,
+      stages,
+    });
+  } catch (error) {
+    await client.query("ROLLBACK"); // Roll back the transaction in case of an error
+
+    console.error("Error getting project:", error);
+    res.status(500).json({
+      status: "error",
+      msg: "An error occurred while getting the project",
+    });
+  } finally {
+    client.release();
   }
 };
 
@@ -264,6 +359,13 @@ const updateProject = async (req: Request, res: Response) => {
       updateFields.push("is_accepted = $" + (queryParams.length + 1));
       queryParams.push(isAccepted);
     }
+
+    if ("is_completed" in req.body) {
+      const isCompleted = req.body.is_completed;
+      updateFields.push("is_completed = $" + (queryParams.length + 1));
+      queryParams.push(isCompleted);
+    }
+
     if (updateFields.length === 0) {
       // No fields to update
       return res.status(400).json({
@@ -301,4 +403,5 @@ export {
   getProjectByPatronId,
   createProject,
   updateProject,
+  getProjectById,
 };

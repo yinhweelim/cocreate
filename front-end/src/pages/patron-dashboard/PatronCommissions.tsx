@@ -1,4 +1,16 @@
 import React, { useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+import UserContext from "../../context/UserContext";
+import useFetch from "../../hooks/useFetch";
+
+import SectionHeading from "../../components/SectionHeading";
+import { data, Brief } from "../../interfaces";
+import ProjectBriefCard from "../../components/PatronBriefCard";
+import AddAPhoto from "@mui/icons-material/AddAPhoto";
+import { useSnackbar } from "../../context/SnackbarContext";
+import CreatorProjectCard from "../../components/CreatorProjectCard";
+
 import {
   Box,
   Grid,
@@ -10,16 +22,6 @@ import {
   Card,
   CardContent,
   TextField,
-} from "@mui/material";
-import SectionHeading from "../../components/SectionHeading";
-import UserContext from "../../context/UserContext";
-import useFetch from "../../hooks/useFetch";
-import { data, Brief } from "../../interfaces";
-import ProjectBriefCard from "../../components/PatronBriefCard";
-import AddAPhoto from "@mui/icons-material/AddAPhoto";
-import { useSnackbar } from "../../context/SnackbarContext";
-
-import {
   Dialog,
   DialogActions,
   DialogContent,
@@ -32,6 +34,7 @@ const PatronCommissions = () => {
   const userCtx = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const patronId: string = userCtx?.currentUser.user_id;
+  const navigate = useNavigate();
 
   //brief variables
   const [briefs, setBriefs] = useState([]);
@@ -49,7 +52,10 @@ const PatronCommissions = () => {
 
     try {
       const res: data = await fetchData(
-        "/api/projects/briefs/patrons/" + patronId
+        "/api/projects/briefs/patrons/" + patronId,
+        undefined,
+        undefined,
+        userCtx?.accessToken
       );
       setBriefs(res.data.briefs);
     } catch (error) {
@@ -62,11 +68,17 @@ const PatronCommissions = () => {
   //get projects
   const getProjects = async () => {
     try {
-      const res: data = await fetchData("/api/projects/patrons/" + patronId);
+      const res: data = await fetchData(
+        "/api/projects/patrons/" + patronId,
+        undefined,
+        undefined,
+        userCtx?.accessToken
+      );
       setProjects(res.data.projects);
-      console.log(projects);
     } catch (error) {
       alert(JSON.stringify(error));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -114,7 +126,6 @@ const PatronCommissions = () => {
         returnValue = { ok: false, data: data.message || data.msg };
         console.error(returnValue);
       } else {
-        console.log(data);
         returnValue = { ok: false, data: "An error has occurred" };
         console.error(returnValue);
       }
@@ -135,7 +146,8 @@ const PatronCommissions = () => {
       {
         details,
         budget_amount,
-      }
+      },
+      userCtx?.accessToken
     );
     if (res.ok) {
       setOpenUpdateBrief(false);
@@ -154,7 +166,7 @@ const PatronCommissions = () => {
       "/api/projects/briefs/" + selectedBrief?.id,
       "PATCH",
       { status: "CANCELLED" },
-      undefined
+      userCtx?.accessToken
     );
 
     if (res.ok) {
@@ -226,11 +238,19 @@ const PatronCommissions = () => {
                     No projects yet. Go out and support some creators!
                   </Typography>
                 ) : (
-                  ""
+                  <Grid container flexDirection={"row"} spacing={1}>
+                    {projects?.map((data: any, index: number) => (
+                      <CreatorProjectCard
+                        key={index}
+                        {...data}
+                        cardHeight="250"
+                        onClick={() => {
+                          navigate("/dashboard/projects/" + data.id);
+                        }}
+                      />
+                    ))}
+                  </Grid>
                 )}
-                <Grid container flexDirection={"row"} spacing={1}>
-                  {JSON.stringify(projects)}
-                </Grid>
               </Stack>
             </Grid>
           </Grid>

@@ -4,7 +4,7 @@ import { data, CreatorData } from "../../interfaces";
 import UserContext from "../../context/UserContext";
 import { useSnackbar } from "../../context/SnackbarContext";
 
-import { Grid, Button, Stack, Divider } from "@mui/material";
+import { Grid, Button, Stack, Divider, Typography } from "@mui/material";
 import SectionHeading from "../../components/SectionHeading";
 import CreatorProfileSubpage from "./CreatorProfileSubpage";
 import CreatorProjectConfig from "./CreatorProjectConfigSubpage";
@@ -46,7 +46,7 @@ const CreatorPageConfig = () => {
 
   useEffect(() => {
     getCreatorData();
-  }, []);
+  }, [creatorId]);
 
   //update creator data
   const handleUpdateCreator = async (
@@ -112,7 +112,8 @@ const CreatorPageConfig = () => {
     const res: data = await fetchData(
       "/api/creators/" + creatorId,
       "PATCH",
-      requestBody
+      requestBody,
+      userCtx?.accessToken
     );
     if (res.ok) {
       showSnackbar("Project settings updated successfully", "success");
@@ -158,24 +159,26 @@ const CreatorPageConfig = () => {
         <Divider />
 
         {/* page content */}
-
-        {selectedSubpage === "business_profile" ? (
-          <CreatorProfileSubpage
-            creatorId={creatorId}
-            isLoading={isLoading}
-            setIsLoading={setIsLoading}
-            handleUpdateCreator={handleUpdateCreator}
-            creatorData={creatorData}
-            getCreatorData={getCreatorData}
-          />
+        {isLoading ? (
+          <Typography variant="body1">Loading...</Typography>
         ) : (
-          <CreatorProjectConfig
-            creatorId={creatorId}
-            isLoading={isLoading}
-            setIsLoading={setIsLoading}
-            handleUpdateCreator={handleUpdateCreator}
-            creatorData={creatorData}
-          />
+          <>
+            {" "}
+            {selectedSubpage === "business_profile" ? (
+              <CreatorProfileSubpage
+                creatorId={creatorId}
+                handleUpdateCreator={handleUpdateCreator}
+                creatorData={creatorData}
+                getCreatorData={getCreatorData}
+              />
+            ) : (
+              <CreatorProjectConfig
+                creatorId={creatorId}
+                handleUpdateCreator={handleUpdateCreator}
+                creatorData={creatorData}
+              />
+            )}
+          </>
         )}
       </Grid>
     </>

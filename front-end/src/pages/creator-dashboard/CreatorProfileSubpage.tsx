@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import useFetch from "../../hooks/useFetch";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { data, CreatorData } from "../../interfaces";
@@ -23,10 +23,9 @@ import {
   CardMedia,
 } from "@mui/material";
 import CreatorPortfolioCard from "../../components/CreatorPortfolioCard";
+import UserContext from "../../context/UserContext";
 
 interface CreatorProfileProps {
-  isLoading: boolean;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   creatorId: string;
   handleUpdateCreator: (
     event: React.FormEvent<HTMLFormElement>
@@ -38,7 +37,7 @@ interface CreatorProfileProps {
 const CreatorProfile = (props: CreatorProfileProps) => {
   const fetchData = useFetch();
   const { showSnackbar } = useSnackbar();
-
+  const userCtx = useContext(UserContext);
   //logo state variable
   const [selectedLogo, setSelectedLogo] = useState(null);
 
@@ -50,21 +49,18 @@ const CreatorProfile = (props: CreatorProfileProps) => {
   //fetch portfolio projects on first mount
   const getPortfolioProjects = async () => {
     try {
-      props.setIsLoading(true);
       const res: data = await fetchData(
         "/api/creators/portfolio/" + props.creatorId
       );
       setPortfolioItems(res.data.items);
-      props.setIsLoading(false);
     } catch (error) {
-      props.setIsLoading(false);
       alert(JSON.stringify(error));
     }
   };
 
   useEffect(() => {
     getPortfolioProjects();
-  }, []);
+  }, [props.creatorId]);
 
   //upload creator logo
   const handleUpdateLogo = async (event: any) => {
@@ -77,7 +73,9 @@ const CreatorProfile = (props: CreatorProfileProps) => {
       import.meta.env.VITE_SERVER + "/api/creators/logos/" + props.creatorId,
       {
         method: "PATCH",
-        headers: {},
+        headers: {
+          Authorization: "Bearer " + userCtx?.accessToken,
+        },
         body: formData,
       }
     );
@@ -145,7 +143,9 @@ const CreatorProfile = (props: CreatorProfileProps) => {
         props.creatorId,
       {
         method: "PUT",
-        headers: {},
+        headers: {
+          Authorization: "Bearer " + userCtx?.accessToken,
+        },
         body: formData,
       }
     );
@@ -191,7 +191,7 @@ const CreatorProfile = (props: CreatorProfileProps) => {
       "/api/creators/portfolio/" + projectId,
       "DELETE",
       undefined,
-      undefined
+      userCtx?.accessToken
     );
 
     if (res.ok) {
@@ -204,177 +204,166 @@ const CreatorProfile = (props: CreatorProfileProps) => {
   };
 
   //load page
-  if (props.creatorData === null) {
-    return <Typography variant="body1">Loading...</Typography>;
-  } else
-    return (
-      <>
-        <Grid container paddingY={4}>
-          <Grid container rowSpacing={2}>
-            {/* Profile */}
-            <Grid item xs={9}>
-              <Paper variant="outlined">
-                <Typography variant="h6" component="h4" padding={2}>
-                  Profile
-                </Typography>
-                <Typography variant="body1" padding={2}>
-                  Use this space to introduce yourself, your work, and give
-                  potential patrons an idea of what they can expect.
-                </Typography>
 
-                <Typography variant="body2" paddingX={2}>
-                  Brand Logo
-                </Typography>
+  return (
+    <>
+      <Grid container paddingY={4}>
+        <Grid container rowSpacing={2}>
+          {/* Profile */}
+          <Grid item xs={9}>
+            <Paper variant="outlined">
+              <Typography variant="h6" component="h4" padding={2}>
+                Profile
+              </Typography>
+              <Typography variant="body1" padding={2}>
+                Use this space to introduce yourself, your work, and give
+                potential patrons an idea of what they can expect.
+              </Typography>
 
-                {/* //logo upload and preview */}
-                <Box paddingX={2}>
-                  <Card>
-                    {selectedLogo ? (
-                      <CardMedia
-                        component="img"
-                        alt="Selected"
-                        src={URL.createObjectURL(selectedLogo)}
-                        sx={{ maxHeight: "100px", maxWidth: "300px" }}
-                      />
-                    ) : (
-                      <>
-                        {props.creatorData?.logo_image_url ? (
-                          <CardMedia
-                            component="img"
-                            alt="Logo"
-                            src={props.creatorData?.logo_image_url}
-                            sx={{ maxHeight: "100px", maxWidth: "300px" }}
-                          />
-                        ) : (
-                          <CardContent>No image</CardContent>
-                        )}
-                      </>
-                    )}
-                  </Card>
-                  <input
-                    accept="image/*"
-                    style={{ display: "none" }}
-                    id="image-upload-button"
-                    type="file"
-                    onChange={handleUpdateLogo}
-                  />
-                  <label htmlFor="image-upload-button">
-                    <Button
-                      variant="outlined"
-                      component="span"
-                      color="primary"
-                      size="small"
-                      startIcon={<EditIcon></EditIcon>}
-                    >
-                      Upload image
-                    </Button>
-                  </label>
-                </Box>
-                <Box
-                  component="form"
-                  onSubmit={props.handleUpdateCreator}
-                  noValidate
-                  sx={{ mt: 1 }}
-                  paddingX={2}
-                >
-                  <TextField
-                    margin="normal"
-                    fullWidth
-                    id="pageName"
-                    label="Page Name"
-                    name="pageName"
-                    defaultValue={props.creatorData?.display_name}
-                  />
+              <Typography variant="body2" paddingX={2}>
+                Brand Logo
+              </Typography>
 
-                  <TextField
-                    margin="normal"
-                    fullWidth
-                    id="tagline"
-                    label="Tagline"
-                    name="tagline"
-                    placeholder="Add a short tagline to let people know more about who you are"
-                    defaultValue={props.creatorData?.tagline}
-                  />
-
-                  <Autocomplete
-                    disablePortal
-                    options={["SINGAPORE", "UNITED STATES"]}
-                    defaultValue={props.creatorData?.country_of_operation}
-                    renderInput={(params) => (
-                      <TextField
-                        name="country"
-                        margin="normal"
-                        {...params}
-                        label="Country of Operations"
-                      />
-                    )}
-                  />
-
-                  <TextField
-                    margin="normal"
-                    multiline
-                    minRows={4}
-                    fullWidth
-                    id="about"
-                    label="About"
-                    name="about"
-                    defaultValue={props.creatorData?.about}
-                    placeholder="Add a description to to let people know more about who you are, what you create and projects you're open to."
-                  />
-
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                  >
-                    Update
-                  </Button>
-                </Box>
-              </Paper>
-            </Grid>
-
-            {/* Portfolio product image upload */}
-            <Grid item xs={9}>
-              <Paper variant="outlined">
-                <Typography variant="h6" component="h4" padding={2}>
-                  Portfolio projects
-                </Typography>
-                <Typography variant="body1" padding={2}>
-                  Upload pictures and descriptions of portfolio projects to show
-                  people examples of what you can do. Upload up to 3 projects.
-                </Typography>
-                <Grid
-                  container
-                  flexDirection={"row"}
-                  spacing={1}
-                  paddingLeft={2}
-                >
-                  {portfolioItems?.map((data: any, index: number) => (
-                    <CreatorPortfolioCard
-                      key={index}
-                      {...data}
-                      cardHeight="250"
-                      onDelete={() => handleDeletePortfolioProject(data.id)}
+              {/* //logo upload and preview */}
+              <Box paddingX={2}>
+                <Card>
+                  {selectedLogo ? (
+                    <CardMedia
+                      component="img"
+                      alt="Selected"
+                      src={URL.createObjectURL(selectedLogo)}
+                      sx={{ maxHeight: "100px", maxWidth: "300px" }}
                     />
-                  ))}
-                </Grid>
-                <Box sx={{ mt: 1 }} paddingX={2}>
+                  ) : (
+                    <>
+                      {props.creatorData?.logo_image_url ? (
+                        <CardMedia
+                          component="img"
+                          alt="Logo"
+                          src={props.creatorData?.logo_image_url}
+                          sx={{ maxHeight: "100px", maxWidth: "300px" }}
+                        />
+                      ) : (
+                        <CardContent>No image</CardContent>
+                      )}
+                    </>
+                  )}
+                </Card>
+                <input
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  id="image-upload-button"
+                  type="file"
+                  onChange={handleUpdateLogo}
+                />
+                <label htmlFor="image-upload-button">
                   <Button
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                    startIcon={<ModeEditOutlineOutlinedIcon />}
-                    onClick={() => {
-                      setOpenAddPortfolioItem(true);
-                    }}
+                    variant="outlined"
+                    component="span"
+                    color="primary"
+                    size="small"
+                    startIcon={<EditIcon></EditIcon>}
                   >
-                    Add Portfolio item
+                    Upload image
                   </Button>
-                </Box>
-              </Paper>
-            </Grid>
+                </label>
+              </Box>
+              <Box
+                component="form"
+                onSubmit={props.handleUpdateCreator}
+                noValidate
+                sx={{ mt: 1 }}
+                paddingX={2}
+              >
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  id="pageName"
+                  label="Page Name"
+                  name="pageName"
+                  defaultValue={props.creatorData?.display_name}
+                />
 
-            {/* Social media links */}
-            {/* <Grid item xs={9}>
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  id="tagline"
+                  label="Tagline"
+                  name="tagline"
+                  placeholder="Add a short tagline to let people know more about who you are"
+                  defaultValue={props.creatorData?.tagline}
+                />
+
+                <Autocomplete
+                  disablePortal
+                  options={["SINGAPORE", "UNITED STATES"]}
+                  defaultValue={props.creatorData?.country_of_operation}
+                  renderInput={(params) => (
+                    <TextField
+                      name="country"
+                      margin="normal"
+                      {...params}
+                      label="Country of Operations"
+                    />
+                  )}
+                />
+
+                <TextField
+                  margin="normal"
+                  multiline
+                  minRows={4}
+                  fullWidth
+                  id="about"
+                  label="About"
+                  name="about"
+                  defaultValue={props.creatorData?.about}
+                  placeholder="Add a description to to let people know more about who you are, what you create and projects you're open to."
+                />
+
+                <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
+                  Update
+                </Button>
+              </Box>
+            </Paper>
+          </Grid>
+
+          {/* Portfolio product image upload */}
+          <Grid item xs={9}>
+            <Paper variant="outlined">
+              <Typography variant="h6" component="h4" padding={2}>
+                Portfolio projects
+              </Typography>
+              <Typography variant="body1" padding={2}>
+                Upload pictures and descriptions of portfolio projects to show
+                people examples of what you can do. Upload up to 3 projects.
+              </Typography>
+              <Grid container flexDirection={"row"} spacing={1} paddingLeft={2}>
+                {portfolioItems?.map((data: any, index: number) => (
+                  <CreatorPortfolioCard
+                    key={index}
+                    {...data}
+                    cardHeight="250"
+                    onDelete={() => handleDeletePortfolioProject(data.id)}
+                  />
+                ))}
+              </Grid>
+              <Box sx={{ mt: 1 }} paddingX={2}>
+                <Button
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                  startIcon={<ModeEditOutlineOutlinedIcon />}
+                  onClick={() => {
+                    setOpenAddPortfolioItem(true);
+                  }}
+                >
+                  Add Portfolio item
+                </Button>
+              </Box>
+            </Paper>
+          </Grid>
+
+          {/* Social media links */}
+          {/* <Grid item xs={9}>
               <Paper variant="outlined">
                 <Typography variant="h6" component="h4" padding={2}>
                   Social media links
@@ -428,86 +417,83 @@ const CreatorProfile = (props: CreatorProfileProps) => {
                 </Box>
               </Paper>
             </Grid> */}
-          </Grid>
         </Grid>
+      </Grid>
 
-        {/* dialog for add portfolio project */}
-        <Dialog
-          open={openAddPortfolioItem}
-          onClose={handleCloseAddPortfolioProject}
-        >
-          <DialogTitle>Add Portfolio project</DialogTitle>
-          <Box component="form" onSubmit={handleAddPortfolioProject} noValidate>
-            <DialogContent>
-              <Typography variant="body1">Upload image</Typography>
-              <Card>
-                {selectedPortfolioImage ? (
-                  <CardMedia
-                    component="img"
-                    alt="portfolioimage"
-                    src={URL.createObjectURL(selectedPortfolioImage)}
-                    sx={{ maxWidth: "300px" }}
-                  />
-                ) : (
-                  <CardContent>No image</CardContent>
-                )}
-              </Card>
-              <input
-                accept="image/*"
-                style={{ display: "none" }}
-                id="portfolio-image-upload-button"
-                type="file"
-                onChange={handleSelectPortfolioImage}
-              />
-              <label htmlFor="portfolio-image-upload-button">
-                <Button
-                  variant="outlined"
-                  component="span"
-                  color="primary"
-                  size="small"
-                  startIcon={<EditIcon></EditIcon>}
-                >
-                  Add new
-                </Button>
-              </label>
-              <TextField
-                autoFocus
-                margin="normal"
-                fullWidth
-                id="name"
-                label="Title"
-                name="title"
-                type="text"
-                placeholder="Project title"
-              />
-              <TextField
-                autoFocus
-                multiline
-                minRows={2}
-                margin="normal"
-                fullWidth
-                id="name"
-                label="Description"
-                name="description"
-                type="text"
-                placeholder="Add a short description of this project"
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button variant="outlined" type="submit">
-                Add
-              </Button>
+      {/* dialog for add portfolio project */}
+      <Dialog
+        open={openAddPortfolioItem}
+        onClose={handleCloseAddPortfolioProject}
+      >
+        <DialogTitle>Add Portfolio project</DialogTitle>
+        <Box component="form" onSubmit={handleAddPortfolioProject} noValidate>
+          <DialogContent>
+            <Typography variant="body1">Upload image</Typography>
+            <Card>
+              {selectedPortfolioImage ? (
+                <CardMedia
+                  component="img"
+                  alt="portfolioimage"
+                  src={URL.createObjectURL(selectedPortfolioImage)}
+                  sx={{ maxWidth: "300px" }}
+                />
+              ) : (
+                <CardContent>No image</CardContent>
+              )}
+            </Card>
+            <input
+              accept="image/*"
+              style={{ display: "none" }}
+              id="portfolio-image-upload-button"
+              type="file"
+              onChange={handleSelectPortfolioImage}
+            />
+            <label htmlFor="portfolio-image-upload-button">
               <Button
                 variant="outlined"
-                onClick={handleCloseAddPortfolioProject}
+                component="span"
+                color="primary"
+                size="small"
+                startIcon={<EditIcon></EditIcon>}
               >
-                Cancel
+                Add new
               </Button>
-            </DialogActions>
-          </Box>
-        </Dialog>
-      </>
-    );
+            </label>
+            <TextField
+              autoFocus
+              margin="normal"
+              fullWidth
+              id="name"
+              label="Title"
+              name="title"
+              type="text"
+              placeholder="Project title"
+            />
+            <TextField
+              autoFocus
+              multiline
+              minRows={2}
+              margin="normal"
+              fullWidth
+              id="name"
+              label="Description"
+              name="description"
+              type="text"
+              placeholder="Add a short description of this project"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button variant="outlined" type="submit">
+              Add
+            </Button>
+            <Button variant="outlined" onClick={handleCloseAddPortfolioProject}>
+              Cancel
+            </Button>
+          </DialogActions>
+        </Box>
+      </Dialog>
+    </>
+  );
 };
 
 export default CreatorProfile;

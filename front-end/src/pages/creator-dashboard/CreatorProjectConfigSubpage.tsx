@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import useFetch from "../../hooks/useFetch";
 
 import { data, CreatorData } from "../../interfaces";
@@ -26,11 +26,10 @@ import {
 
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import CreatorProductCard from "../../components/CreatorProductCard";
-import CreatorProjectStagesCard from "../../components/CreatorProjectStagesCard";
+import CreatorProjectStagesCard from "../../components/CreatorPageProjectStages";
+import UserContext from "../../context/UserContext";
 
 interface CreatorProjectConfigProps {
-  isLoading: boolean;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   creatorId: string;
   handleUpdateCreator: (
     event: React.FormEvent<HTMLFormElement>
@@ -39,6 +38,7 @@ interface CreatorProjectConfigProps {
 }
 
 const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
+  const userCtx = useContext(UserContext);
   const fetchData = useFetch();
   const { showSnackbar } = useSnackbar();
 
@@ -50,30 +50,23 @@ const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
 
   const getProducts = async () => {
     try {
-      props.setIsLoading(true);
       const res: data = await fetchData(
         "/api/creators/products/" + props.creatorId
       );
       setProducts(res.data.products);
-      props.setIsLoading(false);
     } catch (error) {
       alert(JSON.stringify(error));
-      props.setIsLoading(false);
     }
   };
 
   const getCreatorProjectStages = async () => {
     try {
-      props.setIsLoading(true);
       const res: data = await fetchData(
         "/api/creators/project_stages/" + props.creatorId
       );
       setProjectStages(res.data.projectStages);
-      console.log(res.data);
-      props.setIsLoading(false);
     } catch (error) {
       alert(JSON.stringify(error));
-      props.setIsLoading(false);
     }
   };
 
@@ -115,12 +108,13 @@ const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
     formData.append("currency", requestBody.currency as string);
     formData.append("starting_price", requestBody.starting_price as string);
 
-    console.log(formData);
     const res = await fetch(
       import.meta.env.VITE_SERVER + "/api/creators/products/" + props.creatorId,
       {
         method: "PUT",
-        headers: {},
+        headers: {
+          Authorization: "Bearer " + userCtx?.accessToken,
+        },
         body: formData,
       }
     );
@@ -169,7 +163,7 @@ const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
       "/api/creators/products/" + productId,
       "DELETE",
       undefined,
-      undefined
+      userCtx?.accessToken
     );
 
     if (res.ok) {
@@ -182,282 +176,264 @@ const CreatorProjectConfig = (props: CreatorProjectConfigProps) => {
   };
 
   //load page
-  if (props.isLoading) {
-    return <Typography variant="body1">Loading...</Typography>;
-  } else
-    return (
-      <>
-        <Grid container paddingY={4}>
-          <Grid container rowSpacing={2}>
-            {/* Request form settings */}
-            <Grid item xs={9}>
-              <Paper variant="outlined">
-                <Typography variant="h6" component="h4" padding={2}>
-                  Request form settings
-                </Typography>
-                <Typography variant="body1" paddingX={2}>
-                  Set up your project request form. Patrons will see these
-                  guidelines when they submit a request to you.
-                </Typography>
 
-                <Box
-                  component="form"
-                  onSubmit={props.handleUpdateCreator}
-                  noValidate
-                  sx={{ mt: 1 }}
-                  paddingX={2}
+  return (
+    <>
+      <Grid container paddingY={4}>
+        <Grid container rowSpacing={2}>
+          {/* Request form settings */}
+          <Grid item xs={9}>
+            <Paper variant="outlined">
+              <Typography variant="h6" component="h4" padding={2}>
+                Request form settings
+              </Typography>
+              <Typography variant="body1" paddingX={2}>
+                Set up your project request form. Patrons will see these
+                guidelines when they submit a request to you.
+              </Typography>
+
+              <Box
+                component="form"
+                onSubmit={props.handleUpdateCreator}
+                noValidate
+                sx={{ mt: 1 }}
+                paddingX={2}
+              >
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  multiline
+                  id="briefDescriptionGuide"
+                  label="Request guidelines"
+                  name="briefDescriptionGuide"
+                  placeholder="What you want your patrons to enter in the request description box. The more specific the better"
+                  defaultValue={
+                    props.creatorData?.project_description_guideline
+                  }
+                />
+
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  multiline
+                  id="paymentInstructions"
+                  label="Payment instructions"
+                  name="paymentInstructions"
+                  placeholder="Short description of your payment terms. E.g. your bank account information, payment deadlines"
+                  defaultValue={props.creatorData?.payment_instructions}
+                />
+
+                <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
+                  Save
+                </Button>
+              </Box>
+            </Paper>
+          </Grid>
+
+          {/* Products and services */}
+          <Grid item xs={9}>
+            <Paper variant="outlined">
+              <Typography variant="h6" component="h4" padding={2}>
+                Products and Services
+              </Typography>
+              <Typography variant="body1" paddingX={2}>
+                Provide up to 3 sample product options that potential patrons
+                can choose from.
+              </Typography>
+              <Grid container flexDirection={"row"} spacing={1} paddingLeft={2}>
+                {products?.map((data: any, index: number) => (
+                  <CreatorProductCard
+                    key={index}
+                    {...data}
+                    onDelete={() => handleDeleteProduct(data.id)}
+                    displayDelete
+                  />
+                ))}
+              </Grid>
+              <Box sx={{ mt: 1 }} paddingX={2}>
+                <Button
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                  startIcon={<ModeEditOutlineOutlinedIcon />}
+                  onClick={() => {
+                    setOpenAddProductDialog(true);
+                  }}
                 >
-                  <TextField
-                    margin="normal"
-                    fullWidth
-                    multiline
-                    id="briefDescriptionGuide"
-                    label="Request guidelines"
-                    name="briefDescriptionGuide"
-                    placeholder="What you want your patrons to enter in the request description box. The more specific the better"
-                    defaultValue={
-                      props.creatorData?.project_description_guideline
-                    }
+                  Add Product
+                </Button>
+              </Box>
+            </Paper>
+          </Grid>
+
+          {/* Project process */}
+          <Grid item xs={9}>
+            <Paper variant="outlined">
+              <Typography variant="h6" component="h4" padding={2}>
+                Project process
+              </Typography>
+              <Typography variant="body1" padding={2}>
+                Set up your project stages to give patrons an idea of what to
+                expect in the commissions process.
+              </Typography>
+
+              <Stack flexDirection={"column"} spacing={2} padding={2}>
+                {projectStages?.map((data: any, index: number) => (
+                  <CreatorProjectStagesCard
+                    key={index}
+                    {...data}
+                    cardHeight="250"
                   />
+                ))}
+                <Button variant="contained" disabled>
+                  Configure
+                </Button>
+              </Stack>
+            </Paper>
+          </Grid>
 
-                  <TextField
-                    margin="normal"
-                    fullWidth
-                    multiline
-                    id="paymentInstructions"
-                    label="Payment instructions"
-                    name="paymentInstructions"
-                    placeholder="Short description of your payment terms. E.g. your bank account information, payment deadlines"
-                    defaultValue={props.creatorData?.payment_instructions}
-                  />
+          {/* Project preferences */}
+          <Grid item xs={9}>
+            <Paper variant="outlined">
+              <Typography variant="h6" component="h4" padding={2}>
+                Project preferences
+              </Typography>
+              <Typography variant="body1" paddingX={2}>
+                Set up your project preferences. These will be displayed on your
+                page.
+              </Typography>
 
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                  >
-                    Save
-                  </Button>
-                </Box>
-              </Paper>
-            </Grid>
+              <Box
+                component="form"
+                onSubmit={props.handleUpdateCreator}
+                noValidate
+                sx={{ mt: 1 }}
+                paddingX={2}
+              >
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  id="slotsPerMonth"
+                  label="Slots per month"
+                  name="slotsPerMonth"
+                  type="number"
+                  placeholder="Display how many project slots you offer per month."
+                  defaultValue={props.creatorData?.slots_per_month}
+                />
 
-            {/* Products and services */}
-            <Grid item xs={9}>
-              <Paper variant="outlined">
-                <Typography variant="h6" component="h4" padding={2}>
-                  Products and Services
-                </Typography>
-                <Typography variant="body1" paddingX={2}>
-                  Provide up to 3 sample product options that potential patrons
-                  can choose from.
-                </Typography>
-                <Grid
-                  container
-                  flexDirection={"row"}
-                  spacing={1}
-                  paddingLeft={2}
-                >
-                  {products?.map((data: any, index: number) => (
-                    <CreatorProductCard
-                      key={index}
-                      {...data}
-                      onDelete={() => handleDeleteProduct(data.id)}
-                      displayDelete
-                    />
-                  ))}
-                </Grid>
-                <Box sx={{ mt: 1 }} paddingX={2}>
-                  <Button
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                    startIcon={<ModeEditOutlineOutlinedIcon />}
-                    onClick={() => {
-                      setOpenAddProductDialog(true);
-                    }}
-                  >
-                    Add Product
-                  </Button>
-                </Box>
-              </Paper>
-            </Grid>
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  id="leadtime"
+                  label="Lead time in weeks"
+                  name="leadTime"
+                  type="number"
+                  placeholder="Display how much lead time your projects typically need."
+                  defaultValue={props.creatorData?.lead_time_in_weeks}
+                />
 
-            {/* Project process */}
-            <Grid item xs={9}>
-              <Paper variant="outlined">
-                <Typography variant="h6" component="h4" padding={2}>
-                  Project process
-                </Typography>
-                <Typography variant="body1" padding={2}>
-                  Set up your project stages to give patrons an idea of what to
-                  expect in the commissions process.
-                </Typography>
-
-                <Stack flexDirection={"column"} spacing={2} padding={2}>
-                  {projectStages?.map((data: any, index: number) => (
-                    <CreatorProjectStagesCard
-                      key={index}
-                      {...data}
-                      cardHeight="250"
-                    />
-                  ))}
-                  <Button variant="contained" disabled>
-                    Configure
-                  </Button>
-                </Stack>
-              </Paper>
-            </Grid>
-
-            {/* Project preferences */}
-            <Grid item xs={9}>
-              <Paper variant="outlined">
-                <Typography variant="h6" component="h4" padding={2}>
-                  Project preferences
-                </Typography>
-                <Typography variant="body1" paddingX={2}>
-                  Set up your project preferences. These will be displayed on
-                  your page.
-                </Typography>
-
-                <Box
-                  component="form"
-                  onSubmit={props.handleUpdateCreator}
-                  noValidate
-                  sx={{ mt: 1 }}
-                  paddingX={2}
-                >
-                  <TextField
-                    margin="normal"
-                    fullWidth
-                    id="slotsPerMonth"
-                    label="Slots per month"
-                    name="slotsPerMonth"
-                    type="number"
-                    placeholder="Display how many project slots you offer per month."
-                    defaultValue={props.creatorData?.slots_per_month}
-                  />
-
-                  <TextField
-                    margin="normal"
-                    fullWidth
-                    id="leadtime"
-                    label="Lead time in weeks"
-                    name="leadTime"
-                    type="number"
-                    placeholder="Display how much lead time your projects typically need."
-                    defaultValue={props.creatorData?.lead_time_in_weeks}
-                  />
-
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                  >
-                    Save
-                  </Button>
-                </Box>
-              </Paper>
-            </Grid>
+                <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
+                  Save
+                </Button>
+              </Box>
+            </Paper>
           </Grid>
         </Grid>
+      </Grid>
 
-        {/* dialog for add product */}
-        <Dialog
-          open={openAddProductDialog}
-          onClose={handleCloseAddProductDialog}
-        >
-          <DialogTitle>Add Product Option</DialogTitle>
-          <Box component="form" onSubmit={handleAddProduct} noValidate>
-            <DialogContent>
-              <Typography variant="body1">Upload image</Typography>
-              <Card>
-                {selectedProductImage ? (
-                  <CardMedia
-                    component="img"
-                    alt="product-image"
-                    src={URL.createObjectURL(selectedProductImage)}
-                    sx={{ maxWidth: "300px" }}
-                  />
-                ) : (
-                  <CardContent>No image</CardContent>
-                )}
-              </Card>
-              <input
-                accept="image/*"
-                style={{ display: "none" }}
-                id="product-image-upload-button"
-                type="file"
-                onChange={handleSelectProductImage}
-              />
-              <label htmlFor="product-image-upload-button">
-                <Button
-                  variant="outlined"
-                  component="span"
-                  color="primary"
-                  size="small"
-                  startIcon={<EditIcon></EditIcon>}
-                >
-                  Add new
-                </Button>
-              </label>
-              <TextField
-                autoFocus
-                margin="normal"
-                fullWidth
-                id="projectTitle"
-                label="Title"
-                name="title"
-                type="text"
-                placeholder="Product option title"
-              />
-              <TextField
-                autoFocus
-                multiline
-                minRows={2}
-                margin="normal"
-                fullWidth
-                id="projectDescription"
-                label="Description"
-                name="description"
-                type="text"
-                placeholder="Add a short description of this product option, such as the size, materials, and complexity"
-              />
+      {/* dialog for add product */}
+      <Dialog open={openAddProductDialog} onClose={handleCloseAddProductDialog}>
+        <DialogTitle>Add Product Option</DialogTitle>
+        <Box component="form" onSubmit={handleAddProduct} noValidate>
+          <DialogContent>
+            <Typography variant="body1">Upload image</Typography>
+            <Card>
+              {selectedProductImage ? (
+                <CardMedia
+                  component="img"
+                  alt="product-image"
+                  src={URL.createObjectURL(selectedProductImage)}
+                  sx={{ maxWidth: "300px" }}
+                />
+              ) : (
+                <CardContent>No image</CardContent>
+              )}
+            </Card>
+            <input
+              accept="image/*"
+              style={{ display: "none" }}
+              id="product-image-upload-button"
+              type="file"
+              onChange={handleSelectProductImage}
+            />
+            <label htmlFor="product-image-upload-button">
+              <Button
+                variant="outlined"
+                component="span"
+                color="primary"
+                size="small"
+                startIcon={<EditIcon></EditIcon>}
+              >
+                Add new
+              </Button>
+            </label>
+            <TextField
+              autoFocus
+              margin="normal"
+              fullWidth
+              id="projectTitle"
+              label="Title"
+              name="title"
+              type="text"
+              placeholder="Product option title"
+            />
+            <TextField
+              autoFocus
+              multiline
+              minRows={2}
+              margin="normal"
+              fullWidth
+              id="projectDescription"
+              label="Description"
+              name="description"
+              type="text"
+              placeholder="Add a short description of this product option, such as the size, materials, and complexity"
+            />
 
-              <Autocomplete
-                disablePortal
-                options={["SGD", "USD"]}
-                renderInput={(params) => (
-                  <TextField
-                    name="currency"
-                    margin="normal"
-                    {...params}
-                    label="Currency"
-                  />
-                )}
-              />
-              <TextField
-                autoFocus
-                margin="normal"
-                fullWidth
-                id="startingPrice"
-                label="Starting rate"
-                name="starting_price"
-                type="number"
-                placeholder="Add your starting rate for this product option"
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button variant="outlined" type="submit">
-                Add
-              </Button>
-              <Button variant="outlined" onClick={handleCloseAddProductDialog}>
-                Cancel
-              </Button>
-            </DialogActions>
-          </Box>
-        </Dialog>
-      </>
-    );
+            <Autocomplete
+              disablePortal
+              options={["SGD", "USD"]}
+              renderInput={(params) => (
+                <TextField
+                  name="currency"
+                  margin="normal"
+                  {...params}
+                  label="Currency"
+                />
+              )}
+            />
+            <TextField
+              autoFocus
+              margin="normal"
+              fullWidth
+              id="startingPrice"
+              label="Starting rate"
+              name="starting_price"
+              type="number"
+              placeholder="Add your starting rate for this product option"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button variant="outlined" type="submit">
+              Add
+            </Button>
+            <Button variant="outlined" onClick={handleCloseAddProductDialog}>
+              Cancel
+            </Button>
+          </DialogActions>
+        </Box>
+      </Dialog>
+    </>
+  );
 };
 
 export default CreatorProjectConfig;

@@ -27,6 +27,7 @@ router.get(
 );
 router.patch(
   "/users/:id",
+  auth,
   validateIdInParam,
   validateUpdateUserData,
   checkValid,
@@ -34,6 +35,7 @@ router.patch(
 );
 router.patch(
   "/users/avatars/:user_id",
+  auth,
   // validateIdInParam,
   // checkValid,
   upload.single("image"),

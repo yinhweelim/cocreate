@@ -1,82 +1,94 @@
-import React, { useState, useContext } from "react";
-import UserContext from "../../context/UserContext";
-import useFetch from "../../hooks/useFetch";
-import { data } from "../../interfaces";
-import { AddAPhoto } from "@mui/icons-material";
-import {
-  Typography,
-  Grid,
-  Divider,
-  Stack,
-  Dialog,
-  DialogTitle,
-  Box,
-  DialogContent,
-  Card,
-  CardMedia,
-  CardContent,
-  Button,
-  TextField,
-  DialogActions,
-} from "@mui/material";
-import ProjectBriefCard from "../../components/PatronBriefCard";
-import SectionHeading from "../../components/SectionHeading";
-import { useSnackbar } from "../../context/SnackbarContext";
-
-interface Project {}
+import React, { useState, useEffect } from "react";
+import { Project } from "../../interfaces";
+import { Typography, Grid, Divider, Stack } from "@mui/material";
+import CreatorProjectCard from "../../components/CreatorProjectCard";
+import { useNavigate } from "react-router-dom";
 
 interface SubpageProps {
-  isLoading: boolean;
-  projects: any;
-  setProjects: React.Dispatch<React.SetStateAction<never[]>>;
+  projects: Project[];
+  setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
 }
+
 const CreatorProjectsSubpage = (props: SubpageProps) => {
-  const { showSnackbar } = useSnackbar();
-  const fetchData = useFetch();
-  const userCtx = useContext(UserContext);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null); // selected brief for update
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [completedProjects, setCompletedProjects] = useState<Project[] | null>(
+    []
+  );
+  const [pendingProjects, setPendingProjects] = useState<Project[] | null>([]);
+  const navigate = useNavigate();
 
-  if (props.isLoading) {
-    return <Typography variant="body1">Loading...</Typography>;
-  } else
-    return (
-      <>
-        {/* page content */}
-        <Grid container paddingY={4}>
-          {JSON.stringify(props.projects)}
-          <Grid container flexDirection="column" rowSpacing={2}>
-            <Stack paddingLeft={2} paddingBottom={4}>
-              <Typography variant="overline" paddingY={1} fontSize="1rem">
-                In progress
+  useEffect(() => {
+    if (props.projects) {
+      // Filter and set completed projects when props.projects change
+      const completedProjects = props.projects.filter(
+        (project: any) => project.is_completed
+      );
+      setCompletedProjects(completedProjects);
+
+      const pendingProjects = props.projects.filter(
+        (project: any) => !project.is_completed
+      );
+      setPendingProjects(pendingProjects);
+    }
+  }, [props.projects]);
+
+  return (
+    <>
+      {/* page content */}
+      <Grid container paddingY={4}>
+        <Grid container flexDirection="column" rowSpacing={2}>
+          <Stack paddingLeft={2} paddingBottom={4}>
+            <Typography variant="overline" paddingY={1} fontSize="1rem">
+              In progress
+            </Typography>
+            {props.projects?.length === 0 ? (
+              <Typography variant="body1">
+                No projects yet. Go out and get some!
               </Typography>
-              {props.projects?.length == 0 ? (
-                <Typography variant="body1">
-                  No projects yet. Go out and get some!
-                </Typography>
-              ) : (
-                ""
-              )}
-            </Stack>
+            ) : (
+              <Grid container flexDirection={"row"} spacing={1}>
+                {pendingProjects?.map((data: any, index: number) => (
+                  <CreatorProjectCard
+                    key={index}
+                    {...data}
+                    cardHeight="250"
+                    onClick={() => {
+                      navigate("/dashboard/projects/" + data.id);
+                    }}
+                  />
+                ))}
+              </Grid>
+            )}
+          </Stack>
 
-            <Divider />
-            <Stack paddingLeft={2} paddingTop={2}>
-              <Typography variant="overline" paddingY={1} fontSize="1rem">
-                Completed
+          <Divider />
+          <Stack paddingLeft={2} paddingTop={2}>
+            <Typography variant="overline" paddingY={1} fontSize="1rem">
+              Completed
+            </Typography>
+            {/* display completed projects */}
+            {props.projects?.length === 0 ? (
+              <Typography variant="body1">
+                No projects yet. Go out and support some creators!
               </Typography>
-
-              {props.projects?.length == 0 ? (
-                <Typography variant="body1">
-                  No projects yet. Go out and support some creators!
-                </Typography>
-              ) : (
-                ""
-              )}
-            </Stack>
-          </Grid>
+            ) : (
+              <Grid container flexDirection={"row"} spacing={1}>
+                {completedProjects?.map((data: any, index: number) => (
+                  <CreatorProjectCard
+                    key={index}
+                    {...data}
+                    cardHeight="250"
+                    onClick={() => {
+                      navigate("/dashboard/projects/" + data.id);
+                    }}
+                  />
+                ))}
+              </Grid>
+            )}
+          </Stack>
         </Grid>
-      </>
-    );
+      </Grid>
+    </>
+  );
 };
 
 export default CreatorProjectsSubpage;

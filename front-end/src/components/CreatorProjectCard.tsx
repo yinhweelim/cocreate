@@ -1,70 +1,105 @@
 import * as React from "react";
+import { useContext } from "react";
 import Card from "@mui/material/Card";
-import { Button, CardHeader, Chip, Grid, IconButton } from "@mui/material";
+import {
+  Button,
+  CardActionArea,
+  CardHeader,
+  Chip,
+  Grid,
+  IconButton,
+  styled,
+  tooltipClasses,
+} from "@mui/material";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
+import LinearProgress, {
+  LinearProgressProps,
+  linearProgressClasses,
+} from "@mui/material/LinearProgress";
+import Box from "@mui/material";
+import UserContext from "../context/UserContext";
 
 interface CardProps {
   onClick: React.MouseEventHandler<HTMLButtonElement> | undefined;
   onDelete: () => void;
   id?: string;
+  name?: string;
   title?: string;
-  image_url?: string;
+  product_image_url?: string;
   deadline?: string;
   product_name?: string;
   patron_name?: string;
+  budget_currency?: string;
+  budget_amount?: string;
+  current_stage?: string;
+  current_stage_index?: number;
+  total_stage_count?: number;
+  created_at?: string;
+  creator_name?: string;
 }
 
 const CreatorProjectCard = (props: CardProps) => {
-  //format chip
-  let chip = null; // Initialize chip as null by default
+  const userCtx = useContext(UserContext);
 
-  if (props.status === "PENDING_RESPONSE") {
-    chip = <Chip variant="outlined" color="primary" label="PENDING RESPONSE" />;
-  } else if (props.status === "ACCEPTED") {
-    chip = <Chip variant="outlined" color="success" label="ACCEPTED" />;
-  } else if (props.status === "CANCELLED") {
-    chip = <Chip variant="outlined" color="secondary" label="CANCELLED" />;
-  } else if (props.status === "DECLINED") {
-    chip = <Chip variant="outlined" color="secondary" label="DECLINED" />;
-  }
+  const progressValue =
+    (props?.current_stage_index! / props?.total_stage_count!) * 100;
+
+  const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
+    height: 5,
+    borderRadius: 5,
+    [`&.${linearProgressClasses.colorPrimary}`]: {
+      backgroundColor:
+        theme.palette.grey[theme.palette.mode === "light" ? 200 : 800],
+    },
+    [`& .${linearProgressClasses.bar}`]: {
+      borderRadius: 5,
+      backgroundColor: theme.palette.mode === "light" ? "#1a90ff" : "#308fe8",
+    },
+  }));
+
   return (
     <Grid item xs={4}>
       <Card
         sx={{
           height: 400,
+          maxWidth: 280,
           display: "flex",
           flexDirection: "column",
         }}
       >
-        <CardMedia
-          sx={{ height: 300, padding: "1em 1em 0 1em", objectFit: "cover" }}
-          image={props.image_url || undefined}
-          title="Portfolio Image"
-        />
-        <CardContent sx={{ flex: 1 }}>
-          <Typography variant="body1" sx={{ fontWeight: "400" }}>
-            {props.product_name}
-          </Typography>
-          <Typography variant="body2">From {props.patron_name}</Typography>
-          <Typography variant="body2" paddingBottom={1}>
-            Budget {props.budget_currency} {props.budget_amount}
-          </Typography>
+        <CardActionArea onClick={props.onClick}>
+          <CardMedia
+            sx={{ height: 240, padding: "1em 1em 0 1em", objectFit: "cover" }}
+            image={props.product_image_url}
+            title="Product Image"
+          />
+          <CardContent sx={{ flex: 1 }}>
+            <Typography variant="body1" sx={{ fontWeight: "400" }}>
+              {props.name}
+            </Typography>
+            {userCtx?.currentUser.role === "CREATOR" ? (
+              <Typography variant="body1">for {props.patron_name}</Typography>
+            ) : (
+              <Typography variant="body1">by {props.creator_name}</Typography>
+            )}
 
-          {chip}
-        </CardContent>
+            <Typography variant="subtitle1">
+              Started {props.created_at}
+            </Typography>
+            <Typography variant="subtitle1" paddingBottom={1}>
+              {props.budget_currency} {props.budget_amount}
+            </Typography>
 
-        <CardActions
-          sx={{
-            justifyContent: "flex",
-          }}
-        >
-          <Button variant="outlined" size="small" onClick={props.onClick}>
-            View
-          </Button>
-        </CardActions>
+            <BorderLinearProgress variant="determinate" value={progressValue} />
+
+            <Typography variant="subtitle1" paddingY={1}>
+              Stage: {props.current_stage}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
       </Card>
     </Grid>
   );

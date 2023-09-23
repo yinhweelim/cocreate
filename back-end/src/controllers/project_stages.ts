@@ -57,8 +57,8 @@ const setProjectStages = async (req: Request, res: Response) => {
       const stage = projectStagesData[i];
 
       const insertProjectStageQuery = `
-          INSERT INTO project_stages (index, name, description, time_estimate_unit, time_estimate_start, time_estimate_end, project_id)
-          VALUES ($1, $2, $3, $4, $5, $6, $7)
+          INSERT INTO project_stages (index, name, description, time_estimate_unit, time_estimate_start, time_estimate_end,is_completed, completed_time, project_id)
+          VALUES ($1, $2, $3, $4, $5, $6, $7,$8,$9)
           RETURNING *;`;
 
       const values = [
@@ -68,6 +68,8 @@ const setProjectStages = async (req: Request, res: Response) => {
         stage.time_estimate_unit,
         stage.time_estimate_start,
         stage.time_estimate_end,
+        stage.is_completed,
+        stage.completed_time,
         req.params.project_id,
       ];
 

@@ -53,6 +53,7 @@ const router = express.Router();
 router.get("/creators/:id", validateIdInParam, checkValid, getCreatorById);
 router.patch(
   "/creators/:id",
+  auth,
   validateIdInParam,
   validateUpdateCreatorData,
   checkValid,
@@ -60,6 +61,7 @@ router.patch(
 );
 router.patch(
   "/creators/logos/:creator_id",
+  auth,
   upload.single("image"),
   updateCreatorLogo
 );
@@ -73,6 +75,7 @@ router.get(
 );
 router.put(
   "/creators/products/:creator_id",
+  auth,
   validateCreatorIdInParam,
   checkValid,
   upload.single("image"),
@@ -80,6 +83,7 @@ router.put(
 );
 router.patch(
   "/creators/products/:id",
+  auth,
   validateIdInParam,
   validateUpdateProductData,
   checkValid,
@@ -87,6 +91,7 @@ router.patch(
 );
 router.delete(
   "/creators/products/:id",
+  auth,
   validateIdInParam,
   checkValid,
   deleteProduct
@@ -101,6 +106,7 @@ router.get(
 );
 router.put(
   "/creators/project_stages/:creator_id",
+  auth,
   validateCreatorIdInParam,
   validateSetProjectStagesData,
   checkValid,
@@ -116,6 +122,7 @@ router.get(
 );
 router.put(
   "/creators/testimonials/:creator_id",
+  auth,
   validateCreatorIdInParam,
   validateCreateTestimonialData,
   checkValid,
@@ -131,6 +138,7 @@ router.get(
 );
 router.put(
   "/creators/portfolio/:creator_id",
+  auth,
   validateCreatorIdInParam,
   checkValid,
   upload.single("image"),
@@ -138,6 +146,7 @@ router.put(
 );
 router.delete(
   "/creators/portfolio/:id",
+  auth,
   validateIdInParam,
   checkValid,
   deleteCreatorPortfolioItem
@@ -152,6 +161,7 @@ router.get(
 );
 router.put(
   "/creators/sociallinks/:creator_id",
+  auth,
   validateCreatorIdInParam,
   validateCreateSocialLinkData,
   checkValid,
@@ -159,6 +169,7 @@ router.put(
 );
 router.patch(
   "/creators/sociallinks/:id",
+  auth,
   validateIdInParam,
   validateUpdateSocialLinkData,
   checkValid,
@@ -166,6 +177,7 @@ router.patch(
 );
 router.delete(
   "/creators/sociallinks/:id",
+  auth,
   validateIdInParam,
   checkValid,
   deleteSocialLink
