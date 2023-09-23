@@ -1,11 +1,9 @@
 import * as React from "react";
 import Card from "@mui/material/Card";
-import { CardActionArea, Grid, IconButton } from "@mui/material";
-import CardActions from "@mui/material/CardActions";
+import { CardActionArea, Grid } from "@mui/material";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import DeleteIcon from "@mui/icons-material/Delete";
 import "./BriefProductOption.css";
 
 const BriefProductOption = (props: {

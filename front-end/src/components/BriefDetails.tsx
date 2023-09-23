@@ -1,6 +1,5 @@
-import React from "react";
 import { Brief } from "../interfaces";
-import { Typography, Grid, Card, CardMedia, Box } from "@mui/material";
+import { Typography, Grid, Card, CardMedia } from "@mui/material";
 
 const BriefDetails = (props: { brief: Brief | null }) => {
   return (
@@ -15,9 +14,7 @@ const BriefDetails = (props: { brief: Brief | null }) => {
           <Typography variant="overline">Option</Typography>
           <br />
           <Typography variant="body1">
-            {props.brief?.product_name
-              ? props.brief?.product_name
-              : props.productName}
+            {props.brief?.product_name ? props.brief?.product_name : ""}
             <br />
           </Typography>
         </Grid>

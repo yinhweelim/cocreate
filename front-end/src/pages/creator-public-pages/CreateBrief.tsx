@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import useFetch from "../../hooks/useFetch";
-import { Link as RouterLink, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import UserContext from "../../context/UserContext";
 import { CreatorData, data } from "../../interfaces";
 import CloseIcon from "@mui/icons-material/Close";
@@ -179,7 +179,7 @@ const CreateBrief = () => {
   });
 
   const handleClose = (
-    event?: React.SyntheticEvent | Event,
+    _event?: React.SyntheticEvent | Event,
     reason?: string
   ) => {
     if (reason === "clickaway") {

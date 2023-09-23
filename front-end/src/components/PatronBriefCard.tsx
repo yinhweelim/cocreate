@@ -5,7 +5,6 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { format } from "date-fns";
 
 const ProjectBriefCard = (props: {
   onClick: React.MouseEventHandler<HTMLButtonElement> | undefined;
@@ -25,7 +24,7 @@ const ProjectBriefCard = (props: {
   status?: string;
   product_name?: string;
   creator_name?: string;
-  created_at?: Date;
+  created_at?: string;
 }) => {
   let chip = null;
   if (props.status === "PENDING_RESPONSE") {
@@ -58,7 +57,7 @@ const ProjectBriefCard = (props: {
           </Typography>
           <Typography variant="body1">by {props.creator_name}</Typography>
           <Typography variant="subtitle1">
-            Started {props.created_at}
+            Started {props?.created_at}
           </Typography>
           <Typography variant="subtitle1" paddingBottom={1}>
             {props.budget_currency} {props.budget_amount}

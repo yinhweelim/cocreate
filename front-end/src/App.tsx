@@ -20,7 +20,6 @@ import Settings from "./pages/Settings";
 
 import CreatorProjects from "./pages/creator-dashboard/CreatorProjects";
 import CreatorPageConfig from "./pages/creator-dashboard/CreatorPageConfig";
-import CreatorAnalytics from "./pages/creator-dashboard/CreatorAnalytics";
 import PatronCommissions from "./pages/patron-dashboard/PatronCommissions";
 import { SidebarProvider } from "./context/SidebarContext";
 import CreatorPage from "./pages/creator-public-pages/CreatorPage";
@@ -64,7 +63,7 @@ function App() {
   });
 
   const handleClose = (
-    event?: React.SyntheticEvent | Event,
+    _event?: React.SyntheticEvent | Event,
     reason?: string
   ) => {
     if (reason === "clickaway") {
@@ -155,10 +154,6 @@ function App() {
                           <Route
                             path="/pagesetup"
                             element={<CreatorPageConfig />}
-                          ></Route>
-                          <Route
-                            path="/analytics"
-                            element={<CreatorAnalytics />}
                           ></Route>
                           <Route
                             path="/commissions"

@@ -1,6 +1,4 @@
-import React from "react";
-import { Paper, IconButton, Stack, Typography } from "@mui/material";
-import DragHandleIcon from "@mui/icons-material/DragHandle";
+import { Paper, Stack, Typography } from "@mui/material";
 interface ProjectStages {
   index?: number;
   name?: String;

@@ -1,5 +1,5 @@
-import React, { ReactNode } from "react";
-import { Typography, Box, Stack, Button, Divider, Grid } from "@mui/material";
+import { ReactNode } from "react";
+import { Typography, Stack, Grid } from "@mui/material";
 
 const SectionSubpages = (props: {
   actionButton: ReactNode | undefined;

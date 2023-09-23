@@ -138,6 +138,7 @@ const PatronCommissions = () => {
     event.preventDefault();
     const submittedData = new FormData(event.currentTarget);
     const details = submittedData.get("details");
+    // @ts-ignore
     const budget_amount = parseInt(submittedData.get("budget_amount"), 10);
 
     const res: data = await fetchData(
@@ -350,7 +351,7 @@ const PatronCommissions = () => {
               )}
 
               <TextField
-                disabled={selectedBrief?.status === "CANCELLED"}
+                disabled={selectedBrief?.status !== "PENDING_RESPONSE"}
                 autoFocus
                 multiline
                 margin="normal"
@@ -363,7 +364,7 @@ const PatronCommissions = () => {
                 defaultValue={selectedBrief?.details}
               />
               <TextField
-                disabled={selectedBrief?.status === "CANCELLED"}
+                disabled={selectedBrief?.status !== "PENDING_RESPONSE"}
                 margin="normal"
                 fullWidth
                 id="budget"

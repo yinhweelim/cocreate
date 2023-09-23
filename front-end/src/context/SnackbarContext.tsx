@@ -1,10 +1,4 @@
-import React, { createContext, useContext } from "react";
-
-// export const SnackbarContext = createContext({});
-
-// export function useSnackbar() {
-//   return useContext(SnackbarContext);
-// }
+import { createContext, useContext } from "react";
 
 interface SnackbarContextProps {
   showSnackbar: (message: string, severity: "success" | "warning") => void;
